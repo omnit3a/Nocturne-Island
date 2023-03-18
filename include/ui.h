@@ -13,12 +13,29 @@
 #define LEFT_DOWN_ARROW_UI "../assets/ui/down-left-arrow.bmp"
 #define RIGHT_DOWN_ARROW_UI "../assets/ui/down-right-arrow.bmp"
 
+#define FONT_PATH "../assets/ui/font.bmp"
+#define FONT_WIDTH 8
+#define FONT_HEIGHT 8
+#define FONT_ROW_LENGTH 16
+#define FONT_SCALE 2
+
+typedef enum ui_mode_e {
+  IDLE = 0,
+  INVENTORY = 1
+} ui_mode_t;
+
+extern ui_mode_t currentUIMode;
 extern blocks_t currentBlock;
 extern int uiScale;
+extern char * blockName[64];
 
+void drawLetter(int xPos, int yPos, unsigned char offset, SDL_Renderer * renderer);
+void drawString(int xPos, int yPos, char * string, SDL_Renderer * renderer);
 void drawUI(SDL_Renderer * renderer); 
 void drawCurrentBlock(int xPos, int yPos, SDL_Renderer * renderer);
 void drawCurrentDirection(int xPos, int yPos, SDL_Renderer * renderer);
 void handleBlockSelect(SDL_Event event);
+void handleUISwitch(SDL_Event event);
+void displayInventory(SDL_Renderer * renderer);
 
 #endif

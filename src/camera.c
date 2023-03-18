@@ -10,9 +10,10 @@ unsigned int cameraX = 0;
 unsigned int cameraY = 0;
 unsigned int cameraZoom = 8;
 
-void updateCamera(unsigned int xPos, unsigned int yPos, unsigned int zoom, SDL_Renderer * renderer, char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
+void updateCamera(unsigned int xPos, unsigned int yPos, unsigned int zoom, SDL_Renderer * renderer, char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Window * window){
+  SDL_GetWindowSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
   cameraX = xPos, cameraY = yPos, cameraZoom = zoom;
-  SDL_SetRenderDrawColor(renderer, 0, 32, 255, 255);
+  SDL_SetRenderDrawColor(renderer, 0, 175, 150, 255);
   SDL_RenderClear(renderer);
   drawWorld(world, zoom, renderer);
 }

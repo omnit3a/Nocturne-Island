@@ -8,14 +8,15 @@
 #include <physics.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <inventory.h>
 
 int playerX = MAP_WIDTH/2;
 int playerY = MAP_LENGTH/2;
 int playerZ = MAP_HEIGHT-1;
 int playerDirectionX = 1;
 int playerDirectionY = 1;
-rotation_t playerRotation;
-z_rotation_t playerZRotation;
+rotation_t playerRotation = NORTH;
+z_rotation_t playerZRotation = STRAIGHT;
 pthread_t jump_thread;
 
 int playerXOff;
@@ -95,11 +96,16 @@ blocks_t playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   playerOffsetDirection();
   if (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1 && playerZ > 0 && playerZ < MAP_HEIGHT-1){
     static blocks_t temp_block = 0;
+    if (map[playerXOff][playerYOff][playerZOff] == NOKIUM){
+      return NOKIUM;
+    }
     if (solid_map[playerXOff][playerYOff][playerZOff] == true){
       temp_block = map[playerXOff][playerYOff][playerZOff];
+      addItemToInventory(temp_block, 1);
       map[playerXOff][playerYOff][playerZOff] = 0;
       solid_map[playerXOff][playerYOff][playerZOff] = false;
       waterFlow(playerXOff, playerYOff, playerZOff, map);
+      blockingPlayerCheck();
     }
     return temp_block;
   }
@@ -109,8 +115,10 @@ blocks_t playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
 void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], blocks_t block){
   playerOffsetDirection();
   if (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1 && playerZ > 0 && playerZ < MAP_HEIGHT-1){
-    if (solid_map[playerXOff][playerYOff][playerZOff] == false){
+    if (solid_map[playerXOff][playerYOff][playerZOff] == false && checkInventoryForItem(block)){
       map[playerXOff][playerYOff][playerZOff] = block;
+      checkAndRemoveItem(block, 1);
+      blockingPlayerCheck();
     }
   }
 }
@@ -120,21 +128,25 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
     case SDLK_a:
       if (solid_map[playerX][playerY-1][playerZ] == false){
         playerY--;
+	blockingPlayerCheck();
       }
       break;
     case SDLK_s:
       if (solid_map[playerX+1][playerY][playerZ] == false){
         playerX++;
+	blockingPlayerCheck();
       }
       break;
     case SDLK_w:
       if (solid_map[playerX-1][playerY][playerZ] == false){
         playerX--;
+	blockingPlayerCheck();
       }
       break;
     case SDLK_d:
       if (solid_map[playerX][playerY+1][playerZ] == false){
         playerY++;
+	blockingPlayerCheck();
       }
       break;
     case SDLK_r:
@@ -144,7 +156,10 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
       rotatePlayerUp();
       break;
     case SDLK_SPACE:
-      pthread_create(&jump_thread, NULL, handlePlayerJumping, NULL);
+      if (solid_map[playerX][playerY][playerZ+1] == false && solid_map[playerX][playerY][playerZ-1] == true){
+        pthread_create(&jump_thread, NULL, handlePlayerJumping, NULL);
+        blockingPlayerCheck();
+      }
       break;
   }
 

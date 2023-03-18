@@ -3,15 +3,27 @@
 
 #include <SDL2/SDL.h>
 #include <map.h>
+#include <stdbool.h>
 
-#define PLAYER_SPRITE_RED "../assets/player-red.bmp"
-#define PLAYER_SPRITE_BLUE "../assets/player-blue.bmp"
 #define ATLAS_PATH "../assets/atlas.bmp"
 
-#define ATLAS_WIDTH 384
-#define ATLAS_HEIGHT 544
+#define LEVEE_PATH "../assets/levee.bmp"
+#define LEVEE_OUTLINE_PATH "../assets/levee-outline.bmp"
+
 #define TILE_WIDTH 24
 #define TILE_HEIGHT 34
+#define ATLAS_WIDTH TILE_WIDTH * 16
+#define ATLAS_HEIGHT TILE_HEIGHT * 16
+#define DEFAULT_SCREEN_WIDTH 640
+#define DEFAULT_SCREEN_HEIGHT 480
+
+#define BASE_DEPTH_BRIGHTNESS 50
+
+extern char * PLAYER_SPRITE;
+extern bool renderPlayerLast;
+
+extern int SCREEN_WIDTH;
+extern int SCREEN_HEIGHT;
 
 typedef enum blocks_e {
   STONE = 1,
@@ -20,8 +32,14 @@ typedef enum blocks_e {
   WATER = 4,
   MAGMA = 5,
   SAND = 6,
+  TREE_BOTTOM = 7,
+  TREE_TRUNK = 8,
+  TREE_LEAVES = 9,
+  BLOCK_OUTLINE = 10,
+  NOKIUM = 11,
 } blocks_t;
 
+bool blockingPlayerCheck();
 void drawBlock(int xPos, int yPos, int zPos, int height, blocks_t block, SDL_Renderer * renderer);
 void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Renderer * renderer);
 void drawPlayer(char * playerPath, int xPos, int yPos, SDL_Renderer * renderer);

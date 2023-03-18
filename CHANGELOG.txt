@@ -1,3 +1,14 @@
 Alpha Version 0.1.2:
   Added placing and mining blocks above and below the player
+  Improved terrain gen to make it more similar to rubydung terrain gen
+  Changed player sprite to be more mediveal
+  Made highlight of player visible behind cliffs and indoors
+  Named player character "Levee"
+  Started on lighting system
+  Decided on a cartoony artstyle for all the sprites and stuff
+  Added a texture to stone
+  Added dynamic resolution
+  Added unbreakable block (Nokium) that spawns at bottom of world
+  Added an inventory, which can be opened with 'e'
   
+Alpha Version 0.2.0:

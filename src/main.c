@@ -1,3 +1,4 @@
+
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,9 +13,8 @@
 #include <unistd.h>
 #include <physics.h>
 #include <teams.h>
-
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
+#include <lighting.h>
+#include <inventory.h>
 
 int main(int argc, char ** argv){
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
@@ -28,8 +28,8 @@ int main(int argc, char ** argv){
 
   SDL_Window * window;
   SDL_Renderer * renderer;
-  SDL_CreateWindowAndRenderer(WINDOW_WIDTH,
-			      WINDOW_HEIGHT,
+  SDL_CreateWindowAndRenderer(SCREEN_WIDTH,
+			      SCREEN_HEIGHT,
 			      0,
 			      &window,
 			      &renderer);
@@ -52,7 +52,9 @@ int main(int argc, char ** argv){
   cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
   setPhysicsMap(world_copy);
   generateSolidity(world_copy);
-  setTeam(DEFAULT_TEAM, 0); //set the players team to the default team
+  initInventory();
+  
+  setTeam(DEFAULT_TEAM, 1); //set the players team to the default team
 
   /* START PHYSICS FOR PLAYER */
   if (pthread_mutex_init(&physics_lock,NULL) != 0){
@@ -67,7 +69,7 @@ int main(int argc, char ** argv){
   while (running_game){
     SDL_Event e;
     while (SDL_PollEvent(&e) > 0){
-      updateCamera(cameraX, cameraY, cameraZoom, renderer, world_copy);
+      updateCamera(cameraX, cameraY, cameraZoom, renderer, world_copy, window);
       drawUI(renderer);
       SDL_RenderPresent(renderer);
       switch (e.type){
@@ -75,6 +77,7 @@ int main(int argc, char ** argv){
 	  handlePlayerMovement(world_copy, e);
 	  handleBlockSelect(e);
 	  handleCameraMovement(e);
+	  handleUISwitch(e);
 	  switch(e.key.keysym.sym){
 	    /* Mine a block */
 	    case SDLK_m:
@@ -91,10 +94,6 @@ int main(int argc, char ** argv){
 	      generateSolidity(world_copy);
 	      break;
 	    /* Swap team */
-	    case SDLK_t:
-	      swapTeam(1);
-	      break;
-	    /* Zoom in */
 	  }
 	  break;
         case SDL_QUIT:

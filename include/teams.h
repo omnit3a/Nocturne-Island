@@ -7,7 +7,7 @@
 
 #define SPAWN_X MAP_WIDTH/2 
 #define SPAWN_Y MAP_LENGTH/2
-#define SPAWN_Z MAP_HEIGHT/2
+#define SPAWN_Z 11
 #define DEFAULT_TEAM RED_TEAM
 
 extern int playerTeam;
