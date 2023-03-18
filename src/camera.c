@@ -5,38 +5,20 @@
 #include <drawer.h>
 #include <player.h>
 #include <map.h>
+#include <unistd.h>
 
-unsigned int cameraX = 0;
-unsigned int cameraY = 0;
-unsigned int cameraZoom = 8;
+int cameraX = 0;
+int cameraY = 0;
+int cameraZoom = 32;
 
 void updateCamera(unsigned int xPos, unsigned int yPos, unsigned int zoom, SDL_Renderer * renderer, char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Window * window){
+  /* Make the camera follow the player */
+  cameraX = -((xPosBackup-xPos)-((SCREEN_WIDTH/2)-TILE_WIDTH));
+  cameraY = -((yPosBackup-yPos)-((SCREEN_HEIGHT/2)-TILE_HEIGHT));
+  /* Dynamically resize window */
   SDL_GetWindowSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
-  cameraX = xPos, cameraY = yPos, cameraZoom = zoom;
   SDL_SetRenderDrawColor(renderer, 0, 175, 150, 255);
   SDL_RenderClear(renderer);
-  drawWorld(world, zoom, renderer);
+  drawWorld(world, cameraZoom, renderer);
 }
 
-void handleCameraMovement(SDL_Event event){
-  switch(event.key.keysym.sym){
-    case SDLK_z:
-      cameraZoom++;
-      break;
-    case SDLK_x:
-      cameraZoom--;
-      break;
-    case SDLK_UP:
-      cameraY+=cameraZoom;
-      break;
-    case SDLK_DOWN:
-      cameraY-=cameraZoom;
-      break;
-    case SDLK_LEFT:
-      cameraX+=(cameraZoom*2);
-      break;
-    case SDLK_RIGHT:
-      cameraX-=(cameraZoom*2);
-      break;
-  }
-}

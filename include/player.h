@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <drawer.h>
+#include <stdbool.h>
 
 typedef enum rotation_e {
   NORTH = 0,

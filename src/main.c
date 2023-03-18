@@ -13,7 +13,6 @@
 #include <unistd.h>
 #include <physics.h>
 #include <teams.h>
-#include <lighting.h>
 #include <inventory.h>
 
 int main(int argc, char ** argv){
@@ -21,10 +20,6 @@ int main(int argc, char ** argv){
     fprintf(stderr, "Failed to initialized SDL2\n");
     return -1;
   }
-
-  /* TODO
-     Setup text rendering
-  */
 
   SDL_Window * window;
   SDL_Renderer * renderer;
@@ -50,11 +45,10 @@ int main(int argc, char ** argv){
   char world_copy[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
   generateHills(world, time(0));  // generate a hilly world
   cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
-  setPhysicsMap(world_copy);
-  generateSolidity(world_copy);
-  initInventory();
+  setPhysicsMap(world_copy); // save the world map to the physics collision map
+  initInventory(); // fill inventory with empty slots
   
-  setTeam(DEFAULT_TEAM, 1); //set the players team to the default team
+  setTeam(DEFAULT_TEAM, 1); //set the players team to the default team and spawn the player
 
   /* START PHYSICS FOR PLAYER */
   if (pthread_mutex_init(&physics_lock,NULL) != 0){
@@ -62,6 +56,9 @@ int main(int argc, char ** argv){
     return -1;
   }
   pthread_t physics_id;
+  /* Player physics run on a seperate thread to allow for real-time gameplay 
+     rather than turn-based 
+  */
   pthread_create(&physics_id, NULL, handlePlayerGravity, NULL);
 
   /* MAIN GAME LOOP */
@@ -69,6 +66,10 @@ int main(int argc, char ** argv){
   while (running_game){
     SDL_Event e;
     while (SDL_PollEvent(&e) > 0){
+      /* Redraw screen and UI everytime an input is received.
+	 Probably should make it refresh everytime the world/player/physics 
+	 updates instead of when the player does something
+       */
       updateCamera(cameraX, cameraY, cameraZoom, renderer, world_copy, window);
       drawUI(renderer);
       SDL_RenderPresent(renderer);
@@ -76,24 +77,22 @@ int main(int argc, char ** argv){
         case SDL_KEYDOWN:
 	  handlePlayerMovement(world_copy, e);
 	  handleBlockSelect(e);
-	  handleCameraMovement(e);
-	  handleUISwitch(e);
+	  handleUISwitch(e); // switch between UI modes
 	  switch(e.key.keysym.sym){
 	    /* Mine a block */
 	    case SDLK_m:
 	      playerMineBlock(world);
+	      /* Regenerate the world_copy map, physics map, and solidity map */
 	      cullHiddenBlocks(world_copy, world);
 	      setPhysicsMap(world_copy);
-	      generateSolidity(world_copy);
 	      break;
 	    /* Place a block */
 	    case SDLK_p:
 	      playerPlaceBlock(world, currentBlock);
+	      /* Regenerate the world_copy map, physics map, and solidity map */
 	      cullHiddenBlocks(world_copy, world);
 	      setPhysicsMap(world_copy);
-	      generateSolidity(world_copy);
 	      break;
-	    /* Swap team */
 	  }
 	  break;
         case SDL_QUIT:

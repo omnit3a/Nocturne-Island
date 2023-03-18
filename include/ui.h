@@ -4,15 +4,13 @@
 #include <SDL2/SDL.h>
 #include <drawer.h>
 
-#define STONE_BLOCK_UI "../assets/ui/blocks/stone.bmp"
-#define GRASS_BLOCK_UI "../assets/ui/blocks/grass.bmp"
-#define WOOD_BLOCK_UI "../assets/ui/blocks/wood.bmp"
-
+/* Directional arrows textures */
 #define LEFT_UP_ARROW_UI "../assets/ui/up-left-arrow.bmp"
 #define RIGHT_UP_ARROW_UI "../assets/ui/up-right-arrow.bmp"
 #define LEFT_DOWN_ARROW_UI "../assets/ui/down-left-arrow.bmp"
 #define RIGHT_DOWN_ARROW_UI "../assets/ui/down-right-arrow.bmp"
 
+/* Font related definitions */
 #define FONT_PATH "../assets/ui/font.bmp"
 #define FONT_WIDTH 8
 #define FONT_HEIGHT 8
@@ -26,7 +24,7 @@ typedef enum ui_mode_e {
 
 extern ui_mode_t currentUIMode;
 extern blocks_t currentBlock;
-extern int uiScale;
+/* List of display names of blocks */
 extern char * blockName[64];
 
 void drawLetter(int xPos, int yPos, unsigned char offset, SDL_Renderer * renderer);

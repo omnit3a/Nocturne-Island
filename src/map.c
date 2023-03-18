@@ -6,14 +6,31 @@
 #include <stdbool.h>
 
 char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
-bool solid_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
+block_data_t data_map[BLOCKS_AMOUNT] = {
+  {-1, false, true, 0, 0},
+  {2, true, false, STONE, STONE},
+  {1, true, false, GRASS, STONE},
+  {1, true, false, WOOD, WOOD},
+  {1, false, true, WATER, 0},
+  {3, true, false, MAGMA, STONE},
+  {1, true, false, SAND, SAND},
+  {2, true, false, TREE_BOTTOM, WOOD},
+  {2, true, false, TREE_TRUNK, WOOD},
+  {1, true, false, TREE_LEAVES, WOOD},
+  {-1, false, false, BLOCK_OUTLINE, 0},
+  {-1, true, false, NOKIUM, 0}
+};
 
+block_data_t getBlockProperties(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int xPos, int yPos, int zPos){
+  return data_map[(int)map[xPos][yPos][zPos]];
+}
+
+/* Initialize every tile in map to empty block */
 void fillMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   for (int i = 0 ; i < MAP_HEIGHT ; i++){
     for (int j = 0 ; j < MAP_WIDTH ; j++){
       for (int n = 0 ; n < MAP_LENGTH ; n++){
 	map[j][n][i] = 0;
-	solid_map[j][n][i] = false;
       }
     }
   }
@@ -53,13 +70,14 @@ void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_
  * Step 4:
  *   Average the heights of the non-cliffs/mountains
  * Step 5:
- *   Place water table
+ *   Place NOKIUM (unbreakable block) at bottom of world
  * Step 6:
  *   Place trees
  */
 void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
   fillMap(map);
   srand(seed);
+  /* Step 1 */
   int isMountain = 0;
   int prevIsMountain;
   char temp_height_map[MAP_WIDTH][MAP_LENGTH];
@@ -79,6 +97,7 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
     }
   }
 
+  /* Step 2 */
   for (int r = 0 ; r < 100 ; r++){
     for (int i = 0 ; i < MAP_WIDTH ; i++){
       for (int j = 0 ; j < MAP_LENGTH ; j++){
@@ -98,6 +117,7 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
     }
   }
 
+  /* Step 3 */
   int hillChance = 1;
   for (int i = 0 ; i < MAP_WIDTH ; i++){
     for (int j = 0 ; j < MAP_LENGTH ; j++){
@@ -135,6 +155,7 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
     }
   }
 
+  /* Step 4 */
   int surroundVals[4];
   int average;
   for (int r = 0 ; r < 3 ; r++){
@@ -168,6 +189,7 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
     }
   }
 
+  /* Step 5 */
   for (int i = 0 ; i < MAP_WIDTH ; i++){
     for (int j = 0 ; j < MAP_LENGTH ; j++){
       map[i][j][(int)height_map[i][j]] = GRASS;
@@ -177,9 +199,12 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
       map[i][j][0] = NOKIUM;
     }
   }
+
+  /* Step 6 */
   placeTrees(map, height_map, seed);
 }
 
+/* Cull blocks that are surrounded on top, the left and the right */
 void cullHiddenBlocks(char dest_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char src_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   for (int i = 0 ; i < MAP_HEIGHT ; i++){
     for (int j = 0 ; j < MAP_WIDTH ; j++){
@@ -198,23 +223,3 @@ void cullHiddenBlocks(char dest_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char src
     }
   }
 }
-
-void generateSolidity(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
-  for (int i = 0 ; i < MAP_WIDTH ; i++){
-    for (int j = 0 ; j < MAP_LENGTH ; j++){
-      for (int n = 0 ; n < MAP_HEIGHT ; n++){
-        switch(map[i][j][n]){
-	  case 0:
-	    solid_map[i][j][n] = false;
-	    break;
-	  case WATER:
-	    solid_map[i][j][n] = false;
-	    break;
-	  default:
-	    solid_map[i][j][n] = true;
-	    break;
-	}
-      }
-    }
-  }
-} 

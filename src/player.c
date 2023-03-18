@@ -29,6 +29,7 @@ void movePlayer(int xOff, int yOff, int zOff, SDL_Renderer * renderer){
   playerZ += zOff;
 }
 
+/* Make the player face a specific direction */
 void setPlayerRotation(rotation_t rotation){
   switch (rotation){
     case NORTH:
@@ -51,10 +52,12 @@ void setPlayerRotation(rotation_t rotation){
   playerRotation = rotation;
 }
 
+/* Rotate player on the x and y axis */
 void rotatePlayerClockwise(){
   playerRotation = (playerRotation + 1) % 4;
 }
 
+/* Rotate player on the z axis */
 void rotatePlayerUp(){
   playerZRotation = (playerZRotation +1) % 3;
 }
@@ -92,61 +95,69 @@ void playerOffsetDirection(){
   }
 }
 
+/* Mine a block in the direction of the player */
 blocks_t playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   playerOffsetDirection();
   if (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1 && playerZ > 0 && playerZ < MAP_HEIGHT-1){
     static blocks_t temp_block = 0;
-    if (map[playerXOff][playerYOff][playerZOff] == NOKIUM){
-      return NOKIUM;
+    /* If trying to mine NOKIUM, return from function */
+    /* I probably want to replace this with a hardness value for each block */
+    if (getBlockProperties(map,playerXOff,playerYOff,playerZOff).hp < 0){
+      return map[playerXOff][playerYOff][playerZOff];
     }
-    if (solid_map[playerXOff][playerYOff][playerZOff] == true){
-      temp_block = map[playerXOff][playerYOff][playerZOff];
-      addItemToInventory(temp_block, 1);
+    if (getBlockProperties(map,playerXOff,playerYOff,playerZOff).solid){
+      /* Add the mined item to the players inventory */
+      addItemToInventory(getBlockProperties(map, playerXOff, playerYOff, playerZOff).dropped_item, 1);
       map[playerXOff][playerYOff][playerZOff] = 0;
-      solid_map[playerXOff][playerYOff][playerZOff] = false;
       waterFlow(playerXOff, playerYOff, playerZOff, map);
-      blockingPlayerCheck();
+      blockingPlayerCheck(map);
     }
     return temp_block;
   }
   return 0;
 }
 
+/* Allow player to place a block from the inventory */
 void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], blocks_t block){
   playerOffsetDirection();
   if (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1 && playerZ > 0 && playerZ < MAP_HEIGHT-1){
-    if (solid_map[playerXOff][playerYOff][playerZOff] == false && checkInventoryForItem(block)){
+    if (!(getBlockProperties(map,playerXOff,playerYOff,playerZOff).solid) && checkInventoryForItem(block)){
       map[playerXOff][playerYOff][playerZOff] = block;
       checkAndRemoveItem(block, 1);
-      blockingPlayerCheck();
+      blockingPlayerCheck(map);
     }
   }
 }
 
+/* Get user input for the player, then do stuff with it */
 void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event event){
   switch (event.key.keysym.sym){
     case SDLK_a:
-      if (solid_map[playerX][playerY-1][playerZ] == false){
+      /* Move NORTH */
+      if (!(getBlockProperties(map,playerX,playerY-1,playerZ).solid)){
         playerY--;
-	blockingPlayerCheck();
+	blockingPlayerCheck(map);
       }
       break;
     case SDLK_s:
-      if (solid_map[playerX+1][playerY][playerZ] == false){
+      /* Move WEST */
+      if (!(getBlockProperties(map,playerX+1,playerY,playerZ).solid)){
         playerX++;
-	blockingPlayerCheck();
+	blockingPlayerCheck(map);
       }
       break;
     case SDLK_w:
-      if (solid_map[playerX-1][playerY][playerZ] == false){
+      /* Move EAST */
+      if (!(getBlockProperties(map,playerX-1,playerY,playerZ).solid)){
         playerX--;
-	blockingPlayerCheck();
+	blockingPlayerCheck(map);
       }
       break;
     case SDLK_d:
-      if (solid_map[playerX][playerY+1][playerZ] == false){
+      /* Move SOUTH */
+      if (!(getBlockProperties(map,playerX,playerY+1,playerZ).solid)){
         playerY++;
-	blockingPlayerCheck();
+	blockingPlayerCheck(map);
       }
       break;
     case SDLK_r:
@@ -156,11 +167,11 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
       rotatePlayerUp();
       break;
     case SDLK_SPACE:
-      if (solid_map[playerX][playerY][playerZ+1] == false && solid_map[playerX][playerY][playerZ-1] == true){
+      /* Check for empty space above player and solid space below player */
+      if (!(getBlockProperties(map,playerX,playerY,playerZ+1).solid) && getBlockProperties(map,playerX,playerY,playerZ-1).solid){
         pthread_create(&jump_thread, NULL, handlePlayerJumping, NULL);
-        blockingPlayerCheck();
+        blockingPlayerCheck(map);
       }
       break;
   }
-
 }

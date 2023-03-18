@@ -12,3 +12,5 @@ Alpha Version 0.1.2:
   Added an inventory, which can be opened with 'e'
   
 Alpha Version 0.2.0:
+  Removed direct camera control and made camera follow player
+  Refactored blocks to have data which can be expanded, allowing for modification

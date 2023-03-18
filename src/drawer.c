@@ -14,6 +14,7 @@ bool renderPlayerLast;
 
 int SCREEN_WIDTH = DEFAULT_SCREEN_WIDTH;
 int SCREEN_HEIGHT = DEFAULT_SCREEN_HEIGHT;
+int xPosBackup = 0, yPosBackup = 0, belowPosBackup = 0;
 
 int iterator = 0;
 SDL_Surface * atlas_surface;
@@ -31,24 +32,26 @@ SDL_Rect atlas_clip = {
   TILE_HEIGHT
 };
 SDL_Rect tile_rect;
-bool blockingPlayerCheck(){
+
+/* Check if blocks are blocking the player */
+bool blockingPlayerCheck(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   int iteratorX = 0;
   int iteratorY = 0;
   int iteratorXY = 0;
   for (int reach = 0 ; reach < 3 ; reach++){
     for (int i = playerZ ; i < playerZ+5 ; i++){
-      if (solid_map[playerX+reach][playerY][i]){
+      if (!(getBlockProperties(map, playerX+1, playerY, i).transparent)){
 	iteratorX++;
       }
-      if (solid_map[playerX][playerY+reach][i]){
+      if (!(getBlockProperties(map, playerX, playerY+1, i).transparent)){
 	iteratorY++;
       }
-      if (solid_map[playerX+reach][playerY+reach][i]){
+      if (!(getBlockProperties(map, playerX+1, playerY+1, i).transparent)){
 	iteratorXY++;
       }
     }
   }
-  if (solid_map[playerX][playerY][playerZ+1]){
+  if (!(getBlockProperties(map, playerX, playerY, playerZ+1).transparent)){
     iteratorX+=2;
     iteratorY+=2;
     iteratorXY+=2;
@@ -64,6 +67,7 @@ bool blockingPlayerCheck(){
   }
 }
 
+/* Draw specified block on the screen */
 void drawBlock(int xPos, int yPos, int zPos, int height, blocks_t block, SDL_Renderer * renderer){
   atlas_rect.x = xPos;
   atlas_rect.y = yPos;
@@ -81,6 +85,7 @@ void drawBlock(int xPos, int yPos, int zPos, int height, blocks_t block, SDL_Ren
   }
   
   if (zPos > -1){
+    /* Use this to change lighting level of block */
     SDL_SetTextureColorMod(atlas_texture
 			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS)
 			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS)
@@ -89,12 +94,12 @@ void drawBlock(int xPos, int yPos, int zPos, int height, blocks_t block, SDL_Ren
   SDL_RenderCopy(renderer, atlas_texture, &atlas_clip, &atlas_rect);
 }
 
+/* Draw the whole world */
 void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Renderer * renderer){
   int iterator = 0;
   int xPos;
   int belowPos;
   int yPos;
-  int xPosBackup, yPosBackup, belowPosBackup;
 
   atlas_surface = SDL_LoadBMP(ATLAS_PATH);
   atlas_texture = SDL_CreateTextureFromSurface(renderer, atlas_surface);
@@ -104,6 +109,7 @@ void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Re
   for (int n = MAP_HEIGHT-1 ; n >= 0 ; n--){
     for (int i = 0 ; i < MAP_WIDTH ; i++){
       for (int j = 0 ; j < MAP_LENGTH ; j++){
+	/* Convert world coordinates to screen coordinates */
 	xPos = ((j*height)-((i*height)-((SCREEN_WIDTH/2)+height+10)))+cameraX;
 	belowPos = ((j*height)+(i*height)+((n+1)*height))+cameraY;
 	yPos = ((j*height)+(i*height)+(n*height))+cameraY;
@@ -137,6 +143,7 @@ void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Re
     }
     iterator++;
   }
+  /* Draw player infront of blocks */
   if (renderPlayerLast){
     drawBlock(xPosBackup, belowPosBackup, iterator, height, BLOCK_OUTLINE, renderer);
     drawPlayer(PLAYER_SPRITE, xPosBackup, yPosBackup, renderer);
@@ -146,6 +153,7 @@ void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Re
   SDL_DestroyTexture(atlas_texture);
 }
 
+/* Draw player */
 void drawPlayer(char * playerPath, int xPos, int yPos, SDL_Renderer * renderer){
   SDL_Surface * sprite_surface = SDL_LoadBMP(playerPath);
   SDL_Texture * sprite_texture = SDL_CreateTextureFromSurface(renderer, sprite_surface);
@@ -154,6 +162,7 @@ void drawPlayer(char * playerPath, int xPos, int yPos, SDL_Renderer * renderer){
   sprite_area.y = yPos;
   sprite_area.w = cameraZoom*2;
   sprite_area.h = cameraZoom*2;
+  /* Use this to change the lighting of the player */
   SDL_SetTextureColorMod(sprite_texture,
 			 (playerZ * 10)+BASE_DEPTH_BRIGHTNESS,
 			 (playerZ * 10)+BASE_DEPTH_BRIGHTNESS,

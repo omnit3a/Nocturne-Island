@@ -12,7 +12,6 @@
 
 ui_mode_t currentUIMode = IDLE;
 blocks_t currentBlock = 0;
-int uiScale = 32;
 char * blockNames[64] = {
   "Empty",
   "Stone",
@@ -35,6 +34,7 @@ SDL_Rect font_rect = {
   FONT_WIDTH,
   FONT_HEIGHT
 };
+/* Used for the selecting which character from the font map to draw */
 SDL_Rect font_clip = {
   0,
   0,
@@ -42,6 +42,7 @@ SDL_Rect font_clip = {
   FONT_HEIGHT
 };
 
+/* Draw and individual character from the font map */
 void drawLetter(int xPos, int yPos, unsigned char offset, SDL_Renderer * renderer){
   font_rect.x = xPos;
   font_rect.y = yPos;
@@ -58,6 +59,7 @@ void drawLetter(int xPos, int yPos, unsigned char offset, SDL_Renderer * rendere
 void drawString(int xPos, int yPos, char * string, SDL_Renderer * renderer){
   font_surface = SDL_LoadBMP(FONT_PATH);
   font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
+  /* Scale the font */
   font_rect.w = FONT_WIDTH * FONT_SCALE;
   font_rect.h = FONT_HEIGHT * FONT_SCALE;
   font_clip.w = FONT_WIDTH;
@@ -91,6 +93,9 @@ void drawCurrentDirection(int xPos, int yPos, SDL_Renderer * renderer){
   SDL_Surface * sprite_surface;
   int xOff = 0;
   int yOff = 0;
+  /* Determine offset for the player direction arrow
+     depending on the direction the player is facing
+  */
   switch (playerRotation){
     case NORTH:
       sprite_surface = SDL_LoadBMP(LEFT_UP_ARROW_UI);
@@ -135,40 +140,18 @@ void drawCurrentDirection(int xPos, int yPos, SDL_Renderer * renderer){
 }
 
 void handleBlockSelect(SDL_Event event){
-  switch(event.key.keysym.sym){
-    case SDLK_1:
-      currentBlock = inventory[0].block;
-      break;
-    case SDLK_2:
-      currentBlock = inventory[1].block;
-      break;
-    case SDLK_3:
-      currentBlock = inventory[2].block;
-      break;
-    case SDLK_4:
-      currentBlock = inventory[3].block;
-      break;
-    case SDLK_5:
-      currentBlock = inventory[4].block;
-      break;
-    case SDLK_6:
-      currentBlock = inventory[5].block;
-      break;
-    case SDLK_7:
-      currentBlock = inventory[6].block;
-      break;
-    case SDLK_8:
-      currentBlock = inventory[7].block;
-      break;
-    case SDLK_9:
-      currentBlock = inventory[8].block;
-      break;
-    case SDLK_0:
+  /* Handle selecting items from the inventory */
+  char code = event.key.keysym.sym-48;
+  if (code >= 0 && code <= 9){
+    if (code == 0){
       currentBlock = inventory[9].block;
-      break;
+    } else {
+      currentBlock = inventory[code-1].block;
+    }
   }
 }
 
+/* Switch between UI Modes */
 void handleUISwitch(SDL_Event event){
   switch(event.key.keysym.sym){
     case SDLK_e:
@@ -181,10 +164,14 @@ void handleUISwitch(SDL_Event event){
   }
 }
 
+/* Display list of items in inventory */
 void displayInventory(SDL_Renderer * renderer){
   drawString(0,0,"Inventory",renderer);
+  char amount[4] = {0};
   for (int i = 0 ; i < INVENTORY_SIZE ; i++){
     drawString(0,i+1," - ",renderer);
+    sprintf(amount, ": %d", inventory[i].count);
     drawString(3,i+1,blockNames[inventory[i].block],renderer);
+    drawString(3+strlen(blockNames[inventory[i].block]),i+1, amount, renderer);
   }
 }

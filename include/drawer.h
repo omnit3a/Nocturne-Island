@@ -24,6 +24,7 @@ extern bool renderPlayerLast;
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
+extern int xPosBackup, yPosBackup, belowPosBackup;
 
 typedef enum blocks_e {
   STONE = 1,
@@ -39,7 +40,7 @@ typedef enum blocks_e {
   NOKIUM = 11,
 } blocks_t;
 
-bool blockingPlayerCheck();
+bool blockingPlayerCheck(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void drawBlock(int xPos, int yPos, int zPos, int height, blocks_t block, SDL_Renderer * renderer);
 void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Renderer * renderer);
 void drawPlayer(char * playerPath, int xPos, int yPos, SDL_Renderer * renderer);
