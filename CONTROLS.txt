@@ -1,0 +1,11 @@
+WASD: Move
+Space: Jump
+F: Rotate along Z axis
+R: Rotate along X and Y axis
+M: Mine
+P: Place
+0-9: Inventory
+E: Open Inventory
+Z: Zoom in
+X: Zoom out
+Arrow keys: Move camera
