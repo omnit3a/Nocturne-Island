@@ -172,9 +172,10 @@ void handleUISwitch(SDL_Event event){
 /* Display list of items in inventory */
 void displayInventory(SDL_Renderer * renderer){
   drawString(0,0,"Inventory",renderer);
-  char amount[4] = {0};
+  char amount[16];
   for (int i = 0 ; i < INVENTORY_SIZE ; i++){
     drawString(0,i+1," - ",renderer);
+    strcpy(amount, "");
     sprintf(amount, ": %d", inventory[i].count);
     drawString(3,i+1,blockNames[inventory[i].block],renderer);
     drawString(3+strlen(blockNames[inventory[i].block]),i+1, amount, renderer);

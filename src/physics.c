@@ -49,7 +49,6 @@ void * handlePlayerGravity(void * vargp){
     if (playerIsJumping == 0){
       if(!(getBlockProperties(physics_map, playerX, playerY, temp_playerZ-1).solid)){
         playerZ--;
-	sleep(1);
       }
     }
     pthread_mutex_unlock(&physics_lock);
