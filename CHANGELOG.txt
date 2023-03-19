@@ -15,3 +15,4 @@ Alpha Version 0.2.0:
   Removed direct camera control and made camera follow player
   Refactored blocks to have data which can be expanded, allowing for modification
   Added stairs (non-functional currently)
+  Added functionality to stairs
