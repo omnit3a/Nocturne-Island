@@ -7,18 +7,22 @@
 
 char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 block_data_t data_map[BLOCKS_AMOUNT] = {
-  {-1, false, true, 0, 0},
-  {2, true, false, STONE, STONE},
-  {1, true, false, GRASS, STONE},
-  {1, true, false, WOOD, WOOD},
-  {1, false, true, WATER, 0},
-  {3, true, false, MAGMA, STONE},
-  {1, true, false, SAND, SAND},
-  {2, true, false, TREE_BOTTOM, WOOD},
-  {2, true, false, TREE_TRUNK, WOOD},
-  {1, true, false, TREE_LEAVES, WOOD},
-  {-1, false, false, BLOCK_OUTLINE, 0},
-  {-1, true, false, NOKIUM, 0}
+  {-1, false, true, 0, 0, 0},
+  {2, true, false, STONE, STONE, 1},
+  {1, true, false, GRASS, STONE, 1},
+  {1, true, false, WOOD, WOOD, 1},
+  {1, false, true, WATER, 0, 0},
+  {3, true, false, MAGMA, STONE, 3},
+  {1, true, false, SAND, SAND, 1},
+  {2, true, false, TREE_BOTTOM, WOOD, 2},
+  {2, true, false, TREE_TRUNK, WOOD, 2},
+  {1, true, false, TREE_LEAVES, WOOD, 2},
+  {-1, false, false, BLOCK_OUTLINE, 0, 0},
+  {-1, true, false, NOKIUM, 0, 0},
+  {1, true, false, NORTH_STAIRS, STONE, 3},
+  {1, true, false, EAST_STAIRS, STONE, 3},
+  {1, true, false, SOUTH_STAIRS, STONE, 3},
+  {1, true, false, WEST_STAIRS, STONE, 3},
 };
 
 block_data_t getBlockProperties(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int xPos, int yPos, int zPos){

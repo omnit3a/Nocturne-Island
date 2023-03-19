@@ -38,6 +38,10 @@ typedef enum blocks_e {
   TREE_LEAVES = 9,
   BLOCK_OUTLINE = 10,
   NOKIUM = 11,
+  NORTH_STAIRS = 12,
+  EAST_STAIRS = 13,
+  SOUTH_STAIRS = 14,
+  WEST_STAIRS = 15,
 } blocks_t;
 
 bool blockingPlayerCheck(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);

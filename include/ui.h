@@ -13,9 +13,9 @@
 /* Font related definitions */
 #define FONT_PATH "../assets/ui/font.bmp"
 #define FONT_WIDTH 8
-#define FONT_HEIGHT 8
+#define FONT_HEIGHT 16
 #define FONT_ROW_LENGTH 16
-#define FONT_SCALE 2
+#define FONT_SCALE 1
 
 typedef enum ui_mode_e {
   IDLE = 0,

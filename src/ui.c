@@ -23,7 +23,12 @@ char * blockNames[64] = {
   "Tree Bottom",
   "Tree Trunk",
   "Tree Leaves",
-  "Nokium"
+  "Block Highlight",
+  "Nokium",
+  "Stairs",
+  "Stairs",
+  "Stairs",
+  "Stairs",
 };
 
 SDL_Surface * font_surface;

@@ -22,6 +22,7 @@ typedef struct block_data_s {
   bool transparent;
   int block;
   int dropped_item;
+  int count;
 } block_data_t;
 
 extern char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];

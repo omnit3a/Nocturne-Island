@@ -107,7 +107,7 @@ blocks_t playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
     }
     if (getBlockProperties(map,playerXOff,playerYOff,playerZOff).solid){
       /* Add the mined item to the players inventory */
-      addItemToInventory(getBlockProperties(map, playerXOff, playerYOff, playerZOff).dropped_item, 1);
+      addItemToInventory(getBlockProperties(map, playerXOff, playerYOff, playerZOff).dropped_item, getBlockProperties(map, playerXOff, playerYOff, playerZOff).count);
       map[playerXOff][playerYOff][playerZOff] = 0;
       waterFlow(playerXOff, playerYOff, playerZOff, map);
       blockingPlayerCheck(map);
@@ -131,34 +131,20 @@ void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], blocks_t bloc
 
 /* Get user input for the player, then do stuff with it */
 void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event event){
+  rotation_t prevRotation = playerRotation;
+  playerOffsetDirection();
   switch (event.key.keysym.sym){
     case SDLK_a:
-      /* Move NORTH */
-      if (!(getBlockProperties(map,playerX,playerY-1,playerZ).solid)){
-        playerY--;
-	blockingPlayerCheck(map);
-      }
+      setPlayerRotation(NORTH);
       break;
     case SDLK_s:
-      /* Move WEST */
-      if (!(getBlockProperties(map,playerX+1,playerY,playerZ).solid)){
-        playerX++;
-	blockingPlayerCheck(map);
-      }
+      setPlayerRotation(WEST);
       break;
     case SDLK_w:
-      /* Move EAST */
-      if (!(getBlockProperties(map,playerX-1,playerY,playerZ).solid)){
-        playerX--;
-	blockingPlayerCheck(map);
-      }
+      setPlayerRotation(EAST);
       break;
     case SDLK_d:
-      /* Move SOUTH */
-      if (!(getBlockProperties(map,playerX,playerY+1,playerZ).solid)){
-        playerY++;
-	blockingPlayerCheck(map);
-      }
+      setPlayerRotation(SOUTH);
       break;
     case SDLK_r:
       rotatePlayerClockwise();
@@ -171,6 +157,20 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
       if (!(getBlockProperties(map,playerX,playerY,playerZ+1).solid) && getBlockProperties(map,playerX,playerY,playerZ-1).solid){
         pthread_create(&jump_thread, NULL, handlePlayerJumping, NULL);
         blockingPlayerCheck(map);
+      }
+      break;
+  }
+  playerOffsetDirection();
+  switch (event.key.keysym.sym){
+    case SDLK_w:
+    case SDLK_a:
+    case SDLK_s:
+    case SDLK_d:
+      if(!getBlockProperties(map, playerXOff, playerYOff, playerZ).solid){
+	playerX = playerXOff;
+	playerY = playerYOff;
+	blockingPlayerCheck(map);
+	playerRotation = prevRotation;
       }
       break;
   }
