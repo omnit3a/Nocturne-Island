@@ -25,6 +25,12 @@ block_data_t data_map[BLOCKS_AMOUNT] = {
   {1, true, false, STAIRS, STONE, 3},
   {1, true, false, WORK_BENCH, WORK_BENCH, 1},
   {1, true, false, TABLE, TABLE, 1},
+  {1, true, false, IRON_ORE, IRON_CHUNKS, 2},
+  {1, true, false, COAL_ORE, COAL_CHUNKS, 2},
+  {1, true, false, IRON_CHUNKS, IRON_CHUNKS, 1},
+  {1, true, false, COAL_CHUNKS, COAL_CHUNKS, 1},
+  {1, true, false, ROPE, ROPE, 1},
+  {1, true, false, NAILS, NAILS, 1},
 };
 
 block_data_t getBlockProperties(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int xPos, int yPos, int zPos){
@@ -60,6 +66,28 @@ void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_
         if ((rand() % 1000) <= TREE_CHANCE*offset){
 	  map[i][j][(int)height_map[i][j]+1] = TREE_BOTTOM;
 	  map[i][j][(int)height_map[i][j]+3] = TREE_LEAVES;
+	}
+      }
+    }
+  }
+}
+
+/* Place Iron and Coal ore inside of mountains */
+void placeOres(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char height_map[MAP_WIDTH][MAP_LENGTH], int seed){
+  srand(seed);
+  int zPos;
+  for (int i = 0 ; i < MAP_WIDTH ; i++){
+    for (int j = 0 ; j < MAP_LENGTH ; j++){
+      if (height_map[i][j] > GROUND_HEIGHT){
+	zPos = (rand() % (CLIFF_HEIGHT-3))+GROUND_HEIGHT;
+	if (getBlockProperties(map, i, j, zPos+1).solid &&
+	    getBlockProperties(map, i, j, zPos-1).solid){
+	  if ((rand() % 1000) <= IRON_CHANCE){
+	    map[i][j][zPos] = IRON_ORE;
+	  } else if ((rand() % 1000) >= 1000-COAL_CHANCE){
+	    map[i][j][zPos] = COAL_ORE;
+	    continue;
+	  }
 	}
       }
     }
@@ -208,6 +236,7 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
 
   /* Step 6 */
   placeTrees(map, height_map, seed);
+  placeOres(map, height_map, seed);
 }
 
 /* Cull blocks that are surrounded on top, the left and the right */

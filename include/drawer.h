@@ -45,6 +45,12 @@ typedef enum blocks_e {
   STAIRS = 12,
   WORK_BENCH = 16,
   TABLE = 17,
+  IRON_ORE = 18,
+  COAL_ORE = 19,
+  IRON_CHUNKS = 20,
+  COAL_CHUNKS = 21,
+  ROPE = 22,
+  NAILS = 23,
 } blocks_t;
 
 bool blockingPlayerCheck(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);

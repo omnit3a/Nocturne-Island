@@ -21,7 +21,7 @@ char * blockNames[64] = {
   "Water",
   "Magma",
   "Sand",
-  "Tree Bottom",
+  "Log",
   "Tree Trunk",
   "Tree Leaves",
   "Block Highlight",
@@ -32,6 +32,12 @@ char * blockNames[64] = {
   "Stairs",
   "Workbench",
   "Table",
+  "Iron Ore",
+  "Coal Ore",
+  "Iron Chunks",
+  "Coal Chunks",
+  "Rope",
+  "Box of Nails",
 };
 char messageBar[256] = "";
 

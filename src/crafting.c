@@ -9,9 +9,11 @@
 
 crafting_recipe_t recipes[CRAFTING_RECIPE_COUNT] = {
   {1,{{STONE, 3}}, STAIRS, 1},
-  {1,{{WOOD, 8}}, WORK_BENCH, 1},
-  {1,{{WOOD, 6}}, TABLE, 1},
+  {2,{{NAILS, 1},{WOOD, 8}}, WORK_BENCH, 1},
+  {2,{{NAILS, 1},{WOOD, 4}}, TABLE, 1},
   {1,{{WOOD, 2}}, TREE_BOTTOM, 1},
+  {1,{{WOOD, 2}}, ROPE, 4},
+  {3,{{ROPE, 1},{WOOD, 1},{IRON_CHUNKS, 3}}, NAILS, 1}, 
 };
 
 crafting_recipe_t craftable_recipes[CRAFTABLE_RECIPES_COUNT];
