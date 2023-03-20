@@ -23,6 +23,8 @@ block_data_t data_map[BLOCKS_AMOUNT] = {
   {1, true, false, STAIRS, STONE, 3},
   {1, true, false, STAIRS, STONE, 3},
   {1, true, false, STAIRS, STONE, 3},
+  {1, true, false, WORK_BENCH, WORK_BENCH, 1},
+  {1, true, false, TABLE, TABLE, 1},
 };
 
 block_data_t getBlockProperties(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int xPos, int yPos, int zPos){

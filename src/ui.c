@@ -9,6 +9,7 @@
 #include <camera.h>
 #include <messages.h>
 #include <inventory.h>
+#include <crafting.h>
 
 ui_mode_t currentUIMode = IDLE;
 blocks_t currentBlock = 0;
@@ -29,7 +30,10 @@ char * blockNames[64] = {
   "Stairs",
   "Stairs",
   "Stairs",
+  "Workbench",
+  "Table",
 };
+char messageBar[256] = "";
 
 SDL_Surface * font_surface;
 SDL_Texture * font_texture;
@@ -81,9 +85,15 @@ void drawUI(SDL_Renderer * renderer){
     case IDLE:
       drawString(0,0,CURRENT_VERSION_MSG,renderer);
       drawCurrentBlock(12, 12, renderer);
+      displayHealth(renderer);
+      displayMessageBar(renderer);
       break;
     case INVENTORY:
       displayInventory(renderer);
+      displayMessageBar(renderer);
+      break;
+    case CRAFTING:
+      displayCraftableItems(renderer);
       break;
   }
   
@@ -146,24 +156,35 @@ void drawCurrentDirection(int xPos, int yPos, SDL_Renderer * renderer){
 
 void handleBlockSelect(SDL_Event event){
   /* Handle selecting items from the inventory */
-  char code = event.key.keysym.sym-48;
-  if (code >= 0 && code <= 9){
-    if (code == 0){
-      currentBlock = inventory[9].block;
-    } else {
-      currentBlock = inventory[code-1].block;
+  if (currentUIMode == IDLE){
+    char code = event.key.keysym.sym-48;
+    if (code >= 0 && code <= 9){
+      if (code == 0){
+	currentBlock = inventory[9].block;
+      } else {
+	currentBlock = inventory[code-1].block;
+      }
     }
   }
 }
 
 /* Switch between UI Modes */
 void handleUISwitch(SDL_Event event){
+  if (currentUIMode == CRAFTING){
+    return;
+  }
   switch(event.key.keysym.sym){
     case SDLK_e:
       if (currentUIMode == IDLE){
 	currentUIMode = INVENTORY;
-      } else {
+      } else if (currentUIMode == INVENTORY){
 	currentUIMode = IDLE;
+      }
+      break;
+    case SDLK_c:
+      if (currentUIMode == IDLE){
+        currentUIMode = CRAFTING;
+        listCraftableItems();
       }
       break;
   }
@@ -179,5 +200,37 @@ void displayInventory(SDL_Renderer * renderer){
     sprintf(amount, ": %d", inventory[i].count);
     drawString(3,i+1,blockNames[inventory[i].block],renderer);
     drawString(3+strlen(blockNames[inventory[i].block]),i+1, amount, renderer);
+  }
+}
+
+void displayHealth(SDL_Renderer * renderer){
+  char health[64];
+  sprintf(health, "Player Health: %d", playerHealth);
+  drawString(0,2, health, renderer);
+}
+
+void displayMessageBar(SDL_Renderer * renderer){
+  int yPos = ((SCREEN_HEIGHT)-FONT_HEIGHT)/FONT_HEIGHT;
+  drawString(0,yPos, messageBar, renderer);
+}
+
+void handleCraftingSelect(SDL_Event event){
+  char code = event.key.keysym.sym-97;
+  if (currentUIMode == CRAFTING){
+    if (code >= 0 && code <= 26){
+      current_recipe = craftable_recipes[(int)code];
+    } else {
+      strcpy(messageBar, "Cannot select this item to craft");
+    }
+    currentUIMode = IDLE;
+  }
+}
+
+void displayCraftableItems(SDL_Renderer * renderer){
+  char line_text[64];
+  drawString(0,0,"Craftable Items", renderer);
+  for (int i = 0 ; i < CRAFTABLE_RECIPES_COUNT && craftable_recipes[i].output_block != 0 ; i++){
+    sprintf(line_text, " %c %s", i+97, blockNames[craftable_recipes[i].output_block]);
+    drawString(0, i+1, line_text, renderer);
   }
 }

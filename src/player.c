@@ -9,6 +9,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <inventory.h>
+#include <crafting.h>
 
 int playerX = MAP_WIDTH/2;
 int playerY = MAP_LENGTH/2;
@@ -22,6 +23,8 @@ pthread_t jump_thread;
 int playerXOff;
 int playerYOff;
 int playerZOff;
+
+int playerHealth = 50;
 
 void movePlayer(int xOff, int yOff, int zOff, SDL_Renderer * renderer){
   playerX += xOff;
@@ -171,6 +174,9 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
     case SDLK_r:
       rotatePlayerClockwise();
       break;
+    case SDLK_z:
+      interactWithWorkbench(map);
+      break;
     case SDLK_f:
       rotatePlayerUp();
       break;
@@ -207,3 +213,4 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
       break;
   }
 }
+

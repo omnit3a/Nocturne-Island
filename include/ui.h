@@ -19,13 +19,15 @@
 
 typedef enum ui_mode_e {
   IDLE = 0,
-  INVENTORY = 1
+  INVENTORY = 1,
+  CRAFTING = 2
 } ui_mode_t;
 
 extern ui_mode_t currentUIMode;
 extern blocks_t currentBlock;
 /* List of display names of blocks */
-extern char * blockName[64];
+extern char * blockNames[64];
+extern char messageBar[256];
 
 void drawLetter(int xPos, int yPos, unsigned char offset, SDL_Renderer * renderer);
 void drawString(int xPos, int yPos, char * string, SDL_Renderer * renderer);
@@ -35,5 +37,9 @@ void drawCurrentDirection(int xPos, int yPos, SDL_Renderer * renderer);
 void handleBlockSelect(SDL_Event event);
 void handleUISwitch(SDL_Event event);
 void displayInventory(SDL_Renderer * renderer);
+void displayHealth(SDL_Renderer * renderer);
+void displayMessageBar(SDL_Renderer * renderer);
+void handleCraftingSelect(SDL_Event event);
+void displayCraftableItems(SDL_Renderer * renderer);
 
 #endif

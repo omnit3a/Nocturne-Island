@@ -17,7 +17,7 @@ void updateCamera(unsigned int xPos, unsigned int yPos, unsigned int zoom, SDL_R
   cameraY = -((yPosBackup-yPos)-((SCREEN_HEIGHT/2)-TILE_HEIGHT));
   /* Dynamically resize window */
   SDL_GetWindowSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
-  SDL_SetRenderDrawColor(renderer, 0, 175, 150, 255);
+  SDL_SetRenderDrawColor(renderer, 0, 0, 50, 255);
   SDL_RenderClear(renderer);
   drawWorld(world, cameraZoom, renderer);
 }

@@ -43,6 +43,8 @@ typedef enum blocks_e {
   SOUTH_STAIRS = 14,
   WEST_STAIRS = 15,
   STAIRS = 12,
+  WORK_BENCH = 16,
+  TABLE = 17,
 } blocks_t;
 
 bool blockingPlayerCheck(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);

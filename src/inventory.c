@@ -12,6 +12,8 @@ void initInventory(){
     inventory[i].block = 0;
     inventory[i].count = 0;
   }
+  inventory[0].block = WORK_BENCH;
+  inventory[0].count = 1;
 }
 
 /* Check for valid slot in inventory, if one is found then store item */
@@ -54,4 +56,29 @@ bool checkAndRemoveItem(blocks_t block, unsigned char count){
     }
   }
   return false;
+}
+
+item_t countInventoryItem(blocks_t block){
+  item_t temp_count = {0, 0};
+  if (!checkInventoryForItem(block)){
+    return temp_count;
+  }
+  else {
+    temp_count.block = block;
+  }
+  for (int i = 0 ; i < INVENTORY_SIZE; i++){
+    if (inventory[i].block == block){
+      temp_count.count += inventory[i].count;
+    }
+  }
+  return temp_count;
+}
+
+bool checkFullInventory(int threshold){
+  for (int i = 0 ; i < INVENTORY_SIZE ; i++){
+    if (inventory[i].count <= threshold){
+      return false;
+    }
+  }
+  return true;
 }

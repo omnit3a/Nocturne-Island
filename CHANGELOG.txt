@@ -17,4 +17,8 @@ Alpha Version 0.2.0:
   Added stairs (non-functional)
   Added functionality to stairs
   Fixed bug with inventory item overflow
+  Started on crafting
+  Implemented crafting
+Alpha Version 0.2.5:
+  
   

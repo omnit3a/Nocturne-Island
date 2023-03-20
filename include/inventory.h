@@ -17,4 +17,6 @@ void initInventory();
 void addItemToInventory(blocks_t block, unsigned char count);
 bool checkInventoryForItem(blocks_t block);
 bool checkAndRemoveItem(blocks_t block, unsigned char count);
+item_t countInventoryItem(blocks_t block);
+bool checkFullInventory(int threshold);
 #endif

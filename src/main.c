@@ -75,24 +75,35 @@ int main(int argc, char ** argv){
       SDL_RenderPresent(renderer);
       switch (e.type){
         case SDL_KEYDOWN:
-	  handlePlayerMovement(world_copy, e);
-	  handleBlockSelect(e);
-	  handleUISwitch(e); // switch between UI modes
-	  switch(e.key.keysym.sym){
-	    /* Mine a block */
-	    case SDLK_m:
-	      playerMineBlock(world);
-	      /* Regenerate the world_copy map, physics map, and solidity map */
-	      cullHiddenBlocks(world_copy, world);
-	      setPhysicsMap(world_copy);
-	      break;
-	    /* Place a block */
-	    case SDLK_p:
-	      playerPlaceBlock(world, currentBlock);
-	      /* Regenerate the world_copy map, physics map, and solidity map */
-	      cullHiddenBlocks(world_copy, world);
-	      setPhysicsMap(world_copy);
-	      break;
+	  if (currentUIMode != CRAFTING){
+	    handlePlayerMovement(world_copy, e);
+	    handleBlockSelect(e);
+	    handleUISwitch(e); // switch between UI modes
+	    switch(e.key.keysym.sym){
+	      /* Mine a block */
+	      case SDLK_m:
+		if (currentUIMode == CRAFTING){
+		  break;
+		}
+		playerMineBlock(world);
+		/* Regenerate the world_copy map, physics map, and solidity map */
+		cullHiddenBlocks(world_copy, world);
+		setPhysicsMap(world_copy);
+		break;
+		/* Place a block */
+	      case SDLK_p:
+		if (currentUIMode == CRAFTING){
+		  break;
+		}
+		playerPlaceBlock(world, currentBlock);
+		/* Regenerate the world_copy map, physics map, and solidity map */
+		cullHiddenBlocks(world_copy, world);
+		setPhysicsMap(world_copy);
+		break;
+	    }
+	    break;
+	  } else {
+	    handleCraftingSelect(e);
 	  }
 	  break;
         case SDL_QUIT:

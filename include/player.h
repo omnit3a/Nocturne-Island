@@ -25,6 +25,10 @@ extern int playerDirectionX;
 extern int playerDirectionY;
 extern rotation_t playerRotation;
 extern z_rotation_t playerZRotation;
+extern int playerXOff;
+extern int playerYOff;
+extern int playerZOff;
+extern int playerHealth;
 
 void movePlayer(int xOff, int yOff, int zOff, SDL_Renderer * renderer);
 void setPlayerRotation(rotation_t rotation);
