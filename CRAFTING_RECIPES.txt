@@ -1,0 +1,6 @@
+Stairs: 3 Stone
+Workbench: 1 Box of Nails, 8 Wood
+Table: 1 Box of Nails, 4 Wood
+Log: 2 Wood
+Rope: 2 Wood
+Box Of Nails: 1 Rope, 1 Wood, 3 Iron Chunks
