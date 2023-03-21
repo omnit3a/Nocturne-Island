@@ -171,25 +171,10 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
     case SDLK_d:
       setPlayerRotation(SOUTH);
       break;
-    case SDLK_r:
-      rotatePlayerClockwise();
-      break;
-    case SDLK_j:
-      playerRotation = NORTH;
-      break;
-    case SDLK_k:
-      playerRotation = WEST;
-      break;
-    case SDLK_l:
-      playerRotation = SOUTH;
-      break;
-    case SDLK_i:
-      playerRotation = EAST;
-      break;
     case SDLK_z:
       interactWithWorkbench(map);
       break;
-    case SDLK_f:
+    case SDLK_u:
       rotatePlayerUp();
       break;
     case SDLK_SPACE:
@@ -226,3 +211,19 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
   }
 }
 
+void handlePlayerRotation(SDL_Event event){
+	switch (event.key.keysym.sym){
+		case SDLK_j:
+			playerRotation = NORTH;
+			break;
+		case SDLK_k:
+			playerRotation = WEST;
+			break;
+		case SDLK_l:
+			playerRotation = SOUTH;
+			break;
+		case SDLK_i:
+			playerRotation = EAST;
+			break;
+	}
+}

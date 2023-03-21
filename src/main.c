@@ -78,6 +78,7 @@ int main(int argc, char ** argv){
 	  if (currentUIMode != CRAFTING){
 	    handlePlayerMovement(world_copy, e);
 	    handleBlockSelect(e);
+			handlePlayerRotation(e);
 	    handleUISwitch(e); // switch between UI modes
 	    switch(e.key.keysym.sym){
 	      /* Mine a block */

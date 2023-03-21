@@ -1,7 +1,7 @@
 WASD: Move
 Space: Jump
-F: Rotate along Z axis
-R: Rotate along X and Y axis
+U: Rotate up and down
+IJKL: Rotate laterally
 M: Mine
 P: Place
 0-9: Select item from inventory

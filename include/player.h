@@ -38,5 +38,6 @@ void playerOffsetDirection();
 blocks_t playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], blocks_t block);
 void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event event);
+void handlePlayerRotation(SDL_Event event);
 
 #endif
