@@ -91,7 +91,7 @@ int main(int argc, char ** argv){
 		setPhysicsMap(world_copy);
 		break;
 		/* Place a block */
-	      case SDLK_p:
+	      case SDLK_n:
 		if (currentUIMode == CRAFTING){
 		  break;
 		}

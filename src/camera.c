@@ -15,7 +15,7 @@ void updateCamera(unsigned int xPos, unsigned int yPos, unsigned int zoom, SDL_R
   /* Make the camera follow the player */
   cameraX = -((xPosBackup-xPos)-((SCREEN_WIDTH/2)-TILE_WIDTH));
   cameraY = -((yPosBackup-yPos)-((SCREEN_HEIGHT/2)-TILE_HEIGHT));
-  /* Dynamically resize window */
+  /* Dynamically resize window*/
   SDL_GetWindowSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
   SDL_SetRenderDrawColor(renderer, 0, 0, 50, 255);
   SDL_RenderClear(renderer);

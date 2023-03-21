@@ -174,6 +174,18 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
     case SDLK_r:
       rotatePlayerClockwise();
       break;
+    case SDLK_j:
+      playerRotation = NORTH;
+      break;
+    case SDLK_k:
+      playerRotation = WEST;
+      break;
+    case SDLK_l:
+      playerRotation = SOUTH;
+      break;
+    case SDLK_i:
+      playerRotation = EAST;
+      break;
     case SDLK_z:
       interactWithWorkbench(map);
       break;
