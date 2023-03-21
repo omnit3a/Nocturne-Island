@@ -201,7 +201,12 @@ void displayInventory(SDL_Renderer * renderer){
   drawString(0,0,"Inventory",renderer);
   char amount[16];
   for (int i = 0 ; i < INVENTORY_SIZE ; i++){
-    drawString(0,i+1," - ",renderer);
+    char buffer[32];
+    sprintf(buffer, "%d", i + 1);
+    if (strcmp(buffer, "10") == 0) {
+      strcpy(buffer, "0");
+    }
+    drawString(0, i + 1, buffer, renderer);
     strcpy(amount, "");
     sprintf(amount, ": %d", inventory[i].count);
     drawString(3,i+1,blockNames[inventory[i].block],renderer);
