@@ -15,8 +15,8 @@ block_data_t data_map[BLOCKS_AMOUNT] = {
   {3, true, false, MAGMA, STONE, 3},
   {1, true, false, SAND, SAND, 1},
   {2, true, false, TREE_BOTTOM, WOOD, 2},
-  {2, true, false, TREE_TRUNK, WOOD, 2},
-  {1, true, false, TREE_LEAVES, WOOD, 2},
+  {1, true, false, OAK_TREE_LEAVES, WOOD, 2},
+  {1, true, false, PINE_TREE_LEAVES, WOOD, 2},
   {-1, false, false, BLOCK_OUTLINE, 0, 0},
   {-1, true, false, NOKIUM, 0, 0},
   {1, true, false, STAIRS, STONE, 3},
@@ -61,11 +61,16 @@ void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_
       offset = 1;
       if (height_map[i][j] < MAP_HEIGHT){
 	if (height_map[i][j] == CLIFF_HEIGHT){
-	  offset = 3;
+	  offset = 30;
 	}
-        if ((rand() % 1000) <= TREE_CHANCE*offset){
+	offset += rand() % SPAWN_RATE_VARIANCE;
+        if ((rand() % 1000) <= TREE_CHANCE+offset){
 	  map[i][j][(int)height_map[i][j]+1] = TREE_BOTTOM;
-	  map[i][j][(int)height_map[i][j]+3] = TREE_LEAVES;
+		if ((rand() % 3) > 0){
+	  	map[i][j][(int)height_map[i][j]+2] = PINE_TREE_LEAVES;
+		} else {
+			map[i][j][(int)height_map[i][j]+2] = OAK_TREE_LEAVES;
+		}
 	}
       }
     }
@@ -76,17 +81,26 @@ void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_
 void placeOres(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char height_map[MAP_WIDTH][MAP_LENGTH], int seed){
   srand(seed);
   int zPos;
+  int offset = 0;
   for (int i = 0 ; i < MAP_WIDTH ; i++){
     for (int j = 0 ; j < MAP_LENGTH ; j++){
       if (height_map[i][j] > GROUND_HEIGHT){
 	zPos = (rand() % (CLIFF_HEIGHT-3))+GROUND_HEIGHT;
-	if (getBlockProperties(map, i, j, zPos+1).solid &&
+	if (getBlockProperties(map, i, j, zPos+1).block == GRASS &&
 	    getBlockProperties(map, i, j, zPos-1).solid){
-	  if ((rand() % 1000) <= IRON_CHANCE){
-	    map[i][j][zPos] = IRON_ORE;
-	  } else if ((rand() % 1000) >= 1000-COAL_CHANCE){
-	    map[i][j][zPos] = COAL_ORE;
-	    continue;
+
+	  offset = rand() % SPAWN_RATE_VARIANCE;
+	  
+	  /* Select either iron or coal ore */
+	  if (rand() % 2){
+	    if ((rand() % 1000) <= IRON_CHANCE+offset){
+	      map[i][j][zPos] = IRON_ORE;
+	    }
+	  } else {
+	    if ((rand() % 1000) <= COAL_CHANCE+offset){
+	      map[i][j][zPos] = COAL_ORE;
+	      continue;
+	    }
 	  }
 	}
       }
@@ -120,9 +134,9 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
     for (int j = 0 ; j < MAP_LENGTH ; j++){
       height_map[i][j] = 0;
       if (prevIsMountain){
-        isMountain = ((rand() % 100) < 75);
+        isMountain = ((rand() % 100) < 85);
       } else {
-        isMountain = ((rand() % 100) < 10);
+        isMountain = ((rand() % 100) < 5);
       }
       if (isMountain){
         height_map[i][j] = CLIFF_HEIGHT;

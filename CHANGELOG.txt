@@ -19,5 +19,14 @@ Alpha Version 0.2.0:
   Fixed bug with inventory item overflow
   Started on crafting
   Implemented crafting
+  
 Alpha Version 0.2.5:
-	Changed rotation contols  
+  Changed rotation contols
+  Added inventory defragmentation, fixed bug with crafting where items would not be taken
+  Made the "Current block" display update in real time
+  Tweaked world generation parameters
+  Added random variance in threshold for tree and ore placement
+	Changed player sprite
+	Added Oak trees
+
+Alpha Version 0.2.6:

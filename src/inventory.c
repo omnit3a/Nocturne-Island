@@ -17,13 +17,13 @@ void initInventory(){
 }
 
 /* Check for valid slot in inventory, if one is found then store item */
-void addItemToInventory(blocks_t block, unsigned char count){
+void addItemToInventory(blocks_t block, unsigned int count){
   for (int i = 0 ; i < INVENTORY_SIZE ; i++){
     if (inventory[i].count == 0){
       inventory[i].block = 0;
     }
     if (inventory[i].block == block || inventory[i].block == 0){
-      if (count == 255){
+      if (count == MAX_ITEM_COUNT){
 	continue;
       } else {
 	inventory[i].block = block;
@@ -45,7 +45,7 @@ bool checkInventoryForItem(blocks_t block){
 }
 
 /* Check if player has item in inventory, if they do, then remove that item */
-bool checkAndRemoveItem(blocks_t block, unsigned char count){
+bool checkAndRemoveItem(blocks_t block, unsigned int count){
   for (int i = 0 ; i < INVENTORY_SIZE ; i++){
     if (inventory[i].block == block && inventory[i].count >= count){
       inventory[i].count -= count;
@@ -81,4 +81,26 @@ bool checkFullInventory(int threshold){
     }
   }
   return true;
+}
+
+void groupInventoryItems(){
+  item_t temp_inventory[INVENTORY_SIZE];
+  for (int i = 0 ; i < INVENTORY_SIZE ; i++){
+    temp_inventory[i].block = 0;
+    temp_inventory[i].count = 0;
+    if (inventory[i].block > 0){
+      for (int j = 0 ; j < INVENTORY_SIZE ; j++){
+	if (temp_inventory[j].block == inventory[i].block){
+	  break;
+	} else {
+	  temp_inventory[i].block =countInventoryItem(inventory[i].block).block;
+	  temp_inventory[i].count =countInventoryItem(inventory[i].block).count;
+	  break;
+	}
+      }
+    }
+  }
+  for (int i = 0 ; i < INVENTORY_SIZE ; i++){
+    inventory[i] = temp_inventory[i];
+  }
 }

@@ -212,18 +212,18 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
 }
 
 void handlePlayerRotation(SDL_Event event){
-	switch (event.key.keysym.sym){
-		case SDLK_j:
-			playerRotation = NORTH;
-			break;
-		case SDLK_k:
-			playerRotation = WEST;
-			break;
-		case SDLK_l:
-			playerRotation = SOUTH;
-			break;
-		case SDLK_i:
-			playerRotation = EAST;
-			break;
-	}
+  switch (event.key.keysym.sym){
+    case SDLK_j:
+      playerRotation = NORTH;
+      break;
+    case SDLK_k:
+      playerRotation = WEST;
+      break;
+    case SDLK_l:
+      playerRotation = SOUTH;
+      break;
+    case SDLK_i:
+      playerRotation = EAST;
+      break;
+  }
 }

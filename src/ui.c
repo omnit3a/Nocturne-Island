@@ -12,7 +12,7 @@
 #include <crafting.h>
 
 ui_mode_t currentUIMode = IDLE;
-blocks_t currentBlock = 0;
+blocks_t currentBlock = WORK_BENCH;
 char * blockNames[64] = {
   "Empty",
   "Stone",
@@ -22,8 +22,8 @@ char * blockNames[64] = {
   "Magma",
   "Sand",
   "Log",
-  "Tree Trunk",
-  "Tree Leaves",
+  "Oak Tree Leaves",
+  "Pine Tree Leaves",
   "Block Highlight",
   "Nokium",
   "Stairs",
@@ -40,6 +40,7 @@ char * blockNames[64] = {
   "Box of Nails",
 };
 char messageBar[256] = "";
+int selected_block = 0;
 
 SDL_Surface * font_surface;
 SDL_Texture * font_texture;
@@ -107,7 +108,7 @@ void drawUI(SDL_Renderer * renderer){
 
 void drawCurrentBlock(int xPos, int yPos, SDL_Renderer * renderer){
   drawString(0,1,CURRENT_BLOCK_MSG,renderer);
-  drawString(strlen(CURRENT_BLOCK_MSG),1, blockNames[currentBlock], renderer);
+  drawString(strlen(CURRENT_BLOCK_MSG),1, blockNames[inventory[selected_block].block], renderer);
 }
 
 void drawCurrentDirection(int xPos, int yPos, SDL_Renderer * renderer){
@@ -167,8 +168,10 @@ void handleBlockSelect(SDL_Event event){
     if (code >= 0 && code <= 9){
       if (code == 0){
 	currentBlock = inventory[9].block;
+        selected_block = 9;
       } else {
 	currentBlock = inventory[code-1].block;
+	selected_block = code - 1;
       }
     }
   }
@@ -189,8 +192,8 @@ void handleUISwitch(SDL_Event event){
       break;
     case SDLK_c:
       if (currentUIMode == IDLE){
-        currentUIMode = CRAFTING;
-        listCraftableItems();
+	listCraftableItems();
+	currentUIMode = CRAFTING;
       }
       break;
   }
@@ -202,13 +205,14 @@ void displayInventory(SDL_Renderer * renderer){
   char amount[16];
   for (int i = 0 ; i < INVENTORY_SIZE ; i++){
     char buffer[32];
-    sprintf(buffer, "%d", i + 1);
-    if (strcmp(buffer, "10") == 0) {
-      strcpy(buffer, "0");
+    if (i < 9){
+      sprintf(buffer, " %d", i + 1);
+    } else {
+      sprintf(buffer, " %d", 0);
     }
     drawString(0, i + 1, buffer, renderer);
     strcpy(amount, "");
-    sprintf(amount, ": %d", inventory[i].count);
+    sprintf(amount, ": %u", inventory[i].count);
     drawString(3,i+1,blockNames[inventory[i].block],renderer);
     drawString(3+strlen(blockNames[inventory[i].block]),i+1, amount, renderer);
   }
