@@ -7,7 +7,7 @@ SRCDIR=src
 SRCFILE=*.c
 
 OUTDIR=bin
-OUTFILE=isorogue
+OUTFILE=nocturne-island
 
 all:
 	clear
