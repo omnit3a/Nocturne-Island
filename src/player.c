@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <inventory.h>
 #include <crafting.h>
+#include <ui.h>
 
 int playerX = MAP_WIDTH/2;
 int playerY = MAP_LENGTH/2;
@@ -156,6 +157,7 @@ void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], blocks_t bloc
 
 /* Get user input for the player, then do stuff with it */
 void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event event){
+  strcpy(messageBar, "");
   rotation_t prevRotation = playerRotation;
   playerOffsetDirection();
   switch (event.key.keysym.sym){

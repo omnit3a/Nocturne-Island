@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <time.h>
 #include <crafting.h>
 #include <player.h>
 #include <map.h>
@@ -30,14 +31,13 @@ void craftRecipe(crafting_recipe_t recipe){
   /* Total up items in players inventory */
   groupInventoryItems();
   
-  
   /* Check if player can craft recipe */
   if (checkCraftableRecipe(recipe)){
-      for (int n = 0 ; n < recipe.amount_of_inputs ; n++){
-	checkAndRemoveItem(recipe.input_items[n].block, recipe.input_items[n].count);
+      for (int n = 0 ; n < recipe.amount_of_inputs; n++){
+      	checkAndRemoveItem(recipe.input_items[n].block, recipe.input_items[n].count);
       }
       addItemToInventory(recipe.output_block, recipe.output_count);
-      sprintf(temp_string, "Succesfully crafted %s", blockNames[recipe.output_block]);
+      sprintf(temp_string, "Successfully crafted %s", blockNames[recipe.output_block]);
       strcpy(messageBar, temp_string);
       return;
     }
