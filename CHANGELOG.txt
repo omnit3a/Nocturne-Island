@@ -30,4 +30,5 @@ Alpha Version 0.2.5:
   Added Oak trees
 
 Alpha Version 0.2.6:
-  Added fog around player
+  Added light around player
+  Added block HP

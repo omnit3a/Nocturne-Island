@@ -7,31 +7,32 @@
 
 char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 block_data_t data_map[BLOCKS_AMOUNT] = {
-  {-1, false, true, 0, 0, 0},
-  {2, true, false, STONE, STONE, 1},
+  {-101, false, true, 0, 0, 0},
+  {3, true, false, STONE, STONE, 1},
   {1, true, false, GRASS, STONE, 1},
   {1, true, false, WOOD, WOOD, 1},
-  {1, false, true, WATER, 0, 0},
-  {3, true, false, MAGMA, STONE, 3},
+  {-101, false, true, WATER, 0, 0},
+  {4, true, false, MAGMA, STONE, 3},
   {1, true, false, SAND, SAND, 1},
   {2, true, false, TREE_BOTTOM, WOOD, 2},
   {1, true, false, OAK_TREE_LEAVES, WOOD, 2},
   {1, true, false, PINE_TREE_LEAVES, WOOD, 2},
-  {-1, false, false, BLOCK_OUTLINE, 0, 0},
-  {-1, true, false, NOKIUM, 0, 0},
-  {1, true, false, STAIRS, STONE, 3},
-  {1, true, false, STAIRS, STONE, 3},
-  {1, true, false, STAIRS, STONE, 3},
-  {1, true, false, STAIRS, STONE, 3},
+  {-101, false, false, BLOCK_OUTLINE, 0, 0},
+  {-101, true, false, NOKIUM, 0, 0},
+  {2, true, false, STAIRS, STONE, 3},
+  {2, true, false, STAIRS, STONE, 3},
+  {2, true, false, STAIRS, STONE, 3},
+  {2, true, false, STAIRS, STONE, 3},
   {1, true, false, WORK_BENCH, WORK_BENCH, 1},
   {1, true, false, TABLE, TABLE, 1},
-  {1, true, false, IRON_ORE, IRON_CHUNKS, 2},
-  {1, true, false, COAL_ORE, COAL_CHUNKS, 2},
-  {1, true, false, IRON_CHUNKS, IRON_CHUNKS, 1},
-  {1, true, false, COAL_CHUNKS, COAL_CHUNKS, 1},
+  {3, true, false, IRON_ORE, IRON_CHUNKS, 2},
+  {3, true, false, COAL_ORE, COAL_CHUNKS, 2},
+  {2, true, false, IRON_CHUNKS, IRON_CHUNKS, 1},
+  {2, true, false, COAL_CHUNKS, COAL_CHUNKS, 1},
   {1, true, false, ROPE, ROPE, 1},
   {1, true, false, NAILS, NAILS, 1},
 };
+int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
 block_data_t getBlockProperties(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int xPos, int yPos, int zPos){
   return data_map[(int)map[xPos][yPos][zPos]];
@@ -43,6 +44,7 @@ void fillMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
     for (int j = 0 ; j < MAP_WIDTH ; j++){
       for (int n = 0 ; n < MAP_LENGTH ; n++){
 	map[j][n][i] = 0;
+	block_hp_map[j][n][i] = 0;
       }
     }
   }
@@ -251,6 +253,15 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
   /* Step 6 */
   placeTrees(map, height_map, seed);
   placeOres(map, height_map, seed);
+
+  /* Generate block_hp_map */
+  for (int i = 0 ; i < MAP_WIDTH ; i++){
+    for (int j = 0 ; j < MAP_LENGTH ; j++){
+      for (int n = 0 ; n < MAP_HEIGHT ; n++){
+	block_hp_map[i][j][n] = getBlockProperties(map, i, j, n).hp;
+      }
+    }
+  }
 }
 
 /* Cull blocks that are surrounded on top, the left and the right */

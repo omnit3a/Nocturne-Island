@@ -30,6 +30,7 @@ typedef struct block_data_s {
 
 extern char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 extern block_data_t data_map[BLOCKS_AMOUNT];
+extern int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
 block_data_t getBlockProperties(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int xPos, int yPos, int zPos);
 void fillMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);

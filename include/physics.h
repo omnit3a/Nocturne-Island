@@ -12,6 +12,6 @@ void setPhysicsMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void setPhysicsRenderer(SDL_Renderer * renderer);
 void * handlePlayerJumping(void * vargp);
 void * handlePlayerGravity(void * vargp);
-void waterFlow(int xPos, int yPos, int zPos, char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
+void waterFlow(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 
 #endif

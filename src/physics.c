@@ -58,30 +58,6 @@ void * handlePlayerGravity(void * vargp){
 }
 
 /* Make water flow into tile if any of its neighbours contain water */
-void waterFlow(int xPos, int yPos, int zPos, char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
-  if (xPos != 0){
-    if (map[xPos-1][yPos][zPos] == WATER){
-      map[xPos][yPos][zPos] = WATER;
-      return;
-    }
-  }
-  if (xPos != MAP_WIDTH-1){
-    if (map[xPos+1][yPos][zPos] == WATER){
-      map[xPos][yPos][zPos] = WATER;
-      return;
-    }
-  }
-
-  if (yPos != 0){
-    if (map[xPos][yPos-1][zPos] == WATER){
-      map[xPos][yPos][zPos] = WATER;
-      return;
-    }
-  }
-  if (yPos != MAP_LENGTH-1){
-    if (map[xPos][yPos+1][zPos] == WATER){
-      map[xPos][yPos][zPos] = WATER;
-      return;		  
-    }
-  }
+void waterFlow(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
+  /* TODO */
 }

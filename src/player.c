@@ -106,14 +106,20 @@ blocks_t playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
     static blocks_t temp_block = 0;
     /* If trying to mine NOKIUM, return from function */
     /* I probably want to replace this with a hardness value for each block */
-    if (getBlockProperties(map,playerXOff,playerYOff,playerZOff).hp < 0){
+    if (getBlockProperties(map,playerXOff,playerYOff,playerZOff).hp < -100){
       return map[playerXOff][playerYOff][playerZOff];
+    }
+    /* Check if block is fully mined */
+    if (block_hp_map[playerXOff][playerYOff][playerZOff] != 0){
+      block_hp_map[playerXOff][playerYOff][playerZOff]--;
+      if (!(block_hp_map[playerXOff][playerYOff][playerZOff] <= 0)){
+	return map[playerXOff][playerYOff][playerZOff];
+      }
     }
     if (getBlockProperties(map,playerXOff,playerYOff,playerZOff).solid){
       /* Add the mined item to the players inventory */
       addItemToInventory(getBlockProperties(map, playerXOff, playerYOff, playerZOff).dropped_item, getBlockProperties(map, playerXOff, playerYOff, playerZOff).count);
       map[playerXOff][playerYOff][playerZOff] = 0;
-      waterFlow(playerXOff, playerYOff, playerZOff, map);
       blockingPlayerCheck(map);
     }
     return temp_block;
@@ -153,6 +159,7 @@ void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], blocks_t bloc
       blockingPlayerCheck(map);
     }
   }
+
 }
 
 /* Get user input for the player, then do stuff with it */
