@@ -37,7 +37,7 @@ void craftRecipe(crafting_recipe_t recipe){
 	checkAndRemoveItem(recipe.input_items[n].block, recipe.input_items[n].count);
       }
       addItemToInventory(recipe.output_block, recipe.output_count);
-      sprintf(temp_string, "Succesfully crafted %s", blockNames[recipe.output_block]);
+      sprintf(temp_string, "Successfully crafted %s", blockNames[recipe.output_block]);
       strcpy(messageBar, temp_string);
       return;
     }
