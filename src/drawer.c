@@ -8,6 +8,7 @@
 #include <camera.h>
 #include <player.h>
 #include <ui.h>
+#include <lighting.h>
 
 char * PLAYER_SPRITE = LEVEE_PATH;
 bool renderPlayerLast;
@@ -15,6 +16,7 @@ bool renderPlayerLast;
 int SCREEN_WIDTH = DEFAULT_SCREEN_WIDTH;
 int SCREEN_HEIGHT = DEFAULT_SCREEN_HEIGHT;
 int xPosBackup = 0, yPosBackup = 0, belowPosBackup = 0;
+int iBackup = 0, jBackup = 0;
 
 int iterator = 0;
 SDL_Surface * atlas_surface;
@@ -87,9 +89,9 @@ void drawBlock(int xPos, int yPos, int zPos, int height, blocks_t block, SDL_Ren
   if (zPos > -1){
     /* Use this to change lighting level of block */
     SDL_SetTextureColorMod(atlas_texture
-			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS)
-			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS)
-			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS));
+			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS-calculateFogRGB()[0])
+			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS-calculateFogRGB()[1])
+			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS-calculateFogRGB()[2]));
   }
   SDL_RenderCopy(renderer, atlas_texture, &atlas_clip, &atlas_rect);
 }
@@ -100,7 +102,7 @@ void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Re
   int xPos;
   int belowPos;
   int yPos;
-
+  
   atlas_surface = SDL_LoadBMP(ATLAS_PATH);
   atlas_texture = SDL_CreateTextureFromSurface(renderer, atlas_surface);
   atlas_clip.w = TILE_WIDTH;
@@ -113,6 +115,8 @@ void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Re
 	xPos = ((j*height)-((i*height)-((SCREEN_WIDTH/2)+height+10)))+cameraX;
 	belowPos = ((j*height)+(i*height)+((n+1)*height))+cameraY;
 	yPos = ((j*height)+(i*height)+(n*height))+cameraY;
+	iBackup = i;
+	jBackup = j;
 	if (world[i][j][iterator] == 0){
 	  if (i == playerX && j == playerY && iterator == playerZ){
 	    drawBlock(xPos, belowPos, iterator, height, BLOCK_OUTLINE, renderer);

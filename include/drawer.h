@@ -25,6 +25,7 @@ extern bool renderPlayerLast;
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 extern int xPosBackup, yPosBackup, belowPosBackup;
+extern int iBackup, jBackup;
 
 typedef enum blocks_e {
   STONE = 1,

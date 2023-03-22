@@ -26,7 +26,8 @@ Alpha Version 0.2.5:
   Made the "Current block" display update in real time
   Tweaked world generation parameters
   Added random variance in threshold for tree and ore placement
-	Changed player sprite
-	Added Oak trees
+  Changed player sprite
+  Added Oak trees
 
 Alpha Version 0.2.6:
+  Added fog around player
