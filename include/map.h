@@ -19,6 +19,15 @@
 
 #define BLOCKS_AMOUNT 256
 
+typedef enum block_type_s {
+  STONE_TYPE = 0,
+  WOODEN_TYPE = 1,
+  TERRAIN_TYPE = 2,
+  FURNITURE_TYPE = 3,
+  UNKNOWN_TYPE = 4,
+  METAL_TYPE = 5,
+} block_type_t;
+
 typedef struct block_data_s {
   int hp;
   bool solid;
@@ -26,6 +35,7 @@ typedef struct block_data_s {
   int block;
   int dropped_item;
   int count;
+  int block_type;
 } block_data_t;
 
 extern char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];

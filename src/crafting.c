@@ -13,6 +13,7 @@ crafting_recipe_t recipes[CRAFTING_RECIPE_COUNT] = {
   {2,{{NAILS, 1},{WOOD, 4}}, TABLE, 1},
   {1,{{WOOD, 2}}, ROPE, 4},
   {3,{{ROPE, 1},{WOOD, 1},{IRON_CHUNKS, 3}}, NAILS, 1}, 
+  {4,{{ROPE, 1},{WOOD, 2},{IRON_CHUNKS, 4},{NAILS, 1}}, PICKAXE, 1},
 };
 
 crafting_recipe_t craftable_recipes[CRAFTABLE_RECIPES_COUNT];

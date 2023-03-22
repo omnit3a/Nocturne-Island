@@ -38,6 +38,7 @@ char * blockNames[64] = {
   "Coal Chunks",
   "Rope",
   "Box of Nails",
+  "Pickaxe",
 };
 char messageBar[256] = "";
 int selected_block = 0;

@@ -52,6 +52,7 @@ typedef enum blocks_e {
   COAL_CHUNKS = 21,
   ROPE = 22,
   NAILS = 23,
+  PICKAXE = 24,
 } blocks_t;
 
 bool blockingPlayerCheck(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
