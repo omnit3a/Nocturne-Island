@@ -12,7 +12,7 @@ void initInventory(){
     inventory[i].block = 0;
     inventory[i].count = 0;
   }
-  inventory[0].block = PICKAXE;
+  inventory[0].block = WORK_BENCH;
   inventory[0].count = 1;
 }
 
