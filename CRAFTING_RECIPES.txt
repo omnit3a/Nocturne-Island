@@ -5,3 +5,5 @@ Log: 2 Wood
 Rope: 2 Wood
 Box Of Nails: 1 Rope, 1 Wood, 3 Iron Chunks
 Pickaxe: 1 Rope, 2 Wood, 4 Iron Chunks, 1 Box of Nails
+Shovel: Same as Pickaxe
+Axe: Same as Pickaxe
