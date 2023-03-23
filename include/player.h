@@ -30,6 +30,7 @@ extern int playerYOff;
 extern int playerZOff;
 extern int playerHealth;
 
+int getMiningSpeed(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void movePlayer(int xOff, int yOff, int zOff, SDL_Renderer * renderer);
 void setPlayerRotation(rotation_t rotation);
 void rotatePlayerClockwise();

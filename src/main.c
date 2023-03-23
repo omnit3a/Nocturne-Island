@@ -43,14 +43,13 @@ int main(int argc, char ** argv){
   SDL_UpdateWindowSurface(window);
   char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
   char world_copy[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
+  setTeam(DEFAULT_TEAM, 1);
   generateHills(world, time(0));  // generate a hilly world
   cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
   setPhysicsMap(world_copy); // save the world map to the physics collision map
   initInventory(); // fill inventory with empty slots
   addItemToInventory(WORK_BENCH, 1); // give player 1 workbench
   
-  setTeam(DEFAULT_TEAM, 1); //set the players team to the default team and spawn the player
-
   /* START PHYSICS FOR PLAYER */
   if (pthread_mutex_init(&physics_lock,NULL) != 0){
     fprintf(stderr, "Failed to create mutex for physics\n");

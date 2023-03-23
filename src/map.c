@@ -4,6 +4,7 @@
 #include <time.h>
 #include <drawer.h>
 #include <stdbool.h>
+#include <player.h>
 
 char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 block_data_t data_map[BLOCKS_AMOUNT] = {
@@ -126,6 +127,10 @@ void placeOres(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char height_map[MAP_
  *   Place NOKIUM (unbreakable block) at bottom of world
  * Step 6:
  *   Place trees
+ * Step 7:
+ *   Place caves
+ * Step 8:
+ *   Generate block hp map
  */
 void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
   fillMap(map);
@@ -257,11 +262,79 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
   placeTrees(map, height_map, seed);
   placeOres(map, height_map, seed);
 
+  /* Step 7 */
+  /* Probably too many caves */
+  for (int i = 0 ; i < 400 ; i++){
+    generateCave(map, seed, 500, 20);
+  }
+
+  /* Step 8 */
   /* Generate block_hp_map */
   for (int i = 0 ; i < MAP_WIDTH ; i++){
     for (int j = 0 ; j < MAP_LENGTH ; j++){
       for (int n = 0 ; n < MAP_HEIGHT ; n++){
 	block_hp_map[i][j][n] = getBlockProperties(map, i, j, n).hp;
+      }
+    }
+  }
+}
+
+/* 3D Random walk for cave generation */
+void generateCave(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed, int size, int iterations){
+  srand(seed);
+  int xPos = rand() % MAP_WIDTH;
+  int yPos = rand() % MAP_LENGTH;
+  int zPos = 7;
+  int xStart = xPos;
+  int yStart = yPos;
+  int zStart = zPos;
+  int dir_value = 0;
+  for (int reps = 0 ; reps < iterations ; reps++){
+    srand(seed+reps);
+    xPos = xStart;
+    yPos = yStart;
+    zPos = zStart;
+    for (int i = 0 ; i < size ; i++){
+      dir_value = rand() % 6;
+      switch (dir_value){
+        case 0:
+	  if (yPos != 0){
+	    yPos--;
+	    break;
+	  }
+        case 1:
+	  if (yPos != 0){
+	    xPos--;
+	    break;
+	  }
+        case 2:
+	  if (yPos != MAP_LENGTH-1){
+	    yPos++;
+	    break;
+	  }
+        case 3:
+	  if (xPos != MAP_WIDTH-1){
+	    xPos++;
+	    break;
+	  }
+        case 4:
+	  if (zPos != 0){
+	    zPos--;
+	    break;
+	  }
+        case 5:
+	  if (zPos != MAP_HEIGHT-1){
+	    zPos++;
+	    break;
+	  }
+	  continue;
+      }
+      if (xPos != playerX && yPos != playerY){
+	if (getBlockProperties(map, xPos, yPos, zPos).block != NOKIUM &&
+	    (getBlockProperties(map, xPos, yPos, zPos).block < 7 ||
+	     getBlockProperties(map, xPos, yPos, zPos).block > 9)){
+	  map[xPos][yPos][zPos] = 0;
+	}
       }
     }
   }

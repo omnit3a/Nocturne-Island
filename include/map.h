@@ -47,6 +47,7 @@ void fillMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_WIDTH][MAP_LENGTH], int seed);
 void placeOres(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char height_map[MAP_WIDTH][MAP_LENGTH], int seed);
 void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed);
+void generateCave(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed, int size, int iterations);
 void cullHiddenBlocks(char dest_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char src_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 #endif
 

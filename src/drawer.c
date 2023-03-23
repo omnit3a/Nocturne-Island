@@ -76,8 +76,8 @@ void drawBlock(int xPos, int yPos, int zPos, int height, blocks_t block, SDL_Ren
   atlas_rect.w = (cameraZoom*2);
   atlas_rect.h = (cameraZoom*3);
   if (block > 0){
-    atlas_clip.x = (block * TILE_WIDTH) % 384;
-    atlas_clip.y = ((block * TILE_WIDTH) / 384)*TILE_HEIGHT;
+    atlas_clip.x = (block * TILE_WIDTH) % ATLAS_WIDTH;
+    atlas_clip.y = ((block * TILE_HEIGHT) / ATLAS_WIDTH)*TILE_HEIGHT;
   } else {
     atlas_clip.x = 0;
     atlas_clip.y = 0;

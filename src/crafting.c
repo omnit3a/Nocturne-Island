@@ -6,6 +6,7 @@
 #include <string.h>
 #include <ui.h>
 #include <inventory.h>
+#include <messages.h>
 
 crafting_recipe_t recipes[CRAFTING_RECIPE_COUNT] = {
   {1,{{STONE, 3}}, STAIRS, 1},
@@ -25,7 +26,7 @@ void craftRecipe(crafting_recipe_t recipe){
   char temp_string[256];
   
   if (checkFullInventory(3)){
-    sprintf(temp_string, "Cannot craft %s ; Inventory full",blockNames[recipe.output_block]);
+    sprintf(temp_string, UNCRAFTABLE_FULL_MSG, blockNames[recipe.output_block]);
     strcpy(messageBar, temp_string);
     return;
   }
@@ -33,18 +34,17 @@ void craftRecipe(crafting_recipe_t recipe){
   /* Total up items in players inventory */
   groupInventoryItems();
   
-  
   /* Check if player can craft recipe */
   if (checkCraftableRecipe(recipe)){
       for (int n = 0 ; n < recipe.amount_of_inputs ; n++){
 	checkAndRemoveItem(recipe.input_items[n].block, recipe.input_items[n].count);
       }
       addItemToInventory(recipe.output_block, recipe.output_count);
-      sprintf(temp_string, "Successfully crafted %s", blockNames[recipe.output_block]);
+      sprintf(temp_string, CRAFTING_SUCCESS_MSG, blockNames[recipe.output_block]);
       strcpy(messageBar, temp_string);
       return;
     }
-    sprintf(temp_string, "Cannot craft %s; Not enough resources",blockNames[recipe.output_block]);
+    sprintf(temp_string, UNCRAFTABLE_EMPTY_MSG, blockNames[recipe.output_block]);
     strcpy(messageBar, temp_string);
 }
 

@@ -204,7 +204,7 @@ void handleUISwitch(SDL_Event event){
 
 /* Display list of items in inventory */
 void displayInventory(SDL_Renderer * renderer){
-  drawString(0,0,"Inventory",renderer);
+  drawString(0,0,INVENTORY_MSG,renderer);
   char amount[16];
   for (int i = 0 ; i < INVENTORY_SIZE ; i++){
     char buffer[32];
@@ -223,7 +223,7 @@ void displayInventory(SDL_Renderer * renderer){
 
 void displayHealth(SDL_Renderer * renderer){
   char health[64];
-  sprintf(health, "Player Health: %d", playerHealth);
+  sprintf(health, PLAYER_HEALTH_MSG, playerHealth);
   drawString(0,2, health, renderer);
 }
 
@@ -238,7 +238,7 @@ void handleCraftingSelect(SDL_Event event){
     if (code >= 0 && code <= 26){
       current_recipe = craftable_recipes[(int)code];
     } else {
-      strcpy(messageBar, "Cannot select this item to craft");
+      strcpy(messageBar, UNCRAFTABLE_SELECTION_MSG);
     }
     currentUIMode = IDLE;
   }
@@ -246,7 +246,7 @@ void handleCraftingSelect(SDL_Event event){
 
 void displayCraftableItems(SDL_Renderer * renderer){
   char line_text[64];
-  drawString(0,0,"Craftable Items", renderer);
+  drawString(0,0,CRAFTABLE_ITEMS_MSG, renderer);
   for (int i = 0 ; i < CRAFTABLE_RECIPES_COUNT && craftable_recipes[i].output_block != 0 ; i++){
     sprintf(line_text, " %c %s", i+97, blockNames[craftable_recipes[i].output_block]);
     drawString(0, i+1, line_text, renderer);

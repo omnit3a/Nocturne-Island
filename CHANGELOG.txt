@@ -1,4 +1,4 @@
-Alpha Version 0.1.2:
+ Alpha Version 0.1.2:
   Added placing and mining blocks above and below the player
   Improved terrain gen to make it more similar to rubydung terrain gen
   Changed player sprite to be more mediveal
@@ -33,3 +33,13 @@ Alpha Version 0.2.6:
   Added light around player
   Added block HP
   Added Pickaxe (mines STONE_TYPE and METAL_TYPE blocks twice as fast)
+  Added Shovel (mines TERRAIN_TYPE blocks twice as fast)
+  Added Axe (mines WOODEN_TYPE blocks twice as fast)
+  Fixed bug where current item would not update after being replaced with a new block
+  Refactored game binary file tree
+
+Alpha Version 0.2.7:
+  Refactored player mining code for neatness
+  Moved all string constants in ui.c and drawer.c to definitions messages.h
+  Added caves
+  Brightened game
