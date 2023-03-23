@@ -12,8 +12,6 @@ void initInventory(){
     inventory[i].block = 0;
     inventory[i].count = 0;
   }
-  inventory[0].block = WORK_BENCH;
-  inventory[0].count = 1;
 }
 
 /* Check for valid slot in inventory, if one is found then store item */
@@ -28,6 +26,9 @@ void addItemToInventory(blocks_t block, unsigned int count){
       } else {
 	inventory[i].block = block;
 	inventory[i].count+=count;
+	if (i == selected_block){
+	  currentBlock = inventory[i].block;
+	}
 	break;
       }
     }

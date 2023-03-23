@@ -5,13 +5,13 @@
 #include <drawer.h>
 
 /* Directional arrows textures */
-#define LEFT_UP_ARROW_UI "../assets/ui/up-left-arrow.bmp"
-#define RIGHT_UP_ARROW_UI "../assets/ui/up-right-arrow.bmp"
-#define LEFT_DOWN_ARROW_UI "../assets/ui/down-left-arrow.bmp"
-#define RIGHT_DOWN_ARROW_UI "../assets/ui/down-right-arrow.bmp"
+#define LEFT_UP_ARROW_UI "assets/ui/up-left-arrow.bmp"
+#define RIGHT_UP_ARROW_UI "assets/ui/up-right-arrow.bmp"
+#define LEFT_DOWN_ARROW_UI "assets/ui/down-left-arrow.bmp"
+#define RIGHT_DOWN_ARROW_UI "assets/ui/down-right-arrow.bmp"
 
 /* Font related definitions */
-#define FONT_PATH "../assets/ui/font.bmp"
+#define FONT_PATH "assets/ui/font.bmp"
 #define FONT_WIDTH 8
 #define FONT_HEIGHT 16
 #define FONT_ROW_LENGTH 16
@@ -25,6 +25,7 @@ typedef enum ui_mode_e {
 
 extern ui_mode_t currentUIMode;
 extern blocks_t currentBlock;
+extern int selected_block;
 /* List of display names of blocks */
 extern char * blockNames[64];
 extern char messageBar[256];

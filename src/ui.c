@@ -13,6 +13,7 @@
 
 ui_mode_t currentUIMode = IDLE;
 blocks_t currentBlock = WORK_BENCH;
+int selected_block;
 char * blockNames[64] = {
   "Empty",
   "Stone",
@@ -39,9 +40,10 @@ char * blockNames[64] = {
   "Rope",
   "Box of Nails",
   "Pickaxe",
+  "Shovel",
+  "Axe",
 };
 char messageBar[256] = "";
-int selected_block = 0;
 
 SDL_Surface * font_surface;
 SDL_Texture * font_texture;

@@ -9,14 +9,14 @@ char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 block_data_t data_map[BLOCKS_AMOUNT] = {
   {-101, false, true, 0, 0, 0, UNKNOWN_TYPE},
   {3, true, false, STONE, STONE, 1, STONE_TYPE},
-  {1, true, false, GRASS, STONE, 1, TERRAIN_TYPE},
+  {2, true, false, GRASS, STONE, 1, TERRAIN_TYPE},
   {1, true, false, WOOD, WOOD, 1, WOODEN_TYPE},
   {-101, false, true, WATER, 0, 0, UNKNOWN_TYPE},
   {4, true, false, MAGMA, STONE, 3, STONE_TYPE},
   {1, true, false, SAND, SAND, 1, TERRAIN_TYPE},
   {2, true, false, TREE_BOTTOM, WOOD, 2, WOODEN_TYPE},
-  {1, true, false, OAK_TREE_LEAVES, WOOD, 2, WOODEN_TYPE},
-  {1, true, false, PINE_TREE_LEAVES, WOOD, 2, WOODEN_TYPE},
+  {2, true, false, OAK_TREE_LEAVES, WOOD, 2, WOODEN_TYPE},
+  {2, true, false, PINE_TREE_LEAVES, WOOD, 2, WOODEN_TYPE},
   {-101, false, false, BLOCK_OUTLINE, 0, UNKNOWN_TYPE},
   {-101, true, false, NOKIUM, 0, UNKNOWN_TYPE},
   {2, true, false, STAIRS, STONE, 3, STONE_TYPE},
@@ -32,6 +32,8 @@ block_data_t data_map[BLOCKS_AMOUNT] = {
   {1, true, false, ROPE, ROPE, 1, WOODEN_TYPE},
   {1, true, false, NAILS, NAILS, 1, METAL_TYPE},
   {1, true, false, PICKAXE, PICKAXE, 1, METAL_TYPE},
+  {1, true, false, SHOVEL, SHOVEL, 1, METAL_TYPE},
+  {1, true, false, AXE, AXE, 1, METAL_TYPE},
 };
 int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 

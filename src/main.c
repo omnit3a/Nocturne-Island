@@ -47,6 +47,7 @@ int main(int argc, char ** argv){
   cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
   setPhysicsMap(world_copy); // save the world map to the physics collision map
   initInventory(); // fill inventory with empty slots
+  addItemToInventory(WORK_BENCH, 1); // give player 1 workbench
   
   setTeam(DEFAULT_TEAM, 1); //set the players team to the default team and spawn the player
 

@@ -6,7 +6,7 @@ HDRDIR=include/
 SRCDIR=src
 SRCFILE=*.c
 
-OUTDIR=bin
+OUTDIR=.
 OUTFILE=nocturne-island
 
 all:

@@ -115,14 +115,30 @@ blocks_t playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
       if (checkInventoryForItem(PICKAXE)){
 	/* If they do, check if trying to mine metal or stone */
 	if (getBlockProperties(map, playerXOff, playerYOff, playerZOff).block_type == STONE_TYPE || getBlockProperties(map, playerXOff, playerYOff, playerZOff).block_type == METAL_TYPE){
-	  /* If they are, take away 2 hp instead of 1 */
-	  block_hp_map[playerXOff][playerYOff][playerZOff] -= 2;
-	} else {
+	  
+	  /* If they are, take away 1 hp */
+	  block_hp_map[playerXOff][playerYOff][playerZOff]--;
+	}	
+      }
+      /* Check if player has shovel */
+      if (checkInventoryForItem(SHOVEL)){
+	/* If they do, check if trying to mine terrain */
+	if (getBlockProperties(map, playerXOff, playerYOff, playerZOff).block_type == TERRAIN_TYPE){
+	  /* If they are, take away 1 extra hp*/
 	  block_hp_map[playerXOff][playerYOff][playerZOff]--;
 	}
-      } else {
-	block_hp_map[playerXOff][playerYOff][playerZOff]--;
       }
+
+      /* Check if player has axe */
+      if (checkInventoryForItem(AXE)){
+	/* If they do, check if trying to mine wooden objects */
+	if (getBlockProperties(map, playerXOff, playerYOff, playerZOff).block_type == WOODEN_TYPE){
+	  /* If they are, take away 1 extra xp */
+	  block_hp_map[playerXOff][playerYOff][playerZOff]--;
+	}
+      }
+      /* take away 1 hp */
+      block_hp_map[playerXOff][playerYOff][playerZOff]--;
       if (!(block_hp_map[playerXOff][playerYOff][playerZOff] <= 0)){
 	return map[playerXOff][playerYOff][playerZOff];
       }

@@ -5,10 +5,10 @@
 #include <map.h>
 #include <stdbool.h>
 
-#define ATLAS_PATH "../assets/atlas.bmp"
+#define ATLAS_PATH "assets/atlas.bmp"
 
-#define LEVEE_PATH "../assets/levee.bmp"
-#define LEVEE_OUTLINE_PATH "../assets/levee-outline.bmp"
+#define LEVEE_PATH "assets/levee.bmp"
+#define LEVEE_OUTLINE_PATH "assets/levee-outline.bmp"
 
 #define TILE_WIDTH 24
 #define TILE_HEIGHT 34
@@ -53,6 +53,8 @@ typedef enum blocks_e {
   ROPE = 22,
   NAILS = 23,
   PICKAXE = 24,
+  SHOVEL = 25,
+  AXE = 26,
 } blocks_t;
 
 bool blockingPlayerCheck(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
