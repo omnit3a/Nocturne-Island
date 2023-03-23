@@ -166,6 +166,7 @@ void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], blocks_t bloc
 	  map[playerXOff][playerYOff][playerZOff] = block;
 	  break;
       }
+      block_hp_map[playerXOff][playerYOff][playerZOff] = getBlockProperties(map, playerXOff, playerYOff, playerZOff).hp;
       checkAndRemoveItem(block, 1);
       blockingPlayerCheck(map);
     }
