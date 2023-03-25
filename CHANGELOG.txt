@@ -43,3 +43,4 @@ Alpha Version 0.2.7:
   Moved all string constants in ui.c and drawer.c to definitions messages.h
   Added caves
   Brightened game
+  Added SFX (currently using infiniminer sfx)

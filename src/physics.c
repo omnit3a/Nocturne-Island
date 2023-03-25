@@ -7,6 +7,7 @@
 #include <player.h>
 #include <camera.h>
 #include <map.h>
+#include <audio.h>
 
 pthread_mutex_t physics_lock;
 char physics_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
@@ -33,6 +34,7 @@ void * handlePlayerJumping(void * vargp){
   pthread_mutex_lock(&physics_lock);
   playerIsJumping = 1;
   playerZ++;
+  playWav(HITGROUND_SFX_PATH);
   sleep(1);
   playerIsJumping = 0;
   pthread_mutex_unlock(&physics_lock);

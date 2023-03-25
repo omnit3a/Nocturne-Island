@@ -11,6 +11,7 @@
 #include <inventory.h>
 #include <crafting.h>
 #include <ui.h>
+#include <audio.h>
 
 int playerX = MAP_WIDTH/2;
 int playerY = MAP_LENGTH/2;
@@ -148,6 +149,7 @@ blocks_t playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
       addItemToInventory(getBlockProperties(map, playerXOff, playerYOff, playerZOff).dropped_item, getBlockProperties(map, playerXOff, playerYOff, playerZOff).count);
       map[playerXOff][playerYOff][playerZOff] = 0;
       blockingPlayerCheck(map);
+      playWav(BLOCK_BREAK_SFX_PATH);
     }
     return temp_block;
   }
@@ -185,6 +187,7 @@ void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], blocks_t bloc
       block_hp_map[playerXOff][playerYOff][playerZOff] = getBlockProperties(map, playerXOff, playerYOff, playerZOff).hp;
       checkAndRemoveItem(block, 1);
       blockingPlayerCheck(map);
+      playWav(BLOCK_PLACE_SFX_PATH);
     }
   }
 
