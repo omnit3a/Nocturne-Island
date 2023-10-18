@@ -48,6 +48,8 @@ int main(int argc, char ** argv){
   cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
   setPhysicsRenderer(renderer, window);
   setPhysicsMap(world_copy); // save the world map to the physics collision map
+  setupCamera(renderer, window);
+  setupCameraMap(world_copy);
   initInventory(); // fill inventory with empty slots
   addItemToInventory(WORK_BENCH, 1); // give player 1 workbench
   
@@ -71,7 +73,6 @@ int main(int argc, char ** argv){
   pthread_create(&physics_id, NULL, handlePhysics, NULL);
 
   /* Setup camera so that renderer can function properly */
-  setupCamera(renderer, world, window);
   pthread_create(&camera_id, NULL, updateCameraOnTick, NULL);
 
   /* MAIN GAME LOOP */
@@ -96,6 +97,7 @@ int main(int argc, char ** argv){
 		/* Regenerate the world_copy map, physics map, and solidity map */
 		cullHiddenBlocks(world_copy, world);
 		setPhysicsMap(world_copy);
+		setupCameraMap(world_copy);
 		break;
 		/* Place a block */
 	      case SDLK_n:
@@ -106,6 +108,7 @@ int main(int argc, char ** argv){
 		/* Regenerate the world_copy map, physics map, and solidity map */
 		cullHiddenBlocks(world_copy, world);
 		setPhysicsMap(world_copy);
+		setupCameraMap(world_copy);
 		break;
 	    }
 	    break;

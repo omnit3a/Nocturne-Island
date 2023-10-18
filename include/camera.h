@@ -14,7 +14,8 @@ extern int cameraX;
 extern int cameraY;
 extern int cameraZoom;
 
-void setupCamera(SDL_Renderer * renderer, char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Window * window);
+void setupCameraMap(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
+void setupCamera(SDL_Renderer * renderer, SDL_Window * window);
 void updateCamera(unsigned int xPos, unsigned int yPos, unsigned int zoom, SDL_Renderer * renderer, char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Window * window, int free_texture);
 void * updateCameraOnTick(void * vargp);
 

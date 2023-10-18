@@ -19,9 +19,7 @@ SDL_Renderer * camera_renderer;
 char camera_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 SDL_Window * camera_window;
 
-void setupCamera(SDL_Renderer * renderer, char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Window * window){
-  camera_renderer = renderer;
-  camera_window = window;
+void setupCameraMap(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   for (int x = 0 ; x < MAP_WIDTH ; x++){
     for (int y = 0 ; y < MAP_LENGTH ; y++){
       for (int z = 0 ; z < MAP_HEIGHT ; z++){
@@ -29,6 +27,10 @@ void setupCamera(SDL_Renderer * renderer, char world[MAP_WIDTH][MAP_LENGTH][MAP_
       }
     }
   }
+}
+void setupCamera(SDL_Renderer * renderer, SDL_Window * window){
+  camera_renderer = renderer;
+  camera_window = window;
 }
 
 void updateCamera(unsigned int xPos, unsigned int yPos, unsigned int zoom, SDL_Renderer * renderer, char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Window * window, int free_texture){
