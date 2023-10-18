@@ -47,6 +47,7 @@ Alpha Version 0.2.7:
 
 Alpha Version 0.2.8:
   Removed SFX
+  Fixed bug where stairs would be drawn as debug texture
   Changed the way that the game updates the screen, now tick based
   Improved physics system
   Fixed bug where world would not visually update  
