@@ -44,3 +44,8 @@ Alpha Version 0.2.7:
   Added caves
   Brightened game
   Added SFX (currently using infiniminer sfx)
+
+Alpha Version 0.2.8:
+  Removed SFX
+  Changed the way that the game updates the screen, now tick based.
+  Improved physics system
