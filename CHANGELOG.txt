@@ -19,7 +19,7 @@ Alpha Version 0.2.0:
   Fixed bug with inventory item overflow
   Started on crafting
   Implemented crafting
-  
+
 Alpha Version 0.2.5:
   Changed rotation contols
   Added inventory defragmentation, fixed bug with crafting where items would not be taken
@@ -44,3 +44,10 @@ Alpha Version 0.2.7:
   Added caves
   Brightened game
   Added SFX (currently using infiniminer sfx)
+
+Alpha Version 0.2.8:
+  Removed SFX
+  Fixed bug where stairs would be drawn as debug texture
+  Changed the way that the game updates the screen, now tick based
+  Improved physics system
+  Fixed bug where world would not visually update  

@@ -46,33 +46,40 @@ int main(int argc, char ** argv){
   setTeam(DEFAULT_TEAM, 1);
   generateHills(world, time(0));  // generate a hilly world
   cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
+  setPhysicsRenderer(renderer, window);
   setPhysicsMap(world_copy); // save the world map to the physics collision map
+  setupCamera(renderer, window);
+  setupCameraMap(world_copy);
   initInventory(); // fill inventory with empty slots
   addItemToInventory(WORK_BENCH, 1); // give player 1 workbench
   
-  /* START PHYSICS FOR PLAYER */
+  /* INIT PHYSICS MUTEX */
   if (pthread_mutex_init(&physics_lock,NULL) != 0){
     fprintf(stderr, "Failed to create mutex for physics\n");
     return -1;
   }
+
+  /* INIT CAMERA DRAW LOOP MUTEX */
+  if (pthread_mutex_init(&camera_lock,NULL)!=0){
+    fprintf(stderr, "Failed to create mutex for camera\n");
+    return -1;
+  }
+  
   pthread_t physics_id;
+  pthread_t camera_id;
   /* Player physics run on a seperate thread to allow for real-time gameplay 
      rather than turn-based 
   */
-  pthread_create(&physics_id, NULL, handlePlayerGravity, NULL);
+  pthread_create(&physics_id, NULL, handlePhysics, NULL);
+
+  /* Setup camera so that renderer can function properly */
+  pthread_create(&camera_id, NULL, updateCameraOnTick, NULL);
 
   /* MAIN GAME LOOP */
   bool running_game = true;
   while (running_game){
     SDL_Event e;
     while (SDL_PollEvent(&e) > 0){
-      /* Redraw screen and UI everytime an input is received.
-	 Probably should make it refresh everytime the world/player/physics 
-	 updates instead of when the player does something
-       */
-      updateCamera(cameraX, cameraY, cameraZoom, renderer, world_copy, window);
-      drawUI(renderer);
-      SDL_RenderPresent(renderer);
       switch (e.type){
         case SDL_KEYDOWN:
 	  if (currentUIMode != CRAFTING){
@@ -90,6 +97,7 @@ int main(int argc, char ** argv){
 		/* Regenerate the world_copy map, physics map, and solidity map */
 		cullHiddenBlocks(world_copy, world);
 		setPhysicsMap(world_copy);
+		setupCameraMap(world_copy);
 		break;
 		/* Place a block */
 	      case SDLK_n:
@@ -100,6 +108,7 @@ int main(int argc, char ** argv){
 		/* Regenerate the world_copy map, physics map, and solidity map */
 		cullHiddenBlocks(world_copy, world);
 		setPhysicsMap(world_copy);
+		setupCameraMap(world_copy);
 		break;
 	    }
 	    break;
