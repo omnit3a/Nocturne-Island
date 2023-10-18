@@ -46,6 +46,7 @@ int main(int argc, char ** argv){
   setTeam(DEFAULT_TEAM, 1);
   generateHills(world, time(0));  // generate a hilly world
   cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
+  setPhysicsRenderer(renderer, window);
   setPhysicsMap(world_copy); // save the world map to the physics collision map
   initInventory(); // fill inventory with empty slots
   addItemToInventory(WORK_BENCH, 1); // give player 1 workbench
@@ -59,7 +60,7 @@ int main(int argc, char ** argv){
   /* Player physics run on a seperate thread to allow for real-time gameplay 
      rather than turn-based 
   */
-  pthread_create(&physics_id, NULL, handlePlayerGravity, NULL);
+  pthread_create(&physics_id, NULL, handlePhysics, NULL);
 
   /* MAIN GAME LOOP */
   bool running_game = true;
@@ -68,11 +69,11 @@ int main(int argc, char ** argv){
     while (SDL_PollEvent(&e) > 0){
       /* Redraw screen and UI everytime an input is received.
 	 Probably should make it refresh everytime the world/player/physics 
-	 updates instead of when the player does something
+	 updates instead of when the player does somethingOA
        */
-      updateCamera(cameraX, cameraY, cameraZoom, renderer, world_copy, window);
-      drawUI(renderer);
-      SDL_RenderPresent(renderer);
+      //updateCamera(cameraX, cameraY, cameraZoom, renderer, world_copy, window, 1);
+      //drawUI(renderer);
+      //SDL_RenderPresent(renderer);
       switch (e.type){
         case SDL_KEYDOWN:
 	  if (currentUIMode != CRAFTING){

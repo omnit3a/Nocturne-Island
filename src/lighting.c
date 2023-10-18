@@ -7,20 +7,22 @@
 
 int * calculateFogRGB(){
   static int rgbColors[3];
+  int xPos = iBackup;
+  int yPos = jBackup;
   for (int i = 0 ; i < 3 ; i++){
-    if (iBackup < playerX){
-      rgbColors[i] = (playerX - iBackup) * 5;
-      if (jBackup < playerY){
-	rgbColors[i] += (playerY - jBackup) * 5;
+    if (xPos < playerX){
+      rgbColors[i] = (playerX - xPos) * 5;
+      if (yPos < playerY){
+	rgbColors[i] += (playerY - yPos) * 5;
       } else {
-	rgbColors[i] += (jBackup - playerY) * 5;
+	rgbColors[i] += (yPos - playerY) * 5;
       }
     } else {
-      rgbColors[i] = (iBackup - playerX) * 5;
-      if (jBackup < playerY){
-	rgbColors[i] += (playerY - jBackup) * 5;
+      rgbColors[i] = (xPos - playerX) * 5;
+      if (yPos < playerY){
+	rgbColors[i] += (playerY - yPos) * 5;
       } else {
-	rgbColors[i] += (jBackup - playerY) * 5;
+	rgbColors[i] += (yPos - playerY) * 5;
       }
     }
     if (rgbColors[i] > 32){

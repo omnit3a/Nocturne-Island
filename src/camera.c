@@ -11,7 +11,7 @@ int cameraX = 0;
 int cameraY = 0;
 int cameraZoom = 32;
 
-void updateCamera(unsigned int xPos, unsigned int yPos, unsigned int zoom, SDL_Renderer * renderer, char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Window * window){
+void updateCamera(unsigned int xPos, unsigned int yPos, unsigned int zoom, SDL_Renderer * renderer, char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Window * window, int free_texture){
   /* Make the camera follow the player */
   cameraX = -((xPosBackup-xPos)-((SCREEN_WIDTH/2)-TILE_WIDTH));
   cameraY = -((yPosBackup-yPos)-((SCREEN_HEIGHT/2)-TILE_HEIGHT));
@@ -19,6 +19,6 @@ void updateCamera(unsigned int xPos, unsigned int yPos, unsigned int zoom, SDL_R
   SDL_GetWindowSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
   SDL_SetRenderDrawColor(renderer, 0, 0, 50, 255);
   SDL_RenderClear(renderer);
-  drawWorld(world, cameraZoom, renderer);
+  drawWorld(world, cameraZoom, renderer, free_texture);
 }
 

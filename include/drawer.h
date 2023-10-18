@@ -25,6 +25,12 @@ extern bool renderPlayerLast;
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 extern int xPosBackup, yPosBackup, belowPosBackup;
+
+/*
+  IDK why i made these as global variables.
+  im honestly too scared to change them, cause idk where
+  they are required.
+ */
 extern int iBackup, jBackup;
 
 typedef enum blocks_e {
@@ -59,7 +65,7 @@ typedef enum blocks_e {
 
 bool blockingPlayerCheck(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void drawBlock(int xPos, int yPos, int zPos, int height, blocks_t block, SDL_Renderer * renderer);
-void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Renderer * renderer);
+void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Renderer * renderer, int free_texture);
 void drawPlayer(char * playerPath, int xPos, int yPos, SDL_Renderer * renderer);
 #endif
 

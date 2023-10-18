@@ -76,8 +76,8 @@ void drawBlock(int xPos, int yPos, int zPos, int height, blocks_t block, SDL_Ren
   atlas_rect.w = (cameraZoom*2);
   atlas_rect.h = (cameraZoom*3);
   if (block > 0){
-    atlas_clip.x = (block * TILE_WIDTH) % ATLAS_WIDTH;
-    atlas_clip.y = ((block * TILE_HEIGHT) / ATLAS_WIDTH)*TILE_HEIGHT;
+    atlas_clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
+    atlas_clip.y = (block / (ATLAS_WIDTH / TILE_WIDTH)) * TILE_HEIGHT;
   } else {
     atlas_clip.x = 0;
     atlas_clip.y = 0;
@@ -97,14 +97,15 @@ void drawBlock(int xPos, int yPos, int zPos, int height, blocks_t block, SDL_Ren
 }
 
 /* Draw the whole world */
-void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Renderer * renderer){
+void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Renderer * renderer, int free_texture){
   int iterator = 0;
   int xPos;
   int belowPos;
   int yPos;
-  
+
   atlas_surface = SDL_LoadBMP(ATLAS_PATH);
   atlas_texture = SDL_CreateTextureFromSurface(renderer, atlas_surface);
+
   atlas_clip.w = TILE_WIDTH;
   atlas_clip.h = TILE_HEIGHT;
 
@@ -153,8 +154,10 @@ void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Re
     drawPlayer(PLAYER_SPRITE, xPosBackup, yPosBackup, renderer);
     drawCurrentDirection(xPosBackup, yPosBackup, renderer);
   }
-  SDL_FreeSurface(atlas_surface);
-  SDL_DestroyTexture(atlas_texture);
+  if (free_texture){
+    SDL_FreeSurface(atlas_surface);
+    SDL_DestroyTexture(atlas_texture);
+  }
 }
 
 /* Draw player */
