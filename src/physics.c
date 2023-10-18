@@ -83,9 +83,6 @@ void * handlePhysics(void * vargp){
       currentTick++;
       pthread_mutex_unlock(&physics_lock);
       handlePlayerGravity();
-      updateCamera(cameraX, cameraY, cameraZoom, physics_renderer, physics_map, physics_window, 1);
-      drawUI(physics_renderer);
-      SDL_RenderPresent(physics_renderer);
     }
   }
 }
