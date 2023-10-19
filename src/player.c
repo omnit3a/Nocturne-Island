@@ -12,6 +12,7 @@
 #include <crafting.h>
 #include <ui.h>
 #include <audio.h>
+#include <map_defs.h>
 
 int playerX = MAP_WIDTH/2;
 int playerY = MAP_LENGTH/2;
@@ -128,10 +129,10 @@ void playerOffsetDirection(){
 }
 
 /* Mine a block in the direction of the player */
-blocks_t playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
+int playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   playerOffsetDirection();
   if (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1 && playerZ > 0 && playerZ < MAP_HEIGHT-1){
-    static blocks_t temp_block = 0;
+    static int temp_block = 0;
     /* If trying to mine NOKIUM, return from function */
     /* I probably want to replace this with a hardness value for each block */
     if (getBlockProperties(map,playerXOff,playerYOff,playerZOff).hp < -100){
@@ -156,7 +157,7 @@ blocks_t playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
 }
 
 /* Allow player to place a block from the inventory */
-void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], blocks_t block){
+void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int block){
   playerOffsetDirection();
   if (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1 && playerZ > 0 && playerZ < MAP_HEIGHT-1){
     if (!(getBlockProperties(map,playerXOff,playerYOff,playerZOff).solid) && checkInventoryForItem(block)){

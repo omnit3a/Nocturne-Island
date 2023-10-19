@@ -1,0 +1,5 @@
+#pragma once
+
+#define STONE 1
+#define GRASS 2
+#define

@@ -7,6 +7,7 @@
 #include <player.h>
 #include <camera.h>
 #include <physics.h>
+#include <map_defs.h>
 
 char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 block_data_t data_map[BLOCKS_AMOUNT] = {
@@ -40,10 +41,14 @@ block_data_t data_map[BLOCKS_AMOUNT] = {
 };
 int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
+block_data_t translateBlockDef(char * def){
+  static block_data_t data;
+}
+
 void loadBlockProperties(char * path, block_data_t * data){
-  for (int id = 0 ; id < BLOCKS_AMOUNT ; id++){
-    data[id]->id = id;
-  }
+  int block_def_size = 1024
+  char * block_def_copy = malloc(block_def_size);
+  
 }
 
 void unloadBlockProperties(block_data_t * data){

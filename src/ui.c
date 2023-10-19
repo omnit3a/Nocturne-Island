@@ -10,9 +10,10 @@
 #include <messages.h>
 #include <inventory.h>
 #include <crafting.h>
+#include <map_defs.h>
 
 ui_mode_t currentUIMode = IDLE;
-blocks_t currentBlock = WORK_BENCH;
+int currentBlock = WORK_BENCH;
 int selected_block;
 char * blockNames[64] = {
   "Empty",

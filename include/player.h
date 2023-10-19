@@ -36,8 +36,8 @@ void setPlayerRotation(rotation_t rotation);
 void rotatePlayerClockwise();
 void rotatePlayerUp();
 void playerOffsetDirection();
-blocks_t playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
-void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], blocks_t block);
+int playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
+void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int block);
 void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event event);
 void handlePlayerRotation(SDL_Event event);
 
