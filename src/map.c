@@ -8,51 +8,89 @@
 #include <camera.h>
 #include <physics.h>
 #include <map_defs.h>
+#include <string.h>
 
 char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
-block_data_t data_map[BLOCKS_AMOUNT] = {
-  {-101, false, true, 0, 0, 0, UNKNOWN_TYPE},
-  {3, true, false, STONE, STONE, 1, STONE_TYPE},
-  {2, true, false, GRASS, STONE, 1, TERRAIN_TYPE},
-  {1, true, false, WOOD, WOOD, 1, WOODEN_TYPE},
-  {-101, false, true, WATER, 0, 0, UNKNOWN_TYPE},
-  {4, true, false, MAGMA, STONE, 3, STONE_TYPE},
-  {1, true, false, SAND, SAND, 1, TERRAIN_TYPE},
-  {2, true, false, TREE_BOTTOM, WOOD, 2, WOODEN_TYPE},
-  {2, true, false, OAK_TREE_LEAVES, WOOD, 2, WOODEN_TYPE},
-  {2, true, false, PINE_TREE_LEAVES, WOOD, 2, WOODEN_TYPE},
-  {-101, false, false, BLOCK_OUTLINE, 0, 0, UNKNOWN_TYPE},
-  {-101, true, false, NOKIUM, 0, 0, UNKNOWN_TYPE},
-  {2, true, false, STAIRS, STONE, 3, STONE_TYPE},
-  {2, true, false, STAIRS, STONE, 3, STONE_TYPE},
-  {2, true, false, STAIRS, STONE, 3, STONE_TYPE},
-  {2, true, false, STAIRS, STONE, 3, STONE_TYPE},
-  {1, true, false, WORK_BENCH, WORK_BENCH, 1, FURNITURE_TYPE},
-  {1, true, false, TABLE, TABLE, 1, FURNITURE_TYPE},
-  {3, true, false, IRON_ORE, IRON_CHUNKS, 2, METAL_TYPE},
-  {3, true, false, COAL_ORE, COAL_CHUNKS, 2, METAL_TYPE},
-  {2, true, false, IRON_CHUNKS, IRON_CHUNKS, 1, METAL_TYPE},
-  {2, true, false, COAL_CHUNKS, COAL_CHUNKS, 1, METAL_TYPE},
-  {1, true, false, ROPE, ROPE, 1, WOODEN_TYPE},
-  {1, true, false, NAILS, NAILS, 1, METAL_TYPE},
-  {1, true, false, PICKAXE, PICKAXE, 1, METAL_TYPE},
-  {1, true, false, SHOVEL, SHOVEL, 1, METAL_TYPE},
-  {1, true, false, AXE, AXE, 1, METAL_TYPE},
-};
+block_data_t data_map[BLOCKS_AMOUNT];
 int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
-block_data_t translateBlockDef(char * def){
+void translateBlockDef(char * def, int line){
   static block_data_t data;
+  int values[7] = {0, 0, 0, 0, 0, 0, 0};
+  char * token;
+  char * delim = " ";
+  int field = 0;
+  
+  token = strtok(def, delim);
+  
+  while (token != NULL){
+    values[field] = atoi(token);
+    printf("%d\n",values[field++]);
+    token = strtok(NULL, delim);
+  }
+  
+  data_map[line].hp = values[0];
+  data_map[line].solid = values[1];
+  data_map[line].transparent = values[2];
+  data_map[line].block = values[3];
+  data_map[line].dropped_item = values[4];
+  data_map[line].count = values[5];
+  data_map[line].block_type = values[6];
+  
 }
 
 void loadBlockProperties(char * path, block_data_t * data){
-  int block_def_size = 1024
+  int block_def_size = 1024;
   char * block_def_copy = malloc(block_def_size);
+  char ** block_def_lines = malloc(256 * BLOCKS_AMOUNT);
+  FILE * def_file;
+  int current_char = 0;
   
-}
+  if ((def_file = fopen(path, "r")) == NULL){
+    fprintf(stderr, "Unable to load blocks defs\n");
+    exit(-1);
+  }
 
-void unloadBlockProperties(block_data_t * data){
-  
+  // make a copy of the data, so that it can be tokenized
+  do {
+    char def_char = fgetc(def_file);
+
+    if (current_char == block_def_size){
+      block_def_size += 256;
+      block_def_copy = realloc(block_def_copy, block_def_size);
+    }
+    
+    if (feof(def_file)){
+      break;
+    } else {
+      block_def_copy[current_char] = def_char;
+      current_char++;
+    }
+  } while (true);
+
+  char * def_line;
+  char delim[2] = "\n";
+  int current_line = 0;
+
+  // tokenize the data
+  def_line = strtok(block_def_copy, delim);
+
+  while (def_line != NULL){
+    block_def_lines[current_line++] = def_line;
+    def_line = strtok(NULL, delim);
+  }
+
+  block_def_lines[current_line] = NULL;
+
+  current_line = 0;
+  while (block_def_lines[current_line] != NULL){
+    translateBlockDef(block_def_lines[current_line], current_line);
+    current_line++;
+  }
+
+  free(block_def_lines);
+  free(block_def_copy);
+  fclose(def_file);
 }
 
 block_data_t getBlockProperties(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int xPos, int yPos, int zPos){

@@ -143,7 +143,8 @@ void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Re
 	    yPosBackup = yPos;
 	    belowPosBackup = belowPos;
 	  }
-	  drawBlock(xPos, yPos, iterator, height, world[i][j][iterator], renderer);
+	  block_data_t block = getBlockProperties(world, i, j, iterator);
+	  drawBlock(xPos, yPos, iterator, height, block.block, renderer);
         }
       }
     }

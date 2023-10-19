@@ -51,3 +51,7 @@ Alpha Version 0.2.8:
   Changed the way that the game updates the screen, now tick based
   Improved physics system
   Fixed bug where world would not visually update  
+
+Alpha Version 0.2.9:
+  Game map now updates whenever blocks are culled
+  Block definitions are now loaded from a text file

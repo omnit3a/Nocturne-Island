@@ -44,7 +44,9 @@ int main(int argc, char ** argv){
   SDL_UpdateWindowSurface(window);
   char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
   char world_copy[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
-  //loadBlockProperties(BLOCK_DATA_PATH, data_map);
+
+  loadBlockProperties(BLOCK_DATA_PATH, data_map);
+
   setTeam(DEFAULT_TEAM, 1);
   generateHills(world, time(0));  // generate a hilly world
   cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
@@ -121,6 +123,7 @@ int main(int argc, char ** argv){
     }
   }
 
+  unloadBlockProperties(data_map);
   pthread_mutex_destroy(&physics_lock);
   pthread_mutex_destroy(&camera_lock);
   
