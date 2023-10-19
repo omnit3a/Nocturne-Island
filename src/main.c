@@ -123,7 +123,6 @@ int main(int argc, char ** argv){
     }
   }
 
-  unloadBlockProperties(data_map);
   pthread_mutex_destroy(&physics_lock);
   pthread_mutex_destroy(&camera_lock);
   
