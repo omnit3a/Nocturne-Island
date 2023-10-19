@@ -43,6 +43,7 @@ int main(int argc, char ** argv){
   SDL_UpdateWindowSurface(window);
   char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
   char world_copy[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
+  loadBlockProperties(BLOCK_DATA_PATH, data_map);
   setTeam(DEFAULT_TEAM, 1);
   generateHills(world, time(0));  // generate a hilly world
   cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
@@ -96,8 +97,6 @@ int main(int argc, char ** argv){
 		playerMineBlock(world);
 		/* Regenerate the world_copy map, physics map, and solidity map */
 		cullHiddenBlocks(world_copy, world);
-		setPhysicsMap(world_copy);
-		setupCameraMap(world_copy);
 		break;
 		/* Place a block */
 	      case SDLK_n:
@@ -107,8 +106,6 @@ int main(int argc, char ** argv){
 		playerPlaceBlock(world, currentBlock);
 		/* Regenerate the world_copy map, physics map, and solidity map */
 		cullHiddenBlocks(world_copy, world);
-		setPhysicsMap(world_copy);
-		setupCameraMap(world_copy);
 		break;
 	    }
 	    break;
@@ -122,8 +119,10 @@ int main(int argc, char ** argv){
       }
     }
   }
-  
-  pthread_mutex_destroy(&physics_lock);
 
+  unloadBlockProperties(data_map);
+  pthread_mutex_destroy(&physics_lock);
+  pthread_mutex_destroy(&camera_lock);
+  
   return 0;
 }

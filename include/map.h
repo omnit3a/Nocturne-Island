@@ -3,6 +3,8 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
+#define BLOCK_DATA_PATH "assets/defs/blocks.txt"
+
 #define MAP_WIDTH 100
 #define MAP_LENGTH 100
 #define MAP_HEIGHT 50
@@ -29,6 +31,7 @@ typedef enum block_type_s {
 } block_type_t;
 
 typedef struct block_data_s {
+  int id;
   int hp;
   bool solid;
   bool transparent;
@@ -42,6 +45,8 @@ extern char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 extern block_data_t data_map[BLOCKS_AMOUNT];
 extern int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
+block_data_t * loadBlockProperties(char * path);
+void unloadBlockProperties(block_data_t * data);
 block_data_t getBlockProperties(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int xPos, int yPos, int zPos);
 void fillMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_WIDTH][MAP_LENGTH], int seed);

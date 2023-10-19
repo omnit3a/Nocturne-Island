@@ -5,6 +5,8 @@
 #include <drawer.h>
 #include <stdbool.h>
 #include <player.h>
+#include <camera.h>
+#include <physics.h>
 
 char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 block_data_t data_map[BLOCKS_AMOUNT] = {
@@ -18,8 +20,8 @@ block_data_t data_map[BLOCKS_AMOUNT] = {
   {2, true, false, TREE_BOTTOM, WOOD, 2, WOODEN_TYPE},
   {2, true, false, OAK_TREE_LEAVES, WOOD, 2, WOODEN_TYPE},
   {2, true, false, PINE_TREE_LEAVES, WOOD, 2, WOODEN_TYPE},
-  {-101, false, false, BLOCK_OUTLINE, 0, UNKNOWN_TYPE},
-  {-101, true, false, NOKIUM, 0, UNKNOWN_TYPE},
+  {-101, false, false, BLOCK_OUTLINE, 0, 0, UNKNOWN_TYPE},
+  {-101, true, false, NOKIUM, 0, 0, UNKNOWN_TYPE},
   {2, true, false, STAIRS, STONE, 3, STONE_TYPE},
   {2, true, false, STAIRS, STONE, 3, STONE_TYPE},
   {2, true, false, STAIRS, STONE, 3, STONE_TYPE},
@@ -37,6 +39,16 @@ block_data_t data_map[BLOCKS_AMOUNT] = {
   {1, true, false, AXE, AXE, 1, METAL_TYPE},
 };
 int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
+
+void loadBlockProperties(char * path, block_data_t * data){
+  for (int id = 0 ; id < BLOCKS_AMOUNT ; id++){
+    data[id]->id = id;
+  }
+}
+
+void unloadBlockProperties(block_data_t * data){
+  
+}
 
 block_data_t getBlockProperties(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int xPos, int yPos, int zPos){
   return data_map[(int)map[xPos][yPos][zPos]];
@@ -358,4 +370,6 @@ void cullHiddenBlocks(char dest_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char src
       }
     }
   }
+  setPhysicsMap(dest_map);
+  setupCameraMap(dest_map);
 }
