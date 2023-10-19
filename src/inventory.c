@@ -3,6 +3,7 @@
 #include <inventory.h>
 #include <drawer.h>
 #include <stdbool.h>
+#include <map_defs.h>
 
 item_t inventory[INVENTORY_SIZE];
 
@@ -15,7 +16,7 @@ void initInventory(){
 }
 
 /* Check for valid slot in inventory, if one is found then store item */
-void addItemToInventory(blocks_t block, unsigned int count){
+void addItemToInventory(int block, unsigned int count){
   for (int i = 0 ; i < INVENTORY_SIZE ; i++){
     if (inventory[i].count == 0){
       inventory[i].block = 0;
@@ -36,7 +37,7 @@ void addItemToInventory(blocks_t block, unsigned int count){
 }
 
 /* Check if player has item in inventory */
-bool checkInventoryForItem(blocks_t block){
+bool checkInventoryForItem(int block){
   for (int i = 0 ; i < INVENTORY_SIZE ; i++){
     if (inventory[i].block == block){
       return true;
@@ -46,7 +47,7 @@ bool checkInventoryForItem(blocks_t block){
 }
 
 /* Check if player has item in inventory, if they do, then remove that item */
-bool checkAndRemoveItem(blocks_t block, unsigned int count){
+bool checkAndRemoveItem(int block, unsigned int count){
   for (int i = 0 ; i < INVENTORY_SIZE ; i++){
     if (inventory[i].block == block && inventory[i].count >= count){
       inventory[i].count -= count;
@@ -59,7 +60,7 @@ bool checkAndRemoveItem(blocks_t block, unsigned int count){
   return false;
 }
 
-item_t countInventoryItem(blocks_t block){
+item_t countInventoryItem(int block){
   item_t temp_count = {0, 0};
   if (!checkInventoryForItem(block)){
     return temp_count;

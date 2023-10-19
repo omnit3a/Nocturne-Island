@@ -9,6 +9,7 @@
 #include <player.h>
 #include <ui.h>
 #include <lighting.h>
+#include <map_defs.h>
 
 char * PLAYER_SPRITE = LEVEE_PATH;
 bool renderPlayerLast;
@@ -70,7 +71,7 @@ bool blockingPlayerCheck(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
 }
 
 /* Draw specified block on the screen */
-void drawBlock(int xPos, int yPos, int zPos, int height, blocks_t block, SDL_Renderer * renderer){
+void drawBlock(int xPos, int yPos, int zPos, int height, int block, SDL_Renderer * renderer){
   atlas_rect.x = xPos;
   atlas_rect.y = yPos;
   atlas_rect.w = (cameraZoom*2);
@@ -142,7 +143,8 @@ void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Re
 	    yPosBackup = yPos;
 	    belowPosBackup = belowPos;
 	  }
-	  drawBlock(xPos, yPos, iterator, height, world[i][j][iterator], renderer);
+	  block_data_t block = getBlockProperties(world, i, j, iterator);
+	  drawBlock(xPos, yPos, iterator, height, block.block, renderer);
         }
       }
     }

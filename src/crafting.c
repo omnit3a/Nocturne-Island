@@ -7,6 +7,7 @@
 #include <ui.h>
 #include <inventory.h>
 #include <messages.h>
+#include <map_defs.h>
 
 crafting_recipe_t recipes[CRAFTING_RECIPE_COUNT] = {
   {1,{{STONE, 3}}, STAIRS, 1},

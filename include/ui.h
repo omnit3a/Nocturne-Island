@@ -24,7 +24,7 @@ typedef enum ui_mode_e {
 } ui_mode_t;
 
 extern ui_mode_t currentUIMode;
-extern blocks_t currentBlock;
+extern int currentBlock;
 extern int selected_block;
 /* List of display names of blocks */
 extern char * blockNames[64];
