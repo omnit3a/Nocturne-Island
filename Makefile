@@ -21,4 +21,5 @@ package: all
 	cp $(OUTFILE) $(PACKAGEDIR)
 	cp -r $(ASSETDIR) $(PACKAGEDIR)
 	cp LICENSE $(PACKAGEDIR)
+	cp *.txt $(PACKAGEDIR)
 	zip -r $(PACKAGENAME) $(PACKAGEDIR)

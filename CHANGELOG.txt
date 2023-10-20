@@ -55,3 +55,6 @@ Alpha Version 0.2.8:
 Alpha Version 0.2.9:
   Game map now updates whenever blocks are culled
   Block definitions are now loaded from a text file
+
+Alpha Version 0.2.10:
+  Minor bug fixes
