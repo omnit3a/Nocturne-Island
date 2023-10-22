@@ -149,7 +149,7 @@ int playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
       /* Add the mined item to the players inventory */
       addItemToInventory(getBlockProperties(map, playerXOff, playerYOff, playerZOff).dropped_item, getBlockProperties(map, playerXOff, playerYOff, playerZOff).count);
       map[playerXOff][playerYOff][playerZOff] = 0;
-      blockingPlayerCheck(map);
+      
     }
     return temp_block;
   }
@@ -186,7 +186,7 @@ void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int block){
       }
       block_hp_map[playerXOff][playerYOff][playerZOff] = getBlockProperties(map, playerXOff, playerYOff, playerZOff).hp;
       checkAndRemoveItem(block, 1);
-      blockingPlayerCheck(map);
+      
     }
   }
 
@@ -198,17 +198,17 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
   rotation_t prevRotation = playerRotation;
   playerOffsetDirection();
   switch (event.key.keysym.sym){
-    case SDLK_a:
+    case SDLK_w:
       setPlayerRotation(NORTH);
       break;
-    case SDLK_s:
-      setPlayerRotation(WEST);
-      break;
-    case SDLK_w:
+    case SDLK_a:
       setPlayerRotation(EAST);
       break;
-    case SDLK_d:
+    case SDLK_s:
       setPlayerRotation(SOUTH);
+      break;
+    case SDLK_d:
+      setPlayerRotation(WEST);
       break;
     case SDLK_z:
       interactWithWorkbench(map);
@@ -220,7 +220,7 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
       /* Check for empty space above player and solid space below player */
       if (!(getBlockProperties(map,playerX,playerY,playerZ+1).solid) && getBlockProperties(map,playerX,playerY,playerZ-1).solid){
         pthread_create(&jump_thread, NULL, handlePlayerJumping, NULL);
-        blockingPlayerCheck(map);
+        
       }
       break;
   }
@@ -241,7 +241,6 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
       if(!getBlockProperties(map, playerXOff, playerYOff, playerZ).solid){
 	playerX = playerXOff;
 	playerY = playerYOff;
-	blockingPlayerCheck(map);
 	playerRotation = prevRotation;
       } else {
 	playerRotation = prevRotation;
@@ -252,17 +251,17 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
 
 void handlePlayerRotation(SDL_Event event){
   switch (event.key.keysym.sym){
-    case SDLK_j:
+    case SDLK_i:
       playerRotation = NORTH;
       break;
-    case SDLK_k:
-      playerRotation = WEST;
+    case SDLK_j:
+      playerRotation = EAST;
       break;
-    case SDLK_l:
+    case SDLK_k:
       playerRotation = SOUTH;
       break;
-    case SDLK_i:
-      playerRotation = EAST;
+    case SDLK_l:
+      playerRotation = WEST;
       break;
   }
 }

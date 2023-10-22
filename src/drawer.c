@@ -36,141 +36,79 @@ SDL_Rect atlas_clip = {
 };
 SDL_Rect tile_rect;
 
-/* Check if blocks are blocking the player */
-bool blockingPlayerCheck(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
-  int iteratorX = 0;
-  int iteratorY = 0;
-  int iteratorXY = 0;
-  for (int reach = 0 ; reach < 3 ; reach++){
-    for (int i = playerZ ; i < playerZ+5 ; i++){
-      if (!(getBlockProperties(map, playerX+1, playerY, i).transparent)){
-	iteratorX++;
-      }
-      if (!(getBlockProperties(map, playerX, playerY+1, i).transparent)){
-	iteratorY++;
-      }
-      if (!(getBlockProperties(map, playerX+1, playerY+1, i).transparent)){
-	iteratorXY++;
-      }
-    }
-  }
-  if (!(getBlockProperties(map, playerX, playerY, playerZ+1).transparent)){
-    iteratorX+=2;
-    iteratorY+=2;
-    iteratorXY+=2;
-  }
-  if ((iteratorX > 3 && iteratorY > 3) || iteratorXY > 3){
-    PLAYER_SPRITE = LEVEE_OUTLINE_PATH;
-    renderPlayerLast = true;
-    return true;
-  } else {
-    PLAYER_SPRITE = LEVEE_PATH;
-    renderPlayerLast = false;
-    return false;
-  }
-}
-
-/* Draw specified block on the screen */
-void drawBlock(int xPos, int yPos, int zPos, int height, int block, SDL_Renderer * renderer){
-  atlas_rect.x = xPos;
-  atlas_rect.y = yPos;
-  atlas_rect.w = (cameraZoom*2);
-  atlas_rect.h = (cameraZoom*3);
-  if (block > 0){
-    atlas_clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
-    atlas_clip.y = (block / (ATLAS_WIDTH / TILE_WIDTH)) * TILE_HEIGHT;
-  } else {
-    atlas_clip.x = 0;
-    atlas_clip.y = 0;
-  }
-  if (xPos >= SCREEN_WIDTH+(height*3) || xPos < 0-(height*3) || yPos >= SCREEN_HEIGHT+(height*3) || yPos < 0-(height*3)){
-    return;
-  }
+int *** getBlocksInView(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
+  static int result[9][9][256] = {0};
+  int dist = CAMERA_VIEW_DISTANCE;
+  int x_start = playerX-5, x_end = playerX+5;
+  int y_start = playerY-5, y_end = playerY+5;
   
-  if (zPos > -1){
-    /* Use this to change lighting level of block */
-    SDL_SetTextureColorMod(atlas_texture
-			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS-calculateFogRGB()[0])
-			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS-calculateFogRGB()[1])
-			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS-calculateFogRGB()[2]));
+  int resultX = 0;
+  int resultY = 0;
+  int resultZ = 0;
+  for (int x = x_start ; x != x_end; x++){
+    resultY = 0;
+    for (int y = y_start ; y != y_end ; y++){
+      resultZ = 0;
+      for (int z = 0 ; z < 256 ; z++){	
+	result[resultX][resultY][resultZ] = world[x+1][y+1][z];
+	resultZ++;
+      }
+      resultY++;
+    }
+    resultX++;
   }
-  SDL_RenderCopy(renderer, atlas_texture, &atlas_clip, &atlas_rect);
+
+  return result;
 }
 
-/* Draw the whole world */
-void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Renderer * renderer, int free_texture){
-  int iterator = 0;
-  int xPos;
-  int belowPos;
-  int yPos;
-
+void drawView(int blocks_in_view[9][9][256], SDL_Renderer * renderer){
+  int distance = CAMERA_VIEW_DISTANCE;
+  
   atlas_surface = SDL_LoadBMP(ATLAS_PATH);
   atlas_texture = SDL_CreateTextureFromSurface(renderer, atlas_surface);
-
   atlas_clip.w = TILE_WIDTH;
   atlas_clip.h = TILE_HEIGHT;
+  atlas_clip.y = 0;
 
-  for (int n = MAP_HEIGHT-1 ; n >= 0 ; n--){
-    for (int i = 0 ; i < MAP_WIDTH ; i++){
-      for (int j = 0 ; j < MAP_LENGTH ; j++){
-	/* Convert world coordinates to screen coordinates */
-	xPos = ((j*height)-((i*height)-((SCREEN_WIDTH/2)+height+10)))+cameraX;
-	belowPos = ((j*height)+(i*height)+((n+1)*height))+cameraY;
-	yPos = ((j*height)+(i*height)+(n*height))+cameraY;
-	iBackup = i;
-	jBackup = j;
-	if (world[i][j][iterator] == 0){
-	  if (i == playerX && j == playerY && iterator == playerZ){
-	    drawBlock(xPos, belowPos, iterator, height, BLOCK_OUTLINE, renderer);
-	    drawPlayer(PLAYER_SPRITE,xPos,yPos, renderer);
-	    drawCurrentDirection(xPos, yPos, renderer);
-
-	    /* Save player render position for renderPlayerLast */
-	    xPosBackup = xPos;
-	    yPosBackup = yPos;
-	    belowPosBackup = belowPos;
-	  }
-	  continue;
+  int brightness[3] = {255, 175, 100};
+  
+  for (int z = -20 ; z < 1 ; z++){
+    for (int x = 0 ; x < 9 ; x++){
+      for (int y = 0 ; y < 9 ; y++){
+	int block = blocks_in_view[x][y][playerZ+z];
+	
+	SDL_SetTextureColorMod(atlas_texture,
+			       (z * 10)+BASE_DEPTH_BRIGHTNESS,
+			       (z * 10)+BASE_DEPTH_BRIGHTNESS,
+			       (z * 10)+BASE_DEPTH_BRIGHTNESS);
+	if (block > 0){
+	  atlas_clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
 	} else {
-
-	  if (playerX == i && playerY == j && playerZ == iterator){
-	    drawPlayer(PLAYER_SPRITE, xPos, yPos, renderer);
-	    drawBlock(xPos, belowPos, iterator, height, BLOCK_OUTLINE, renderer);
-	    drawCurrentDirection(xPos, yPos, renderer);
-
-	    /* Save player render position for renderPlayerLast */ 
-	    xPosBackup = xPos;
-	    yPosBackup = yPos;
-	    belowPosBackup = belowPos;
-	  }
-	  block_data_t block = getBlockProperties(world, i, j, iterator);
-	  drawBlock(xPos, yPos, iterator, height, block.block, renderer);
-        }
+	  atlas_clip.x = 0;
+	}
+	
+	atlas_rect.x = (x * (SCREEN_WIDTH/9));
+	atlas_rect.y = (y * (SCREEN_HEIGHT/9));
+	atlas_rect.w = (SCREEN_WIDTH/9);
+	atlas_rect.h = (SCREEN_HEIGHT/9);
+	SDL_RenderCopy(renderer, atlas_texture, &atlas_clip, &atlas_rect);
       }
     }
-    iterator++;
   }
-  /* Draw player infront of blocks */
-  if (renderPlayerLast){
-    drawBlock(xPosBackup, belowPosBackup, iterator, height, BLOCK_OUTLINE, renderer);
-    drawPlayer(PLAYER_SPRITE, xPosBackup, yPosBackup, renderer);
-    drawCurrentDirection(xPosBackup, yPosBackup, renderer);
-  }
-  if (free_texture){
-    SDL_FreeSurface(atlas_surface);
-    SDL_DestroyTexture(atlas_texture);
-  }
+  SDL_FreeSurface(atlas_surface);
+  SDL_DestroyTexture(atlas_texture);
+  drawPlayer(LEVEE_PATH, renderer);
 }
-
+  
 /* Draw player */
-void drawPlayer(char * playerPath, int xPos, int yPos, SDL_Renderer * renderer){
+void drawPlayer(char * playerPath, SDL_Renderer * renderer){
   SDL_Surface * sprite_surface = SDL_LoadBMP(playerPath);
   SDL_Texture * sprite_texture = SDL_CreateTextureFromSurface(renderer, sprite_surface);
   SDL_Rect sprite_area;
-  sprite_area.x = xPos;
-  sprite_area.y = yPos;
-  sprite_area.w = cameraZoom*2;
-  sprite_area.h = cameraZoom*2;
+  sprite_area.x = (SCREEN_WIDTH/2)-((SCREEN_WIDTH/9)/2);
+  sprite_area.y = (SCREEN_HEIGHT/2)-((SCREEN_WIDTH/9)/2);
+  sprite_area.w = SCREEN_WIDTH/9;
+  sprite_area.h = SCREEN_HEIGHT/9;
   /* Use this to change the lighting of the player */
   SDL_SetTextureColorMod(sprite_texture,
 			 (playerZ * 10)+BASE_DEPTH_BRIGHTNESS,

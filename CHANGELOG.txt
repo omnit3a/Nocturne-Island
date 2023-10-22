@@ -58,3 +58,6 @@ Alpha Version 0.2.9:
 
 Alpha Version 0.2.10:
   Minor bug fixes
+
+Alpha Version 0.3.0:
+  Began work on graphical style change
