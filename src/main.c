@@ -54,7 +54,6 @@ int main(int argc, char ** argv){
   setupCamera(renderer, window);
   setupCameraMap(world_copy);
   initInventory(); // fill inventory with empty slots
-  addItemToInventory(WORK_BENCH, 1); // give player 1 workbench
   
   /* INIT PHYSICS MUTEX */
   if (pthread_mutex_init(&physics_lock,NULL) != 0){
@@ -85,35 +84,24 @@ int main(int argc, char ** argv){
     while (SDL_PollEvent(&e) > 0){
       switch (e.type){
         case SDL_KEYDOWN:
-	  if (currentUIMode != CRAFTING){
-	    handlePlayerMovement(world_copy, e);
-	    handleBlockSelect(e);
-	    handlePlayerRotation(e);
-	    handleUISwitch(e); // switch between UI modes
-	    switch(e.key.keysym.sym){
-	      /* Mine a block */
-	      case SDLK_m:
-		if (currentUIMode == CRAFTING){
-		  break;
-		}
-		playerMineBlock(world);
-		/* Regenerate the world_copy map, physics map, and solidity map */
-		cullHiddenBlocks(world_copy, world);
-		break;
-		/* Place a block */
-	      case SDLK_n:
-		if (currentUIMode == CRAFTING){
-		  break;
-		}
-		playerPlaceBlock(world, currentBlock);
-		/* Regenerate the world_copy map, physics map, and solidity map */
-		cullHiddenBlocks(world_copy, world);
-		break;
+	  handlePlayerMovement(world_copy, e);
+	  handleBlockSelect(e);
+	  handlePlayerRotation(e);
+	  handleUISwitch(e); // switch between UI modes
+	  switch(e.key.keysym.sym){
+	    /* Mine a block */
+	    case SDLK_m:
+	      playerMineBlock(world);
+	      /* Regenerate the world_copy map, physics map, and solidity map */
+	      cullHiddenBlocks(world_copy, world);
+	      break;
+	      /* Place a block */
+	    case SDLK_n:
+	      playerPlaceBlock(world, currentBlock);
+	      /* Regenerate the world_copy map, physics map, and solidity map */
+	      cullHiddenBlocks(world_copy, world);
+	      break;
 	    }
-	    break;
-	  } else {
-	    handleCraftingSelect(e);
-	  }
 	  break;
         case SDL_QUIT:
 	  running_game = false;

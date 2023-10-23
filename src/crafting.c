@@ -10,14 +10,6 @@
 #include <map_defs.h>
 
 crafting_recipe_t recipes[CRAFTING_RECIPE_COUNT] = {
-  {1,{{STONE, 3}}, STAIRS, 1},
-  {2,{{NAILS, 1},{WOOD, 8}}, WORK_BENCH, 1},
-  {2,{{NAILS, 1},{WOOD, 4}}, TABLE, 1},
-  {1,{{WOOD, 2}}, ROPE, 4},
-  {3,{{ROPE, 1},{WOOD, 1},{IRON_CHUNKS, 3}}, NAILS, 1}, 
-  {4,{{ROPE, 1},{WOOD, 2},{IRON_CHUNKS, 4},{NAILS, 1}}, PICKAXE, 1},
-  {4,{{ROPE, 1},{WOOD, 2},{IRON_CHUNKS, 4},{NAILS, 1}}, SHOVEL, 1},
-  {4,{{ROPE, 1},{WOOD, 2},{IRON_CHUNKS, 4},{NAILS, 1}}, AXE, 1},
 };
 
 crafting_recipe_t craftable_recipes[CRAFTABLE_RECIPES_COUNT];
@@ -51,11 +43,13 @@ void craftRecipe(crafting_recipe_t recipe){
 
 void interactWithWorkbench(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   playerOffsetDirection();
+  /*
   if (getBlockProperties(map, playerXOff, playerYOff, playerZOff).block == WORK_BENCH){
     if (current_recipe.output_block > 0){
       craftRecipe(current_recipe);
     }
   }
+  */
 }
 
 bool checkCraftableRecipe(crafting_recipe_t recipe){

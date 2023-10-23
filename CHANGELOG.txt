@@ -61,3 +61,6 @@ Alpha Version 0.2.10:
 
 Alpha Version 0.3.0:
   Began work on graphical style change
+  Removed crafting system. Pending rewrite.
+  Removed majority of blocks and items.
+  Added slope prototype.

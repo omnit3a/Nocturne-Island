@@ -5,6 +5,7 @@
 #include <map.h>
 #include <stdbool.h>
 #include <map_defs.h>
+#include <camera.h>
 
 #define ATLAS_PATH "assets/3d-atlas.bmp"
 
@@ -35,6 +36,7 @@ extern int xPosBackup, yPosBackup, belowPosBackup;
 extern int iBackup, jBackup;
 
 int *** getBlocksInView(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
-void drawView(int blocks_in_view[9][9][256], SDL_Renderer * renderer);
+void drawSlopes(int blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][256], SDL_Renderer * renderer);
+void drawView(int blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][256], SDL_Renderer * renderer);
 void drawPlayer(char * playerPath, SDL_Renderer * renderer);
 #endif

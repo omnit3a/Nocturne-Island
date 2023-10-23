@@ -13,36 +13,14 @@
 #include <map_defs.h>
 
 ui_mode_t currentUIMode = IDLE;
-int currentBlock = WORK_BENCH;
+int currentBlock = EMPTY;
 int selected_block;
 char * blockNames[64] = {
   "Empty",
   "Stone",
   "Grass",
-  "Wood",
-  "Water",
-  "Magma",
-  "Sand",
   "Log",
-  "Oak Tree Leaves",
-  "Pine Tree Leaves",
-  "Block Highlight",
-  "Nokium",
-  "Stairs",
-  "Stairs",
-  "Stairs",
-  "Stairs",
-  "Workbench",
-  "Table",
-  "Iron Ore",
-  "Coal Ore",
-  "Iron Chunks",
-  "Coal Chunks",
-  "Rope",
-  "Box of Nails",
-  "Pickaxe",
-  "Shovel",
-  "Axe",
+  "Tree Leaves",
 };
 char messageBar[256] = "";
 

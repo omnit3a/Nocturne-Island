@@ -28,32 +28,7 @@ int playerZOff;
 int playerHealth = 50;
 
 int getMiningSpeed(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
-  /* Check if player has a pickaxe */
-  if (checkInventoryForItem(PICKAXE)){
-    /* If they do, mine STONE_TYPE and METAL_TYPE blocks faster */
-    if (getBlockProperties(map, playerXOff, playerYOff, playerZOff).block_type == STONE_TYPE || getBlockProperties(map, playerXOff, playerYOff, playerZOff).block_type == METAL_TYPE){
-      return 2;
-    }
-  }
-
-  /* Check if player has a shovel */
-  if (checkInventoryForItem(SHOVEL)){
-    /* If they do, mine TERRAIN_TYPE blocks faster */
-    if (getBlockProperties(map, playerXOff, playerYOff, playerZOff).block_type == TERRAIN_TYPE){
-      return 2;
-    }
-  }
-
-  /* Check if player has an axe */
-  if (checkInventoryForItem(AXE)){
-    /* If they do, mine WOODEN_TYPE blocks faster */
-    if (getBlockProperties(map, playerXOff, playerYOff, playerZOff).block_type == WOODEN_TYPE){
-      return 2;
-    }
-  }
-
   return 1;
-
 }
 
 void movePlayer(int xOff, int yOff, int zOff, SDL_Renderer * renderer){
@@ -161,32 +136,9 @@ void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int block){
   playerOffsetDirection();
   if (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1 && playerZ > 0 && playerZ < MAP_HEIGHT-1){
     if (!(getBlockProperties(map,playerXOff,playerYOff,playerZOff).solid) && checkInventoryForItem(block)){
-
-      /* Handle placing of stairs so that they face the correct direction*/
-      switch(block){
-        case STAIRS:
-	  switch(playerRotation){
-	    case NORTH:
-	      map[playerXOff][playerYOff][playerZOff] = SOUTH_STAIRS;
-	      break;
-	    case EAST:
-	      map[playerXOff][playerYOff][playerZOff] = WEST_STAIRS;
-	      break;
-	    case SOUTH:
-	      map[playerXOff][playerYOff][playerZOff] = NORTH_STAIRS;
-	      break;
-	    case WEST:
-	      map[playerXOff][playerYOff][playerZOff] = EAST_STAIRS;
-	      break;
-	  }
-	  break;
-        default:
-	  map[playerXOff][playerYOff][playerZOff] = block;
-	  break;
-      }
+      map[playerXOff][playerYOff][playerZOff] = block;
       block_hp_map[playerXOff][playerYOff][playerZOff] = getBlockProperties(map, playerXOff, playerYOff, playerZOff).hp;
-      checkAndRemoveItem(block, 1);
-      
+      checkAndRemoveItem(block, 1);   
     }
   }
 
@@ -197,21 +149,23 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
   strcpy(messageBar, "");
   rotation_t prevRotation = playerRotation;
   playerOffsetDirection();
+  int move_player = 0;
   switch (event.key.keysym.sym){
     case SDLK_w:
       setPlayerRotation(NORTH);
+      move_player = 1;
       break;
     case SDLK_a:
       setPlayerRotation(EAST);
+      move_player = 1;
       break;
     case SDLK_s:
       setPlayerRotation(SOUTH);
+      move_player = 1;
       break;
     case SDLK_d:
       setPlayerRotation(WEST);
-      break;
-    case SDLK_z:
-      interactWithWorkbench(map);
+      move_player = 1;
       break;
     case SDLK_u:
       rotatePlayerUp();
@@ -225,27 +179,12 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
       break;
   }
   playerOffsetDirection();
-  switch (event.key.keysym.sym){
-    case SDLK_w:
-    case SDLK_a:
-    case SDLK_s:
-    case SDLK_d:
-      switch (getBlockProperties(map, playerXOff, playerYOff, playerZ).block){
-	/* Move player up if going up stairs */
-        case STAIRS:
-	  if (!getBlockProperties(map, playerXOff,playerYOff, playerZ+1).solid){
-	    playerZ++;
-	  }
-	  break;
-      }
-      if(!getBlockProperties(map, playerXOff, playerYOff, playerZ).solid){
-	playerX = playerXOff;
-	playerY = playerYOff;
-	playerRotation = prevRotation;
-      } else {
-	playerRotation = prevRotation;
-      }
-      break;
+  if(!getBlockProperties(map, playerXOff, playerYOff, playerZ).solid && move_player){
+    playerX = playerXOff;
+    playerY = playerYOff;
+    playerRotation = prevRotation;
+  } else {
+    playerRotation = prevRotation;
   }
 }
 
