@@ -18,6 +18,7 @@ int SCREEN_WIDTH = DEFAULT_SCREEN_WIDTH;
 int SCREEN_HEIGHT = DEFAULT_SCREEN_HEIGHT;
 int xPosBackup = 0, yPosBackup = 0, belowPosBackup = 0;
 int iBackup = 0, jBackup = 0;
+int blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][MAP_HEIGHT];
 
 int iterator = 0;
 SDL_Surface * atlas_surface;
@@ -36,147 +37,143 @@ SDL_Rect atlas_clip = {
 };
 SDL_Rect tile_rect;
 
-/* Check if blocks are blocking the player */
-bool blockingPlayerCheck(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
-  int iteratorX = 0;
-  int iteratorY = 0;
-  int iteratorXY = 0;
-  for (int reach = 0 ; reach < 3 ; reach++){
-    for (int i = playerZ ; i < playerZ+5 ; i++){
-      if (!(getBlockProperties(map, playerX+1, playerY, i).transparent)){
-	iteratorX++;
+void getBlocksInView(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
+  int x_start = playerX-5, x_end = playerX+5;
+  int y_start = playerY-5, y_end = playerY+5;
+  
+  int resultX = 0;
+  int resultY = 0;
+  int resultZ = 0;
+  for (int x = x_start ; x != x_end; x++){
+    resultY = 0;
+    for (int y = y_start ; y != y_end ; y++){
+      resultZ = 0;
+      for (int z = 0 ; z < MAP_HEIGHT ; z++){	
+        blocks_in_view[resultX][resultY][resultZ] = world[x+1][y+1][z];
+	resultZ++;
       }
-      if (!(getBlockProperties(map, playerX, playerY+1, i).transparent)){
-	iteratorY++;
-      }
-      if (!(getBlockProperties(map, playerX+1, playerY+1, i).transparent)){
-	iteratorXY++;
+      resultY++;
+    }
+    resultX++;
+  }
+}
+
+void drawSlopes(SDL_Renderer * renderer){
+  int blocks[6] = {0};
+  int adjacent = 0;
+  for (int z = playerZ-1 ; z <= playerZ ; z++){
+    for (int x = 0 ; x < CAMERA_VIEW ; x++){
+      for (int y = 0 ; y < CAMERA_VIEW ; y++){
+	for (int pos = 0 ; pos < 6 ; pos++){
+	  blocks[pos] = 0;
+	}
+	if (blocks_in_view[x][y][z] == 0){
+	  continue;
+	}
+	adjacent = 0;
+	blocks[0] = (blocks_in_view[x][y][z+1] > 0);
+	blocks[1] = (blocks_in_view[x][y][z-1] > 0);
+	
+	if (blocks[0] == 1 || blocks[1] == 0){
+	  continue;
+	}
+	
+	if(blocks_in_view[x+1][y][z] > 0){
+	  blocks[2] = (blocks_in_view[x+1][y][z] > 0);
+	  adjacent++;
+	}
+	if(blocks_in_view[x][y-1][z] > 0){
+	  blocks[3] = (blocks_in_view[x][y-1][z] > 0);
+	  adjacent++;
+	}
+	if(blocks_in_view[x-1][y][z] > 0){
+	  blocks[4] = (blocks_in_view[x-1][y][z] > 0);
+	  adjacent++;
+	}
+	if(blocks_in_view[x][y+1][z] > 0){
+	  blocks[5] = (blocks_in_view[x][y+1][z] > 0);
+	  adjacent++;
+	}
+	
+	if(adjacent == 0 || adjacent == 4){
+	  continue;
+	}
+	
+	if(z == playerZ){
+	  atlas_clip.x = UP_SLOPE_X;
+	  atlas_clip.y = UP_SLOPE_Y;
+	} else {
+	  atlas_clip.x = DOWN_SLOPE_X;
+	  atlas_clip.y = DOWN_SLOPE_Y;
+	}
+	atlas_rect.x = (x * (SCREEN_WIDTH/CAMERA_VIEW));
+	atlas_rect.y = (y * (SCREEN_HEIGHT/CAMERA_VIEW));
+	SDL_RenderCopy(renderer, atlas_texture, &atlas_clip, &atlas_rect);
       }
     }
   }
-  if (!(getBlockProperties(map, playerX, playerY, playerZ+1).transparent)){
-    iteratorX+=2;
-    iteratorY+=2;
-    iteratorXY+=2;
-  }
-  if ((iteratorX > 3 && iteratorY > 3) || iteratorXY > 3){
-    PLAYER_SPRITE = LEVEE_OUTLINE_PATH;
-    renderPlayerLast = true;
-    return true;
-  } else {
-    PLAYER_SPRITE = LEVEE_PATH;
-    renderPlayerLast = false;
-    return false;
-  }
 }
 
-/* Draw specified block on the screen */
-void drawBlock(int xPos, int yPos, int zPos, int height, int block, SDL_Renderer * renderer){
-  atlas_rect.x = xPos;
-  atlas_rect.y = yPos;
-  atlas_rect.w = (cameraZoom*2);
-  atlas_rect.h = (cameraZoom*3);
-  if (block > 0){
-    atlas_clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
-    atlas_clip.y = (block / (ATLAS_WIDTH / TILE_WIDTH)) * TILE_HEIGHT;
-  } else {
-    atlas_clip.x = 0;
-    atlas_clip.y = 0;
-  }
-  if (xPos >= SCREEN_WIDTH+(height*3) || xPos < 0-(height*3) || yPos >= SCREEN_HEIGHT+(height*3) || yPos < 0-(height*3)){
-    return;
-  }
-  
-  if (zPos > -1){
-    /* Use this to change lighting level of block */
-    SDL_SetTextureColorMod(atlas_texture
-			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS-calculateFogRGB()[0])
-			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS-calculateFogRGB()[1])
-			   ,((zPos * 10)+BASE_DEPTH_BRIGHTNESS-calculateFogRGB()[2]));
-  }
-  SDL_RenderCopy(renderer, atlas_texture, &atlas_clip, &atlas_rect);
-}
-
-/* Draw the whole world */
-void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Renderer * renderer, int free_texture){
-  int iterator = 0;
-  int xPos;
-  int belowPos;
-  int yPos;
-
+void drawView(SDL_Renderer * renderer){
   atlas_surface = SDL_LoadBMP(ATLAS_PATH);
   atlas_texture = SDL_CreateTextureFromSurface(renderer, atlas_surface);
-
   atlas_clip.w = TILE_WIDTH;
   atlas_clip.h = TILE_HEIGHT;
 
-  for (int n = MAP_HEIGHT-1 ; n >= 0 ; n--){
-    for (int i = 0 ; i < MAP_WIDTH ; i++){
-      for (int j = 0 ; j < MAP_LENGTH ; j++){
-	/* Convert world coordinates to screen coordinates */
-	xPos = ((j*height)-((i*height)-((SCREEN_WIDTH/2)+height+10)))+cameraX;
-	belowPos = ((j*height)+(i*height)+((n+1)*height))+cameraY;
-	yPos = ((j*height)+(i*height)+(n*height))+cameraY;
-	iBackup = i;
-	jBackup = j;
-	if (world[i][j][iterator] == 0){
-	  if (i == playerX && j == playerY && iterator == playerZ){
-	    drawBlock(xPos, belowPos, iterator, height, BLOCK_OUTLINE, renderer);
-	    drawPlayer(PLAYER_SPRITE,xPos,yPos, renderer);
-	    drawCurrentDirection(xPos, yPos, renderer);
+  int is_underground = 0;
+  
+  for (int z = -10 ; z < 1 ; z++){
+    for (int x = 0 ; x < CAMERA_VIEW ; x++){
+      for (int y = 0 ; y < CAMERA_VIEW ; y++){
+	int block = blocks_in_view[x][y][playerZ+z];
+	if (block > 0){
+	  atlas_clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
+	  atlas_clip.y = (block / (ATLAS_HEIGHT / TILE_HEIGHT)) * TILE_HEIGHT;
 
-	    /* Save player render position for renderPlayerLast */
-	    xPosBackup = xPos;
-	    yPosBackup = yPos;
-	    belowPosBackup = belowPos;
-	  }
-	  continue;
 	} else {
+	  atlas_clip.x = 0;
+	  atlas_clip.y = 0;
+	}
 
-	  if (playerX == i && playerY == j && playerZ == iterator){
-	    drawPlayer(PLAYER_SPRITE, xPos, yPos, renderer);
-	    drawBlock(xPos, belowPos, iterator, height, BLOCK_OUTLINE, renderer);
-	    drawCurrentDirection(xPos, yPos, renderer);
+	if (blocks_in_view[x][y][playerZ+1] && blocks_in_view[x][y][playerZ] == 0){
+	  is_underground = 1;
+	} else {
+	  is_underground = 0;
+	}
 
-	    /* Save player render position for renderPlayerLast */ 
-	    xPosBackup = xPos;
-	    yPosBackup = yPos;
-	    belowPosBackup = belowPos;
-	  }
-	  block_data_t block = getBlockProperties(world, i, j, iterator);
-	  drawBlock(xPos, yPos, iterator, height, block.block, renderer);
-        }
+	int brightness = 255-(is_underground * 128);
+	
+	SDL_SetTextureColorMod(atlas_texture,
+			       brightness,
+			       brightness,
+			       brightness
+			       );
+	
+	atlas_rect.x = (x * (SCREEN_WIDTH/CAMERA_VIEW));
+	atlas_rect.y = (y * (SCREEN_HEIGHT/CAMERA_VIEW));
+	atlas_rect.w = (SCREEN_WIDTH/CAMERA_VIEW);
+	atlas_rect.h = (SCREEN_HEIGHT/CAMERA_VIEW);
+	SDL_RenderCopy(renderer, atlas_texture, &atlas_clip, &atlas_rect);
       }
     }
-    iterator++;
   }
-  /* Draw player infront of blocks */
-  if (renderPlayerLast){
-    drawBlock(xPosBackup, belowPosBackup, iterator, height, BLOCK_OUTLINE, renderer);
-    drawPlayer(PLAYER_SPRITE, xPosBackup, yPosBackup, renderer);
-    drawCurrentDirection(xPosBackup, yPosBackup, renderer);
-  }
-  if (free_texture){
-    SDL_FreeSurface(atlas_surface);
-    SDL_DestroyTexture(atlas_texture);
-  }
-}
 
+  drawSlopes(renderer);
+
+  SDL_FreeSurface(atlas_surface);
+  SDL_DestroyTexture(atlas_texture);
+  drawPlayer(LEVEE_PATH, renderer);
+}
+  
 /* Draw player */
-void drawPlayer(char * playerPath, int xPos, int yPos, SDL_Renderer * renderer){
-  SDL_Surface * sprite_surface = SDL_LoadBMP(playerPath);
+void drawPlayer(char * playerPath, SDL_Renderer * renderer){
+  SDL_Surface * sprite_surface = SDL_LoadBMP(LEVEE_PATH);
   SDL_Texture * sprite_texture = SDL_CreateTextureFromSurface(renderer, sprite_surface);
   SDL_Rect sprite_area;
-  sprite_area.x = xPos;
-  sprite_area.y = yPos;
-  sprite_area.w = cameraZoom*2;
-  sprite_area.h = cameraZoom*2;
-  /* Use this to change the lighting of the player */
-  SDL_SetTextureColorMod(sprite_texture,
-			 (playerZ * 10)+BASE_DEPTH_BRIGHTNESS,
-			 (playerZ * 10)+BASE_DEPTH_BRIGHTNESS,
-			 (playerZ * 10)+BASE_DEPTH_BRIGHTNESS
-			 );
+  sprite_area.x = (SCREEN_WIDTH/2)-((SCREEN_WIDTH/CAMERA_VIEW)/2);
+  sprite_area.y = (SCREEN_HEIGHT/2)-((SCREEN_WIDTH/CAMERA_VIEW)/2);
+  sprite_area.w = SCREEN_WIDTH/CAMERA_VIEW;
+  sprite_area.h = SCREEN_HEIGHT/CAMERA_VIEW;
   SDL_RenderCopy(renderer, sprite_texture, NULL, &sprite_area);
   SDL_DestroyTexture(sprite_texture);
   SDL_FreeSurface(sprite_surface);

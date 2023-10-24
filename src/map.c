@@ -127,11 +127,7 @@ void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_
 	offset += rand() % SPAWN_RATE_VARIANCE;
         if ((rand() % 1000) <= TREE_CHANCE+offset){
 	  map[i][j][(int)height_map[i][j]+1] = TREE_BOTTOM;
-		if ((rand() % 3) > 0){
-	  	map[i][j][(int)height_map[i][j]+2] = PINE_TREE_LEAVES;
-		} else {
-			map[i][j][(int)height_map[i][j]+2] = OAK_TREE_LEAVES;
-		}
+	  map[i][j][(int)height_map[i][j]+2] = TREE_LEAVES;
 	}
       }
     }
@@ -140,33 +136,7 @@ void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_
 
 /* Place Iron and Coal ore inside of mountains */
 void placeOres(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char height_map[MAP_WIDTH][MAP_LENGTH], int seed){
-  srand(seed);
-  int zPos;
-  int offset = 0;
-  for (int i = 0 ; i < MAP_WIDTH ; i++){
-    for (int j = 0 ; j < MAP_LENGTH ; j++){
-      if (height_map[i][j] > GROUND_HEIGHT){
-	zPos = (rand() % (CLIFF_HEIGHT-3))+GROUND_HEIGHT;
-	if (getBlockProperties(map, i, j, zPos+1).block == GRASS &&
-	    getBlockProperties(map, i, j, zPos-1).solid){
-
-	  offset = rand() % SPAWN_RATE_VARIANCE;
-	  
-	  /* Select either iron or coal ore */
-	  if (rand() % 2){
-	    if ((rand() % 1000) <= IRON_CHANCE+offset){
-	      map[i][j][zPos] = IRON_ORE;
-	    }
-	  } else {
-	    if ((rand() % 1000) <= COAL_CHANCE+offset){
-	      map[i][j][zPos] = COAL_ORE;
-	      continue;
-	    }
-	  }
-	}
-      }
-    }
-  }
+  /* TODO */
 }
 
 /* World Generation Steps:
@@ -192,7 +162,7 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
   srand(seed);
   /* Step 1 */
   int isMountain = 0;
-  int prevIsMountain;
+  int prevIsMountain = 0;
   char temp_height_map[MAP_WIDTH][MAP_LENGTH];
   char height_map[MAP_WIDTH][MAP_LENGTH];
   for (int i = 0 ; i < MAP_WIDTH ; i++){
@@ -269,8 +239,8 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
   }
 
   /* Step 4 */
-  int surroundVals[4];
-  int average;
+  int surroundVals[4] = {0};
+  int average = 0;
   for (int r = 0 ; r < 3 ; r++){
     for (int i = 0 ; i < MAP_WIDTH ; i++){
       for (int j = 0 ; j < MAP_LENGTH ; j++){
@@ -309,7 +279,7 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
       for (int n = height_map[i][j]-1 ; n > 0 ; n--){
         map[i][j][n] = STONE;
       }
-      map[i][j][0] = NOKIUM;
+      map[i][j][0] = STONE;
     }
   }
 
@@ -345,6 +315,7 @@ void cullHiddenBlocks(char dest_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char src
       }
     }
   }
+
   for (int i = 0 ; i < MAP_HEIGHT ; i++){
     for (int j = 0 ; j < MAP_WIDTH ; j++){
       for (int n = 0 ; n < MAP_LENGTH ; n++){
@@ -354,6 +325,7 @@ void cullHiddenBlocks(char dest_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char src
       }
     }
   }
+
   setPhysicsMap(dest_map);
   setupCameraMap(dest_map);
 }

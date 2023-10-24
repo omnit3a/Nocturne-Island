@@ -5,15 +5,16 @@
 #include <map.h>
 #include <stdbool.h>
 #include <map_defs.h>
+#include <camera.h>
 
-#define ATLAS_PATH "assets/atlas.bmp"
+#define ATLAS_PATH "assets/3d-atlas.bmp"
 
 #define LEVEE_PATH "assets/levee.bmp"
 #define LEVEE_OUTLINE_PATH "assets/levee-outline.bmp"
 
-#define TILE_WIDTH 24
-#define TILE_HEIGHT 34
-#define ATLAS_WIDTH 384
+#define TILE_WIDTH 16
+#define TILE_HEIGHT 16
+#define ATLAS_WIDTH TILE_WIDTH * 16
 #define ATLAS_HEIGHT TILE_HEIGHT * 16
 #define DEFAULT_SCREEN_WIDTH 640
 #define DEFAULT_SCREEN_HEIGHT 480
@@ -26,6 +27,7 @@ extern bool renderPlayerLast;
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 extern int xPosBackup, yPosBackup, belowPosBackup;
+extern int blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][MAP_HEIGHT];
 
 /*
   IDK why i made these as global variables.
@@ -34,9 +36,8 @@ extern int xPosBackup, yPosBackup, belowPosBackup;
  */
 extern int iBackup, jBackup;
 
-bool blockingPlayerCheck(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
-void drawBlock(int xPos, int yPos, int zPos, int height, int block, SDL_Renderer * renderer);
-void drawWorld(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int height, SDL_Renderer * renderer, int free_texture);
-void drawPlayer(char * playerPath, int xPos, int yPos, SDL_Renderer * renderer);
+void getBlocksInView(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
+void drawSlopes(SDL_Renderer * renderer);
+void drawView(SDL_Renderer * renderer);
+void drawPlayer(char * playerPath, SDL_Renderer * renderer);
 #endif
-

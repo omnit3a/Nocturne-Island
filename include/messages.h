@@ -3,7 +3,7 @@
 
 #define CURRENT_BLOCK_MSG "Current Block: "
 #define INVENTORY_MSG "Inventory"
-#define CURRENT_VERSION_MSG "Alpha 0.2.9"
+#define CURRENT_VERSION_MSG "Alpha 0.3.0"
 #define PLAYER_HEALTH_MSG "Player Health: %d"
 #define UNCRAFTABLE_SELECTION_MSG "Cannot select this item for crafting"
 #define CRAFTABLE_ITEMS_MSG "Craftable Items"
