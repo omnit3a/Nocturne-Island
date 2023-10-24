@@ -6,3 +6,5 @@ M: Mine
 P: Place
 0-9: Select item from inventory
 E: Open Inventory
+C: Select item to craft
+Z: Use workbench
