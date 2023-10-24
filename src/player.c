@@ -8,8 +8,6 @@
 #include <physics.h>
 #include <pthread.h>
 #include <unistd.h>
-#include <inventory.h>
-#include <crafting.h>
 #include <ui.h>
 #include <audio.h>
 #include <map_defs.h>
@@ -116,13 +114,13 @@ int playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
     /* Check if block is fully mined */
     if (block_hp_map[playerXOff][playerYOff][playerZOff] != 0){
       block_hp_map[playerXOff][playerYOff][playerZOff] -= getMiningSpeed(map);
-      if (!(block_hp_map[playerXOff][playerYOff][playerZOff] <= 0)){
+      if (block_hp_map[playerXOff][playerYOff][playerZOff] > 0){
 	return map[playerXOff][playerYOff][playerZOff];
       }
     }
-    if (getBlockProperties(map,playerXOff,playerYOff,playerZOff).solid){
+    
+    if (getBlockProperties(map,playerXOff,playerYOff,playerZOff).solid == 1){
       /* Add the mined item to the players inventory */
-      addItemToInventory(getBlockProperties(map, playerXOff, playerYOff, playerZOff).dropped_item, getBlockProperties(map, playerXOff, playerYOff, playerZOff).count);
       map[playerXOff][playerYOff][playerZOff] = 0;
       
     }
@@ -135,10 +133,9 @@ int playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
 void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int block){
   playerOffsetDirection();
   if (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1 && playerZ > 0 && playerZ < MAP_HEIGHT-1){
-    if (!(getBlockProperties(map,playerXOff,playerYOff,playerZOff).solid) && checkInventoryForItem(block)){
+    if (!(getBlockProperties(map,playerXOff,playerYOff,playerZOff).solid)){
       map[playerXOff][playerYOff][playerZOff] = block;
       block_hp_map[playerXOff][playerYOff][playerZOff] = getBlockProperties(map, playerXOff, playerYOff, playerZOff).hp;
-      checkAndRemoveItem(block, 1);   
     }
   }
 

@@ -27,6 +27,7 @@ extern bool renderPlayerLast;
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 extern int xPosBackup, yPosBackup, belowPosBackup;
+extern int blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][MAP_HEIGHT];
 
 /*
   IDK why i made these as global variables.
@@ -35,8 +36,8 @@ extern int xPosBackup, yPosBackup, belowPosBackup;
  */
 extern int iBackup, jBackup;
 
-int *** getBlocksInView(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
-void drawSlopes(int blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][256], SDL_Renderer * renderer);
-void drawView(int blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][256], SDL_Renderer * renderer);
+void getBlocksInView(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
+void drawSlopes(SDL_Renderer * renderer);
+void drawView(SDL_Renderer * renderer);
 void drawPlayer(char * playerPath, SDL_Renderer * renderer);
 #endif

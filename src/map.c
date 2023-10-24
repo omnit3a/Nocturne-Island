@@ -162,7 +162,7 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
   srand(seed);
   /* Step 1 */
   int isMountain = 0;
-  int prevIsMountain;
+  int prevIsMountain = 0;
   char temp_height_map[MAP_WIDTH][MAP_LENGTH];
   char height_map[MAP_WIDTH][MAP_LENGTH];
   for (int i = 0 ; i < MAP_WIDTH ; i++){
@@ -239,8 +239,8 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
   }
 
   /* Step 4 */
-  int surroundVals[4];
-  int average;
+  int surroundVals[4] = {0};
+  int average = 0;
   for (int r = 0 ; r < 3 ; r++){
     for (int i = 0 ; i < MAP_WIDTH ; i++){
       for (int j = 0 ; j < MAP_LENGTH ; j++){
@@ -315,6 +315,7 @@ void cullHiddenBlocks(char dest_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char src
       }
     }
   }
+
   for (int i = 0 ; i < MAP_HEIGHT ; i++){
     for (int j = 0 ; j < MAP_WIDTH ; j++){
       for (int n = 0 ; n < MAP_LENGTH ; n++){
@@ -324,6 +325,7 @@ void cullHiddenBlocks(char dest_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char src
       }
     }
   }
+
   setPhysicsMap(dest_map);
   setupCameraMap(dest_map);
 }
