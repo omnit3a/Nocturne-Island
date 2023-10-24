@@ -84,7 +84,6 @@ int main(int argc, char ** argv){
         case SDL_KEYDOWN:
 	  handlePlayerMovement(world_copy, e);
 	  handlePlayerRotation(e);
-	  handleUISwitch(e); // switch between UI modes
 	  switch(e.key.keysym.sym){
 	    /* Mine a block */
 	    case SDLK_m:
@@ -94,7 +93,7 @@ int main(int argc, char ** argv){
 	      break;
 	      /* Place a block */
 	    case SDLK_n:
-	      playerPlaceBlock(world, currentBlock);
+	      //playerPlaceBlock(world, currentBlock);
 	      /* Regenerate the world_copy map, physics map, and solidity map */
 	      cullHiddenBlocks(world_copy, world);
 	      break;

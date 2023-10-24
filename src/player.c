@@ -70,6 +70,7 @@ void rotatePlayerUp(){
 
 // add direction offsets for mining and placing blocks
 void playerOffsetDirection(){
+  playerZOff = playerZ;
   switch (playerRotation){
     case NORTH:
       playerXOff = playerX;
@@ -86,17 +87,6 @@ void playerOffsetDirection(){
     case WEST:
       playerXOff = playerX+1;
       playerYOff = playerY;
-      break;
-  }
-  switch (playerZRotation){
-    case UP:
-      playerZOff = playerZ+1;
-      break;
-    case STRAIGHT:
-      playerZOff = playerZ;
-      break;
-    case DOWN:
-      playerZOff = playerZ-1;
       break;
   }
 }
@@ -143,7 +133,6 @@ void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int block){
 
 /* Get user input for the player, then do stuff with it */
 void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event event){
-  strcpy(messageBar, "");
   rotation_t prevRotation = playerRotation;
   playerOffsetDirection();
   int move_player = 0;
@@ -163,9 +152,6 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
     case SDLK_d:
       setPlayerRotation(WEST);
       move_player = 1;
-      break;
-    case SDLK_u:
-      rotatePlayerUp();
       break;
     case SDLK_SPACE:
       /* Check for empty space above player and solid space below player */

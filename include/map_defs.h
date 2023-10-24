@@ -13,7 +13,5 @@
 #define TREE_BOTTOM 3
 #define TREE_LEAVES 4
 
-#define UP_SLOPE_X 0
-#define DOWN_SLOPE_X 0
-#define UP_SLOPE_Y 16
-#define DOWN_SLOPE_Y 32
+#define WALL_OVERLAY 17
+#define SLOPE_OVERLAY 33

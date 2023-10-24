@@ -56,7 +56,7 @@ void * updateCameraOnTick(void * vargp){
     if (currentTick % 50 == 0){
       pthread_mutex_lock(&camera_lock);
       updateCamera(cameraX, cameraY, cameraZoom, camera_renderer, camera_map, camera_window, 1);
-      drawUI(camera_renderer);
+      draw_ui(camera_renderer);
       SDL_RenderPresent(camera_renderer);
       pthread_mutex_unlock(&camera_lock);
     }

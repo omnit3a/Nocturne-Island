@@ -59,59 +59,7 @@ void getBlocksInView(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
 }
 
 void drawSlopes(SDL_Renderer * renderer){
-  int blocks[6] = {0};
-  int adjacent = 0;
-  for (int z = playerZ-1 ; z <= playerZ ; z++){
-    for (int x = 0 ; x < CAMERA_VIEW ; x++){
-      for (int y = 0 ; y < CAMERA_VIEW ; y++){
-	for (int pos = 0 ; pos < 6 ; pos++){
-	  blocks[pos] = 0;
-	}
-	if (blocks_in_view[x][y][z] == 0){
-	  continue;
-	}
-	adjacent = 0;
-	blocks[0] = (blocks_in_view[x][y][z+1] > 0);
-	blocks[1] = (blocks_in_view[x][y][z-1] > 0);
-	
-	if (blocks[0] == 1 || blocks[1] == 0){
-	  continue;
-	}
-	
-	if(blocks_in_view[x+1][y][z] > 0){
-	  blocks[2] = (blocks_in_view[x+1][y][z] > 0);
-	  adjacent++;
-	}
-	if(blocks_in_view[x][y-1][z] > 0){
-	  blocks[3] = (blocks_in_view[x][y-1][z] > 0);
-	  adjacent++;
-	}
-	if(blocks_in_view[x-1][y][z] > 0){
-	  blocks[4] = (blocks_in_view[x-1][y][z] > 0);
-	  adjacent++;
-	}
-	if(blocks_in_view[x][y+1][z] > 0){
-	  blocks[5] = (blocks_in_view[x][y+1][z] > 0);
-	  adjacent++;
-	}
-	
-	if(adjacent == 0 || adjacent == 4){
-	  continue;
-	}
-	
-	if(z == playerZ){
-	  atlas_clip.x = UP_SLOPE_X;
-	  atlas_clip.y = UP_SLOPE_Y;
-	} else {
-	  atlas_clip.x = DOWN_SLOPE_X;
-	  atlas_clip.y = DOWN_SLOPE_Y;
-	}
-	atlas_rect.x = (x * (SCREEN_WIDTH/CAMERA_VIEW));
-	atlas_rect.y = (y * (SCREEN_HEIGHT/CAMERA_VIEW));
-	SDL_RenderCopy(renderer, atlas_texture, &atlas_clip, &atlas_rect);
-      }
-    }
-  }
+  /* TODO */
 }
 
 void drawView(SDL_Renderer * renderer){
@@ -119,36 +67,20 @@ void drawView(SDL_Renderer * renderer){
   atlas_texture = SDL_CreateTextureFromSurface(renderer, atlas_surface);
   atlas_clip.w = TILE_WIDTH;
   atlas_clip.h = TILE_HEIGHT;
-
-  int is_underground = 0;
   
   for (int z = -10 ; z < 1 ; z++){
     for (int x = 0 ; x < CAMERA_VIEW ; x++){
       for (int y = 0 ; y < CAMERA_VIEW ; y++){
 	int block = blocks_in_view[x][y][playerZ+z];
+	
 	if (block > 0){
 	  atlas_clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
 	  atlas_clip.y = (block / (ATLAS_HEIGHT / TILE_HEIGHT)) * TILE_HEIGHT;
-
 	} else {
 	  atlas_clip.x = 0;
 	  atlas_clip.y = 0;
 	}
 
-	if (blocks_in_view[x][y][playerZ+1] && blocks_in_view[x][y][playerZ] == 0){
-	  is_underground = 1;
-	} else {
-	  is_underground = 0;
-	}
-
-	int brightness = 255-(is_underground * 128);
-	
-	SDL_SetTextureColorMod(atlas_texture,
-			       brightness,
-			       brightness,
-			       brightness
-			       );
-	
 	atlas_rect.x = (x * (SCREEN_WIDTH/CAMERA_VIEW));
 	atlas_rect.y = (y * (SCREEN_HEIGHT/CAMERA_VIEW));
 	atlas_rect.w = (SCREEN_WIDTH/CAMERA_VIEW);

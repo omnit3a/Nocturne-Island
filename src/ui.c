@@ -10,17 +10,11 @@
 #include <messages.h>
 #include <map_defs.h>
 
-ui_mode_t currentUIMode = IDLE;
-int currentBlock = EMPTY;
-int selected_block = 0;
-char blockNames[256][64] = {
-  "Empty",
-  "Stone",
-  "Grass",
-  "Log",
-  "Tree Leaves",
-};
-char messageBar[256] = "";
+ui_mode_t ui_mode = IDLE;
+int x_cursor = 0;
+int y_cursor = 0;
+int ui_x_scale = 1;
+int ui_y_scale = 1;
 
 SDL_Surface * font_surface;
 SDL_Texture * font_texture;
@@ -38,43 +32,61 @@ SDL_Rect font_clip = {
   FONT_HEIGHT
 };
 
+void zero_ui(){
+  x_cursor = 0;
+  y_cursor = 0;
+}
+
+void newline_ui(){
+  x_cursor = 0;
+  y_cursor++;
+  y_cursor = y_cursor % ROWS;
+}
+
 /* Draw and individual character from the font map */
-void drawLetter(int xPos, int yPos, unsigned char offset, SDL_Renderer * renderer){
-  font_rect.x = xPos;
-  font_rect.y = yPos;
-  if (offset > 0){
-    font_clip.x = (offset * FONT_WIDTH) % (FONT_WIDTH*FONT_ROW_LENGTH);
-    font_clip.y = ((offset / FONT_ROW_LENGTH) * FONT_HEIGHT);
+void draw_letter(char letter, SDL_Renderer * renderer){
+  font_rect.x = x_cursor * ui_x_scale;
+  font_rect.y = y_cursor * ui_y_scale;
+  if (letter > 0){
+    font_clip.x = (letter * FONT_WIDTH) % (FONT_WIDTH*FONT_ATLAS_SIZE);
+    font_clip.y = ((letter / FONT_ATLAS_SIZE) * FONT_HEIGHT);
   } else {
     font_clip.x = 0;
     font_clip.y = 0;
   }
+
+  x_cursor++;
+  x_cursor = x_cursor % COLS;
+  if (x_cursor == COLS-1){
+    newline_ui();
+  }
+    
   SDL_RenderCopy(renderer, font_texture, &font_clip, &font_rect);
 }
 
-void drawString(int xPos, int yPos, char * string, SDL_Renderer * renderer){
+void draw_string(char * string, SDL_Renderer * renderer){
   font_surface = SDL_LoadBMP(FONT_PATH);
   font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
   /* Scale the font */
-  font_rect.w = FONT_WIDTH * FONT_SCALE;
-  font_rect.h = FONT_HEIGHT * FONT_SCALE;
+  font_rect.w = ui_x_scale;
+  font_rect.h = ui_y_scale;
   font_clip.w = FONT_WIDTH;
   font_clip.h = FONT_HEIGHT;
   for (int i = 0 ; string[i] != 0 ; i++){
-    drawLetter((xPos * FONT_WIDTH * FONT_SCALE) + (i*(FONT_WIDTH*FONT_SCALE)), yPos * (FONT_HEIGHT * FONT_SCALE), (unsigned char) string[i], renderer);
+    draw_letter(string[i], renderer);
   }
   SDL_FreeSurface(font_surface);
   SDL_DestroyTexture(font_texture);
 }
 
-void drawUI(SDL_Renderer * renderer){
-  drawCurrentDirection(renderer);
-  switch(currentUIMode){
+void draw_ui(SDL_Renderer * renderer){
+  zero_ui();
+  draw_direction(renderer);
+  ui_x_scale = (SCREEN_WIDTH / COLS);
+  ui_y_scale = (SCREEN_HEIGHT / ROWS); 
+  switch(ui_mode){
     case IDLE:
-      drawString(0,0,CURRENT_VERSION_MSG,renderer);
-      break;
-    case INVENTORY:
-      displayMessageBar(renderer);
+      draw_string(CURRENT_VERSION_MSG,renderer);
       break;
     default:
       break;
@@ -82,7 +94,7 @@ void drawUI(SDL_Renderer * renderer){
   
 }
 
-void drawCurrentDirection(SDL_Renderer * renderer){
+void draw_direction(SDL_Renderer * renderer){
   SDL_Surface * sprite_surface = NULL;
   int xOff = 0;
   int yOff = 0;
@@ -127,16 +139,5 @@ void drawCurrentDirection(SDL_Renderer * renderer){
 }
 
 /* Switch between UI Modes */
-void handleUISwitch(SDL_Event event){
-}
-
-void displayHealth(SDL_Renderer * renderer){
-  char health[64];
-  sprintf(health, PLAYER_HEALTH_MSG, playerHealth);
-  drawString(0,2, health, renderer);
-}
-
-void displayMessageBar(SDL_Renderer * renderer){
-  int yPos = ((SCREEN_HEIGHT)-FONT_HEIGHT)/FONT_HEIGHT;
-  drawString(0,yPos, messageBar, renderer);
+void handle_ui(SDL_Event event){
 }
