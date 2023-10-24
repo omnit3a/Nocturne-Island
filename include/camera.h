@@ -2,12 +2,11 @@
 #define CAMERA_H_
 
 #include <SDL2/SDL.h>
-#include <map.h>
+#include <drawer.h>
 #include <pthread.h>
 #include <time.h>
 
 #define CAMERA_SPEED CLOCKS_PER_SEC / 100
-#define CAMERA_VIEW 9
 
 extern pthread_mutex_t camera_lock;
 

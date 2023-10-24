@@ -41,9 +41,7 @@ void updateCamera(unsigned int xPos, unsigned int yPos, unsigned int zoom, SDL_R
   SDL_GetWindowSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
   SDL_SetRenderDrawColor(renderer, 0, 0, 50, 255);
   SDL_RenderClear(renderer);
-  setupCameraMap(world);
-  getBlocksInView(world);
-  drawView(renderer);
+  drawWorld(world, cameraZoom, renderer, free_texture);
 }
 
 void * updateCameraOnTick(void * vargp){
@@ -53,7 +51,7 @@ void * updateCameraOnTick(void * vargp){
   while(1){
     currentClock = clock() % CLOCKS_PER_SEC;
     currentTick = currentClock % CAMERA_SPEED;
-    if (currentTick % 50 == 0){
+    if ((currentTick % 4) == 0){
       pthread_mutex_lock(&camera_lock);
       updateCamera(cameraX, cameraY, cameraZoom, camera_renderer, camera_map, camera_window, 1);
       drawUI(camera_renderer);

@@ -8,17 +8,41 @@
 #include <player.h>
 #include <camera.h>
 #include <messages.h>
+#include <inventory.h>
+#include <crafting.h>
 #include <map_defs.h>
 
 ui_mode_t currentUIMode = IDLE;
-int currentBlock = EMPTY;
-int selected_block = 0;
-char blockNames[256][64] = {
+int currentBlock = WORK_BENCH;
+int selected_block;
+char * blockNames[64] = {
   "Empty",
   "Stone",
   "Grass",
+  "Wood",
+  "Water",
+  "Magma",
+  "Sand",
   "Log",
-  "Tree Leaves",
+  "Oak Tree Leaves",
+  "Pine Tree Leaves",
+  "Block Highlight",
+  "Nokium",
+  "Stairs",
+  "Stairs",
+  "Stairs",
+  "Stairs",
+  "Workbench",
+  "Table",
+  "Iron Ore",
+  "Coal Ore",
+  "Iron Chunks",
+  "Coal Chunks",
+  "Rope",
+  "Box of Nails",
+  "Pickaxe",
+  "Shovel",
+  "Axe",
 };
 char messageBar[256] = "";
 
@@ -68,66 +92,134 @@ void drawString(int xPos, int yPos, char * string, SDL_Renderer * renderer){
 }
 
 void drawUI(SDL_Renderer * renderer){
-  drawCurrentDirection(renderer);
   switch(currentUIMode){
     case IDLE:
       drawString(0,0,CURRENT_VERSION_MSG,renderer);
-      break;
-    case INVENTORY:
+      drawCurrentBlock(12, 12, renderer);
+      displayHealth(renderer);
       displayMessageBar(renderer);
       break;
-    default:
+    case INVENTORY:
+      displayInventory(renderer);
+      displayMessageBar(renderer);
+      break;
+    case CRAFTING:
+      displayCraftableItems(renderer);
       break;
   }
   
 }
 
-void drawCurrentDirection(SDL_Renderer * renderer){
-  SDL_Surface * sprite_surface = NULL;
+void drawCurrentBlock(int xPos, int yPos, SDL_Renderer * renderer){
+  drawString(0,1,CURRENT_BLOCK_MSG,renderer);
+  drawString(strlen(CURRENT_BLOCK_MSG),1, blockNames[inventory[selected_block].block], renderer);
+}
+
+void drawCurrentDirection(int xPos, int yPos, SDL_Renderer * renderer){
+  SDL_Surface * sprite_surface;
   int xOff = 0;
   int yOff = 0;
-  int render_angle = 0;
   /* Determine offset for the player direction arrow
      depending on the direction the player is facing
   */
-  int x_width = (SCREEN_WIDTH/CAMERA_VIEW);
-  int y_height = (SCREEN_HEIGHT/CAMERA_VIEW);
-  sprite_surface = SDL_LoadBMP(ARROW_UI_PATH);
   switch (playerRotation){
     case NORTH:
-      xOff = x_width * 4;
-      yOff = y_height * 3 - (y_height/4);
-      render_angle = 0;
-      break;
-    case WEST:
-      xOff = x_width * 5 - (x_width/4);
-      yOff = y_height * 4;
-      render_angle = 90;
-      break;
-    case SOUTH:
-      xOff = x_width * 4;
-      yOff = y_height * 5 + (y_height/4);
-      render_angle = 180;
+      sprite_surface = SDL_LoadBMP(LEFT_UP_ARROW_UI);
+      xOff = 0;
+      yOff = 0;
       break;
     case EAST:
-      xOff = x_width * 3 + (x_width/4);
-      yOff = y_height * 4;
-      render_angle = 270;
+      sprite_surface = SDL_LoadBMP(RIGHT_UP_ARROW_UI);
+      xOff = (cameraZoom*2)-cameraZoom;
+      yOff = 0;
+      break;
+    case SOUTH:
+      sprite_surface = SDL_LoadBMP(RIGHT_DOWN_ARROW_UI);
+      xOff = (cameraZoom*2)-cameraZoom;
+      yOff = (cameraZoom*2)-(cameraZoom/5);
+      break;
+    case WEST:
+      sprite_surface = SDL_LoadBMP(LEFT_DOWN_ARROW_UI);
+      xOff = 0;
+      yOff = (cameraZoom*2)-(cameraZoom/5);
+      break;
+  }
+  switch(playerZRotation){
+    case UP:
+      yOff = yOff-((cameraZoom*2)-(cameraZoom/5))/2;
+      break;
+    case DOWN:
+      yOff = yOff+((cameraZoom*2)-(cameraZoom/5))/2;
+      break;
+    default:
       break;
   }
   SDL_Texture * sprite_texture = SDL_CreateTextureFromSurface(renderer, sprite_surface);
   SDL_Rect sprite_area;
-  sprite_area.x = xOff;
-  sprite_area.y = yOff;
-  sprite_area.w = (SCREEN_WIDTH/CAMERA_VIEW);
-  sprite_area.h = (SCREEN_HEIGHT/CAMERA_VIEW);
-  SDL_RenderCopyEx(renderer, sprite_texture, NULL, &sprite_area, render_angle, NULL, 0);
+  sprite_area.x = xPos+xOff;
+  sprite_area.y = yPos+yOff;
+  sprite_area.w = cameraZoom;
+  sprite_area.h = cameraZoom;
+  SDL_RenderCopy(renderer, sprite_texture, NULL, &sprite_area);
   SDL_DestroyTexture(sprite_texture);
   SDL_FreeSurface(sprite_surface);
 }
 
+void handleBlockSelect(SDL_Event event){
+  /* Handle selecting items from the inventory */
+  if (currentUIMode == IDLE){
+    char code = event.key.keysym.sym-48;
+    if (code >= 0 && code <= 9){
+      if (code == 0){
+	currentBlock = inventory[9].block;
+        selected_block = 9;
+      } else {
+	currentBlock = inventory[code-1].block;
+	selected_block = code - 1;
+      }
+    }
+  }
+}
+
 /* Switch between UI Modes */
 void handleUISwitch(SDL_Event event){
+  if (currentUIMode == CRAFTING){
+    return;
+  }
+  switch(event.key.keysym.sym){
+    case SDLK_e:
+      if (currentUIMode == IDLE){
+	currentUIMode = INVENTORY;
+      } else if (currentUIMode == INVENTORY){
+	currentUIMode = IDLE;
+      }
+      break;
+    case SDLK_c:
+      if (currentUIMode == IDLE){
+	listCraftableItems();
+	currentUIMode = CRAFTING;
+      }
+      break;
+  }
+}
+
+/* Display list of items in inventory */
+void displayInventory(SDL_Renderer * renderer){
+  drawString(0,0,INVENTORY_MSG,renderer);
+  char amount[16];
+  for (int i = 0 ; i < INVENTORY_SIZE ; i++){
+    char buffer[32];
+    if (i < 9){
+      sprintf(buffer, " %d", i + 1);
+    } else {
+      sprintf(buffer, " %d", 0);
+    }
+    drawString(0, i + 1, buffer, renderer);
+    strcpy(amount, "");
+    sprintf(amount, ": %u", inventory[i].count);
+    drawString(3,i+1,blockNames[inventory[i].block],renderer);
+    drawString(3+strlen(blockNames[inventory[i].block]),i+1, amount, renderer);
+  }
 }
 
 void displayHealth(SDL_Renderer * renderer){
@@ -139,4 +231,25 @@ void displayHealth(SDL_Renderer * renderer){
 void displayMessageBar(SDL_Renderer * renderer){
   int yPos = ((SCREEN_HEIGHT)-FONT_HEIGHT)/FONT_HEIGHT;
   drawString(0,yPos, messageBar, renderer);
+}
+
+void handleCraftingSelect(SDL_Event event){
+  char code = event.key.keysym.sym-97;
+  if (currentUIMode == CRAFTING){
+    if (code >= 0 && code <= 26){
+      current_recipe = craftable_recipes[(int)code];
+    } else {
+      strcpy(messageBar, UNCRAFTABLE_SELECTION_MSG);
+    }
+    currentUIMode = IDLE;
+  }
+}
+
+void displayCraftableItems(SDL_Renderer * renderer){
+  char line_text[64];
+  drawString(0,0,CRAFTABLE_ITEMS_MSG, renderer);
+  for (int i = 0 ; i < CRAFTABLE_RECIPES_COUNT && craftable_recipes[i].output_block != 0 ; i++){
+    sprintf(line_text, " %c %s", i+97, blockNames[craftable_recipes[i].output_block]);
+    drawString(0, i+1, line_text, renderer);
+  }
 }
