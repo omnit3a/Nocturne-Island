@@ -10,8 +10,6 @@
 #include <time.h>
 #include <ui.h>
 
-pthread_mutex_t camera_lock;
-
 char camera_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 SDL_Renderer * camera_renderer;
 render_obj_t camera_object;
@@ -42,24 +40,5 @@ void update_camera(){
   draw_view(&camera_object);
   draw_player(&camera_object);
   draw_ui(&camera_object);
-}
-
-void * update_camera_on_tick(void * vargp){
-  clock_t currentClock;
-  clock_t currentTick;
-
-  while(1){
-    currentClock = clock() % CLOCKS_PER_SEC;
-    currentTick = currentClock % CAMERA_SPEED;
-    if (currentTick % 10 == 0){
-      pthread_mutex_lock(&camera_lock);
-      
-      update_camera();      
-      SDL_RenderPresent(camera_object.renderer);
-      
-      pthread_mutex_unlock(&camera_lock);
-    }
-  }
-
-  return NULL;
+  SDL_RenderPresent(camera_object.renderer);
 }

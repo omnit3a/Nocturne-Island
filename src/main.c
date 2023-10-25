@@ -7,12 +7,12 @@
 #include <camera.h>
 #include <time.h>
 #include <player.h>
-#include <ui.h>
 #include <pthread.h>
 #include <unistd.h>
 #include <physics.h>
 #include <teams.h>
 #include <map_defs.h>
+#include <ticks.h>
 
 int main(int argc, char ** argv){
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
@@ -49,9 +49,7 @@ int main(int argc, char ** argv){
   generateHills(world, time(0));  // generate a hilly world
   cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
 
-  setPhysicsRenderer(renderer, window);
-  setPhysicsMap(world_copy); // save the world map to the physics collision map
-  
+  setPhysicsMap(world_copy); // save the world map to the physics collision map  
   setup_camera(renderer, window);
   
   /* INIT PHYSICS MUTEX */
@@ -60,26 +58,19 @@ int main(int argc, char ** argv){
     return -1;
   }
 
-  /* INIT CAMERA DRAW LOOP MUTEX */
-  if (pthread_mutex_init(&camera_lock,NULL)!=0){
-    fprintf(stderr, "Failed to create mutex for camera\n");
-    return -1;
-  }
-  
-  pthread_t physics_id;
-  pthread_t camera_id;
-  /* Player physics run on a seperate thread to allow for real-time gameplay 
-     rather than turn-based 
-  */
-  pthread_create(&physics_id, NULL, handlePhysics, NULL);
-
-  /* Setup camera so that renderer can function properly */
-  pthread_create(&camera_id, NULL, update_camera_on_tick, NULL);
-
   /* MAIN GAME LOOP */
   bool running_game = true;
   while (running_game){
     SDL_Event e;
+
+    if (get_current_tick() % (TICKS_PER_SECOND / 8) == 0){
+      handle_physics();
+    } else if (get_current_tick() % 2 == 0){
+      update_camera();
+    } else {
+      reset_physics();
+    }
+    
     while (SDL_PollEvent(&e) > 0){
       switch (e.type){
         case SDL_KEYDOWN:
@@ -109,7 +100,7 @@ int main(int argc, char ** argv){
   }
 
   pthread_mutex_destroy(&physics_lock);
-  pthread_mutex_destroy(&camera_lock);
+  SDL_Quit();
   
   return 0;
 }

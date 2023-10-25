@@ -2,12 +2,10 @@
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <drawer.h>
 #include <map.h>
 #include <camera.h>
 #include <player.h>
-#include <ui.h>
 #include <map_defs.h>
 
 int SCREEN_WIDTH = DEFAULT_SCREEN_WIDTH;
@@ -35,7 +33,7 @@ void get_blocks_in_view(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   }
 }
 
-void draw_slopes(render_obj_t * object){
+void draw_slope_overlay(render_obj_t * object, render_obj_t * overlay_object){
   /* TODO */
 }
 
@@ -51,7 +49,7 @@ void draw_view(render_obj_t * object){
     for (int x = 0 ; x < CAMERA_VIEW ; x++){
       for (int y = 0 ; y < CAMERA_VIEW ; y++){
 	int block = getBlockProperties(blocks_in_view[x][y][playerZ+z]).block;
-	
+
 	if (block > 0){
 	  object->clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
 	  object->clip.y = (block / (ATLAS_HEIGHT / TILE_HEIGHT)) * TILE_HEIGHT;

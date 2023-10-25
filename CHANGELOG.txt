@@ -68,3 +68,4 @@ Alpha Version 0.3.0:
   Rewrote majority of UI code
   Added UI scaling based on window resolution
   Refactored rendering code
+  Rewrote tick system
