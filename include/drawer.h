@@ -32,7 +32,7 @@ typedef struct render_obj_t {
 
 #include <camera.h>
 
-extern int blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][MAP_HEIGHT];
+extern char blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][MAP_HEIGHT];
 
 void get_blocks_in_view(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void draw_slopes(render_obj_t * object);

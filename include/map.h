@@ -35,7 +35,7 @@ extern int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
 void translateBlockDef(char * def, int line);
 void loadBlockProperties(char * path, block_data_t * data);
-block_data_t getBlockProperties(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int xPos, int yPos, int zPos);
+block_data_t getBlockProperties(int block);
 void fillMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_WIDTH][MAP_LENGTH], int seed);
 void placeOres(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char height_map[MAP_WIDTH][MAP_LENGTH], int seed);

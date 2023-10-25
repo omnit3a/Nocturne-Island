@@ -93,8 +93,8 @@ void loadBlockProperties(char * path, block_data_t * data){
   fclose(def_file);
 }
 
-block_data_t getBlockProperties(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int xPos, int yPos, int zPos){
-  return data_map[(int)map[xPos][yPos][zPos]];
+block_data_t getBlockProperties(int block){
+  return data_map[block];
 }
 
 /* Initialize every tile in map to empty block */
@@ -300,7 +300,7 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
   for (int i = 0 ; i < MAP_WIDTH ; i++){
     for (int j = 0 ; j < MAP_LENGTH ; j++){
       for (int n = 0 ; n < MAP_HEIGHT ; n++){
-	block_hp_map[i][j][n] = getBlockProperties(map, i, j, n).hp;
+	block_hp_map[i][j][n] = getBlockProperties(map[i][j][n]).hp;
       }
     }
   }

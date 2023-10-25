@@ -12,7 +12,7 @@
 
 int SCREEN_WIDTH = DEFAULT_SCREEN_WIDTH;
 int SCREEN_HEIGHT = DEFAULT_SCREEN_HEIGHT;
-int blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][MAP_HEIGHT];
+char blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][MAP_HEIGHT];
 
 void get_blocks_in_view(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   int x_start = playerX-5, x_end = playerX+5;
@@ -50,7 +50,7 @@ void draw_view(render_obj_t * object){
   for (int z = -10 ; z < 1 ; z++){
     for (int x = 0 ; x < CAMERA_VIEW ; x++){
       for (int y = 0 ; y < CAMERA_VIEW ; y++){
-	int block = blocks_in_view[x][y][playerZ+z];
+	int block = getBlockProperties(blocks_in_view[x][y][playerZ+z]).block;
 	
 	if (block > 0){
 	  object->clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;

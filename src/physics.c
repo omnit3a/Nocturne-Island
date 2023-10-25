@@ -5,10 +5,8 @@
 #include <unistd.h>
 #include <physics.h>
 #include <player.h>
-#include <camera.h>
 #include <map.h>
 #include <time.h>
-#include <ui.h>
 
 pthread_mutex_t physics_lock;
 char physics_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
@@ -53,7 +51,7 @@ void * handlePlayerJumping(void * vargp){
 void handlePlayerGravity(){
   pthread_mutex_lock(&physics_lock);
   if (playerIsJumping == 0){
-    if(!(getBlockProperties(physics_map, playerX, playerY, playerZ-1).solid)){
+    if(!(getBlockProperties(physics_map[playerX][playerY][playerZ-1]).solid)){
       playerZ--;
     }
   }

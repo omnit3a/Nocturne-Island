@@ -24,6 +24,10 @@ int playerYOff;
 int playerZOff;
 int playerHealth = 50;
 
+int player_border_check(){
+  return (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1);
+}
+
 int getMiningSpeed(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   return 1;
 }
@@ -93,11 +97,11 @@ void playerOffsetDirection(){
 /* Mine a block in the direction of the player */
 int playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   playerOffsetDirection();
-  if (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1 && playerZ > 0 && playerZ < MAP_HEIGHT-1){
+  if (player_border_check()){
     static int temp_block = 0;
     /* If trying to mine NOKIUM, return from function */
     /* I probably want to replace this with a hardness value for each block */
-    if (getBlockProperties(map,playerXOff,playerYOff,playerZOff).hp < -100){
+    if (getBlockProperties(map[playerXOff][playerYOff][playerZOff]).hp < -100){
       return map[playerXOff][playerYOff][playerZOff];
     }
     /* Check if block is fully mined */
@@ -108,7 +112,7 @@ int playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
       }
     }
     
-    if (getBlockProperties(map,playerXOff,playerYOff,playerZOff).solid == 1){
+    if (getBlockProperties(map[playerXOff][playerYOff][playerZOff]).solid == 1){
       /* Add the mined item to the players inventory */
       map[playerXOff][playerYOff][playerZOff] = 0;
       
@@ -121,10 +125,10 @@ int playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
 /* Allow player to place a block from the inventory */
 void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int block){
   playerOffsetDirection();
-  if (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1 && playerZ > 0 && playerZ < MAP_HEIGHT-1){
-    if (!(getBlockProperties(map,playerXOff,playerYOff,playerZOff).solid)){
+  if (player_border_check()){
+    if (!getBlockProperties(map[playerXOff][playerYOff][playerZOff]).solid){
       map[playerXOff][playerYOff][playerZOff] = block;
-      block_hp_map[playerXOff][playerYOff][playerZOff] = getBlockProperties(map, playerXOff, playerYOff, playerZOff).hp;
+      block_hp_map[playerXOff][playerYOff][playerZOff] = getBlockProperties(map[playerXOff][playerYOff][playerZOff]).hp;
     }
   }
 
@@ -154,14 +158,17 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
       break;
     case SDLK_SPACE:
       /* Check for empty space above player and solid space below player */
-      if (!(getBlockProperties(map,playerX,playerY,playerZ+1).solid) && getBlockProperties(map,playerX,playerY,playerZ-1).solid){
+      if (!getBlockProperties(map[playerX][playerY][playerZ+1]).solid && getBlockProperties(map[playerX][playerY][playerZ-1]).solid){
         pthread_create(&jump_thread, NULL, handlePlayerJumping, NULL);
         
       }
       break;
   }
   playerOffsetDirection();
-  if(!getBlockProperties(map, playerXOff, playerYOff, playerZ).solid && move_player){
+  if(!getBlockProperties(map[playerXOff][playerYOff][playerZ]).solid && move_player){
+    if (!player_border_check()){
+      return;
+    }
     playerX = playerXOff;
     playerY = playerYOff;
     playerRotation = prevRotation;

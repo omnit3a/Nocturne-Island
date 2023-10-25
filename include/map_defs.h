@@ -12,6 +12,3 @@
 #define GRASS 2
 #define TREE_BOTTOM 3
 #define TREE_LEAVES 4
-
-#define WALL_OVERLAY 17
-#define SLOPE_OVERLAY 33
