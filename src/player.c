@@ -6,8 +6,6 @@
 #include <drawer.h>
 #include <camera.h>
 #include <physics.h>
-#include <pthread.h>
-#include <unistd.h>
 #include <ui.h>
 #include <map_defs.h>
 
@@ -18,7 +16,6 @@ int playerDirectionX = 1;
 int playerDirectionY = 1;
 rotation_t playerRotation = NORTH;
 z_rotation_t playerZRotation = STRAIGHT;
-pthread_t jump_thread;
 int playerXOff;
 int playerYOff;
 int playerZOff;
@@ -159,8 +156,7 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
     case SDLK_SPACE:
       /* Check for empty space above player and solid space below player */
       if (!getBlockProperties(map[playerX][playerY][playerZ+1]).solid && getBlockProperties(map[playerX][playerY][playerZ-1]).solid){
-        pthread_create(&jump_thread, NULL, handlePlayerJumping, NULL);
-        
+	player_jump();
       }
       break;
   }

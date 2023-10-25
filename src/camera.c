@@ -5,9 +5,6 @@
 #include <drawer.h>
 #include <player.h>
 #include <map.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <time.h>
 #include <ui.h>
 
 char camera_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];

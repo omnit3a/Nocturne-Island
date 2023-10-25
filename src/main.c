@@ -7,8 +7,6 @@
 #include <camera.h>
 #include <time.h>
 #include <player.h>
-#include <pthread.h>
-#include <unistd.h>
 #include <physics.h>
 #include <teams.h>
 #include <map_defs.h>
@@ -52,12 +50,6 @@ int main(int argc, char ** argv){
   setPhysicsMap(world_copy); // save the world map to the physics collision map  
   setup_camera(renderer, window);
   
-  /* INIT PHYSICS MUTEX */
-  if (pthread_mutex_init(&physics_lock,NULL) != 0){
-    fprintf(stderr, "Failed to create mutex for physics\n");
-    return -1;
-  }
-
   /* MAIN GAME LOOP */
   bool running_game = true;
   while (running_game){
@@ -65,10 +57,12 @@ int main(int argc, char ** argv){
 
     if (get_current_tick() % (TICKS_PER_SECOND / 8) == 0){
       handle_physics();
-    } else if (get_current_tick() % 2 == 0){
-      update_camera();
     } else {
       reset_physics();
+    }
+
+    if (get_current_tick() % 2 == 0){
+      update_camera();
     }
     
     while (SDL_PollEvent(&e) > 0){
@@ -99,7 +93,6 @@ int main(int argc, char ** argv){
     }
   }
 
-  pthread_mutex_destroy(&physics_lock);
   SDL_Quit();
   
   return 0;

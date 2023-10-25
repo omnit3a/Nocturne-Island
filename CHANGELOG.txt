@@ -69,3 +69,5 @@ Alpha Version 0.3.0:
   Added UI scaling based on window resolution
   Refactored rendering code
   Rewrote tick system
+  Physics is now tick based
+  Removed all multithreading code

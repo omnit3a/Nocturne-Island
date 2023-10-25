@@ -1,21 +1,16 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
-#include <unistd.h>
 #include <physics.h>
 #include <player.h>
 #include <map.h>
-#include <time.h>
 #include <ticks.h>
 
-pthread_mutex_t physics_lock;
 char physics_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 int playerIsJumping = 0;
-clock_t currentTick = 0;
-pthread_t wait_id;
 
 int ticked = 0;
+int jump_timeout = 0;
 
 /* Save world map for physics usage */
 void setPhysicsMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
@@ -29,22 +24,13 @@ void setPhysicsMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
 }
 
 /* Make the player jump */
-void * handlePlayerJumping(void * vargp){
-  pthread_mutex_lock(&physics_lock);
+void player_jump(){
+  jump_timeout = SDL_GetTicks() + JUMP_LENGTH;
   playerIsJumping = 1;
   playerZ++;
-  pthread_mutex_unlock(&physics_lock);
-
-  sleep(1);
-  
-  pthread_mutex_lock(&physics_lock);
-  playerIsJumping = 0;
-  pthread_mutex_unlock(&physics_lock);
-  return NULL;
 }
 
-/* Constantly run a seperate thread for player gravity */
-void handlePlayerGravity(){
+void handle_gravity(){
   if (playerIsJumping == 0){
     if(!getBlockProperties(physics_map[playerX][playerY][playerZ-1]).solid){
       playerZ--;
@@ -54,11 +40,14 @@ void handlePlayerGravity(){
 
 void reset_physics(){
   ticked = 0;
+  if (SDL_GetTicks() >= jump_timeout){
+    playerIsJumping = 0;
+  }
 }
 
 void handle_physics(){
   if (ticked == 0){
-    handlePlayerGravity();
+    handle_gravity();
     ticked = 1;
   }
 }
