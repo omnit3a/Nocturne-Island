@@ -24,7 +24,7 @@ int main(int argc, char ** argv){
   SDL_Renderer * renderer;
   SDL_CreateWindowAndRenderer(SCREEN_WIDTH,
 			      SCREEN_HEIGHT,
-			      0,
+			      SDL_RENDERER_PRESENTVSYNC,
 			      &window,
 			      &renderer);
   
@@ -44,14 +44,15 @@ int main(int argc, char ** argv){
   char world_copy[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
   loadBlockProperties(BLOCK_DATA_PATH, data_map);
-  
   setTeam(DEFAULT_TEAM, 1);
+
   generateHills(world, time(0));  // generate a hilly world
   cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
+
   setPhysicsRenderer(renderer, window);
   setPhysicsMap(world_copy); // save the world map to the physics collision map
-  setupCamera(renderer, window);
-  setupCameraMap(world_copy);
+  
+  setup_camera(renderer, window);
   
   /* INIT PHYSICS MUTEX */
   if (pthread_mutex_init(&physics_lock,NULL) != 0){
@@ -73,7 +74,7 @@ int main(int argc, char ** argv){
   pthread_create(&physics_id, NULL, handlePhysics, NULL);
 
   /* Setup camera so that renderer can function properly */
-  pthread_create(&camera_id, NULL, updateCameraOnTick, NULL);
+  pthread_create(&camera_id, NULL, update_camera_on_tick, NULL);
 
   /* MAIN GAME LOOP */
   bool running_game = true;
@@ -91,7 +92,8 @@ int main(int argc, char ** argv){
 	      /* Regenerate the world_copy map, physics map, and solidity map */
 	      cullHiddenBlocks(world_copy, world);
 	      break;
-	      /* Place a block */
+	      
+	    /* Place a block */
 	    case SDLK_n:
 	      //playerPlaceBlock(world, currentBlock);
 	      /* Regenerate the world_copy map, physics map, and solidity map */

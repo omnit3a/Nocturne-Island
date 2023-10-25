@@ -327,5 +327,5 @@ void cullHiddenBlocks(char dest_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char src
   }
 
   setPhysicsMap(dest_map);
-  setupCameraMap(dest_map);
+  update_camera_map(dest_map);
 }

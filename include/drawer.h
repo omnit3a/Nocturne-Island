@@ -5,12 +5,9 @@
 #include <map.h>
 #include <stdbool.h>
 #include <map_defs.h>
-#include <camera.h>
 
 #define ATLAS_PATH "assets/3d-atlas.bmp"
-
 #define LEVEE_PATH "assets/levee.bmp"
-#define LEVEE_OUTLINE_PATH "assets/levee-outline.bmp"
 
 #define TILE_WIDTH 16
 #define TILE_HEIGHT 16
@@ -21,23 +18,24 @@
 
 #define BASE_DEPTH_BRIGHTNESS 75
 
-extern char * PLAYER_SPRITE;
-extern bool renderPlayerLast;
-
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
-extern int xPosBackup, yPosBackup, belowPosBackup;
+
+typedef struct render_obj_t {
+  SDL_Renderer * renderer;
+  SDL_Window * window;
+  SDL_Surface * surface;
+  SDL_Texture * texture;
+  SDL_Rect clip;
+  SDL_Rect target;
+} render_obj_t;
+
+#include <camera.h>
+
 extern int blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][MAP_HEIGHT];
 
-/*
-  IDK why i made these as global variables.
-  im honestly too scared to change them, cause idk where
-  they are required.
- */
-extern int iBackup, jBackup;
-
-void getBlocksInView(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
-void drawSlopes(SDL_Renderer * renderer);
-void drawView(SDL_Renderer * renderer);
-void drawPlayer(char * playerPath, SDL_Renderer * renderer);
+void get_blocks_in_view(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
+void draw_slopes(render_obj_t * object);
+void draw_view(render_obj_t * object);
+void draw_player(render_obj_t * object);
 #endif

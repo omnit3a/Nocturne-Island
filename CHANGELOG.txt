@@ -65,3 +65,6 @@ Alpha Version 0.3.0:
   Removed majority of blocks and items
   Added slope prototype
   Removed Inventory. Pending rewrite
+  Rewrote majority of UI code
+  Added UI scaling based on window resolution
+  Refactored rendering code

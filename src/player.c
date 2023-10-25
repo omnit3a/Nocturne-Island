@@ -9,7 +9,6 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <ui.h>
-#include <audio.h>
 #include <map_defs.h>
 
 int playerX = MAP_WIDTH/2;
