@@ -16,7 +16,6 @@ int y_cursor = 0;
 int ui_x_scale = 1;
 int ui_y_scale = 1;
 
-SDL_Surface * font_surface;
 SDL_Texture * font_texture;
 SDL_Rect font_rect = {
   0,
@@ -44,15 +43,16 @@ void newline_ui(){
 }
 
 /* Draw and individual character from the font map */
-void draw_letter(char letter, SDL_Renderer * renderer){
-  font_rect.x = x_cursor * ui_x_scale;
-  font_rect.y = y_cursor * ui_y_scale;
+void draw_letter(char letter, render_obj_t * object){
+  object->target.x = x_cursor * ui_x_scale;
+  object->target.y = y_cursor * ui_y_scale;
+
   if (letter > 0){
-    font_clip.x = (letter * FONT_WIDTH) % (FONT_WIDTH*FONT_ATLAS_SIZE);
-    font_clip.y = ((letter / FONT_ATLAS_SIZE) * FONT_HEIGHT);
+    object->clip.x = (letter * FONT_WIDTH) % (FONT_WIDTH*FONT_ATLAS_SIZE);
+    object->clip.y = ((letter / FONT_ATLAS_SIZE) * FONT_HEIGHT);
   } else {
-    font_clip.x = 0;
-    font_clip.y = 0;
+    object->clip.x = 0;
+    object->clip.y = 0;
   }
 
   x_cursor++;
@@ -61,32 +61,32 @@ void draw_letter(char letter, SDL_Renderer * renderer){
     newline_ui();
   }
     
-  SDL_RenderCopy(renderer, font_texture, &font_clip, &font_rect);
+  SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);
 }
 
-void draw_string(char * string, SDL_Renderer * renderer){
-  font_surface = SDL_LoadBMP(FONT_PATH);
-  font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
+void draw_string(char * string, render_obj_t * object){
+  object->surface = SDL_LoadBMP(FONT_PATH);
+  object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
   /* Scale the font */
-  font_rect.w = ui_x_scale;
-  font_rect.h = ui_y_scale;
-  font_clip.w = FONT_WIDTH;
-  font_clip.h = FONT_HEIGHT;
+  object->target.w = ui_x_scale;
+  object->target.h = ui_y_scale;
+  object->clip.w = FONT_WIDTH;
+  object->clip.h = FONT_HEIGHT;
   for (int i = 0 ; string[i] != 0 ; i++){
-    draw_letter(string[i], renderer);
+    draw_letter(string[i], object);
   }
-  SDL_FreeSurface(font_surface);
-  SDL_DestroyTexture(font_texture);
+  SDL_FreeSurface(object->surface);
+  SDL_DestroyTexture(object->texture);
 }
 
-void draw_ui(SDL_Renderer * renderer){
+void draw_ui(render_obj_t * object){
   zero_ui();
-  draw_direction(renderer);
+  draw_direction(object);
   ui_x_scale = (SCREEN_WIDTH / COLS);
   ui_y_scale = (SCREEN_HEIGHT / ROWS); 
   switch(ui_mode){
     case IDLE:
-      draw_string(CURRENT_VERSION_MSG,renderer);
+      draw_string(CURRENT_VERSION_MSG, object);
       break;
     default:
       break;
@@ -94,8 +94,7 @@ void draw_ui(SDL_Renderer * renderer){
   
 }
 
-void draw_direction(SDL_Renderer * renderer){
-  SDL_Surface * sprite_surface = NULL;
+void draw_direction(render_obj_t * object){
   int xOff = 0;
   int yOff = 0;
   int render_angle = 0;
@@ -104,7 +103,7 @@ void draw_direction(SDL_Renderer * renderer){
   */
   int x_width = (SCREEN_WIDTH/CAMERA_VIEW);
   int y_height = (SCREEN_HEIGHT/CAMERA_VIEW);
-  sprite_surface = SDL_LoadBMP(ARROW_UI_PATH);
+  object->surface = SDL_LoadBMP(ARROW_UI_PATH);
   switch (playerRotation){
     case NORTH:
       xOff = x_width * 4;
@@ -127,15 +126,14 @@ void draw_direction(SDL_Renderer * renderer){
       render_angle = 270;
       break;
   }
-  SDL_Texture * sprite_texture = SDL_CreateTextureFromSurface(renderer, sprite_surface);
-  SDL_Rect sprite_area;
-  sprite_area.x = xOff;
-  sprite_area.y = yOff;
-  sprite_area.w = (SCREEN_WIDTH/CAMERA_VIEW);
-  sprite_area.h = (SCREEN_HEIGHT/CAMERA_VIEW);
-  SDL_RenderCopyEx(renderer, sprite_texture, NULL, &sprite_area, render_angle, NULL, 0);
-  SDL_DestroyTexture(sprite_texture);
-  SDL_FreeSurface(sprite_surface);
+  object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
+  object->target.x = xOff;
+  object->target.y = yOff;
+  object->target.w = (SCREEN_WIDTH/CAMERA_VIEW);
+  object->target.h = (SCREEN_HEIGHT/CAMERA_VIEW);
+  SDL_RenderCopyEx(object->renderer, object->texture, NULL, &object->target, render_angle, NULL, 0);
+  SDL_DestroyTexture(object->texture);
+  SDL_FreeSurface(object->surface);
 }
 
 /* Switch between UI Modes */

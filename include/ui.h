@@ -23,10 +23,10 @@ typedef enum ui_mode_e {
 
 void zero_ui();
 void newline_ui();
-void draw_letter(char letter, SDL_Renderer * renderer);
-void draw_string(char * string, SDL_Renderer * renderer);
-void draw_ui(SDL_Renderer * renderer); 
-void draw_direction(SDL_Renderer * renderer);
+void draw_letter(char letter, render_obj_t * object);
+void draw_string(char * string, render_obj_t * object);
+void draw_ui(render_obj_t * object); 
+void draw_direction(render_obj_t * object);
 void handle_ui(SDL_Event event);
 
 #endif
