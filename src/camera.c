@@ -5,21 +5,14 @@
 #include <drawer.h>
 #include <player.h>
 #include <map.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <time.h>
 #include <ui.h>
 
-pthread_mutex_t camera_lock;
-
-int cameraX = 0;
-int cameraY = 0;
-int cameraZoom = 32;
-SDL_Renderer * camera_renderer;
 char camera_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
-SDL_Window * camera_window;
+SDL_Renderer * camera_renderer;
+render_obj_t camera_object;
+render_obj_t overlay_object;
 
-void setupCameraMap(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
+void update_camera_map(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   for (int x = 0 ; x < MAP_WIDTH ; x++){
     for (int y = 0 ; y < MAP_LENGTH ; y++){
       for (int z = 0 ; z < MAP_HEIGHT ; z++){
@@ -28,37 +21,24 @@ void setupCameraMap(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
     }
   }
 }
-void setupCamera(SDL_Renderer * renderer, SDL_Window * window){
-  camera_renderer = renderer;
-  camera_window = window;
+
+void setup_camera(SDL_Renderer * renderer, SDL_Window * window){
+  camera_object.window = window;
+  camera_object.renderer = renderer;
+  overlay_object.renderer = renderer;
 }
 
-void updateCamera(unsigned int xPos, unsigned int yPos, unsigned int zoom, SDL_Renderer * renderer, char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Window * window, int free_texture){
-  /* Make the camera follow the player */
-  cameraX = -((xPosBackup-xPos)-((SCREEN_WIDTH/2)-TILE_WIDTH));
-  cameraY = -((yPosBackup-yPos)-((SCREEN_HEIGHT/2)-TILE_HEIGHT));
+void update_camera(){
   /* Dynamically resize window*/
-  SDL_GetWindowSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
-  SDL_SetRenderDrawColor(renderer, 0, 0, 50, 255);
-  SDL_RenderClear(renderer);
-  drawWorld(world, cameraZoom, renderer, free_texture);
-}
+  SDL_GetWindowSize(camera_object.window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
+  SDL_SetRenderDrawColor(camera_object.renderer, 0, 0, 50, 255);
+  SDL_RenderClear(camera_object.renderer);
 
-void * updateCameraOnTick(void * vargp){
-  clock_t currentClock;
-  clock_t currentTick;
+  get_blocks_in_view(camera_map);
 
-  while(1){
-    currentClock = clock() % CLOCKS_PER_SEC;
-    currentTick = currentClock % CAMERA_SPEED;
-    if ((currentTick % 4) == 0){
-      pthread_mutex_lock(&camera_lock);
-      updateCamera(cameraX, cameraY, cameraZoom, camera_renderer, camera_map, camera_window, 1);
-      drawUI(camera_renderer);
-      SDL_RenderPresent(camera_renderer);
-      pthread_mutex_unlock(&camera_lock);
-    }
-  }
-
-  return NULL;
+  draw_view(&camera_object);
+  draw_slope_overlay(&camera_object, &overlay_object);
+  draw_player(&camera_object);
+  draw_ui(&camera_object);
+  SDL_RenderPresent(camera_object.renderer);
 }

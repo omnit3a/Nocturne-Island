@@ -4,6 +4,11 @@
 #include <SDL2/SDL.h>
 #include <drawer.h>
 #include <stdbool.h>
+#include <map.h>
+
+#define SPAWN_X MAP_WIDTH/2
+#define SPAWN_Y MAP_LENGTH/2
+#define SPAWN_Z 11
 
 typedef enum rotation_e {
   NORTH = 0,
@@ -28,8 +33,9 @@ extern z_rotation_t playerZRotation;
 extern int playerXOff;
 extern int playerYOff;
 extern int playerZOff;
-extern int playerHealth;
 
+void spawn_player();
+int player_border_check();
 int getMiningSpeed(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void movePlayer(int xOff, int yOff, int zOff, SDL_Renderer * renderer);
 void setPlayerRotation(rotation_t rotation);

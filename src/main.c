@@ -7,13 +7,9 @@
 #include <camera.h>
 #include <time.h>
 #include <player.h>
-#include <ui.h>
-#include <pthread.h>
-#include <unistd.h>
 #include <physics.h>
-#include <teams.h>
-#include <inventory.h>
 #include <map_defs.h>
+#include <ticks.h>
 
 int main(int argc, char ** argv){
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
@@ -25,7 +21,7 @@ int main(int argc, char ** argv){
   SDL_Renderer * renderer;
   SDL_CreateWindowAndRenderer(SCREEN_WIDTH,
 			      SCREEN_HEIGHT,
-			      0,
+			      SDL_RENDERER_PRESENTVSYNC,
 			      &window,
 			      &renderer);
   
@@ -41,78 +37,53 @@ int main(int argc, char ** argv){
   }
 
   SDL_UpdateWindowSurface(window);
-  char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
+  //char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
   char world_copy[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
   loadBlockProperties(BLOCK_DATA_PATH, data_map);
 
-  setTeam(DEFAULT_TEAM, 1);
-  generateHills(world, time(0));  // generate a hilly world
-  cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
-  setPhysicsRenderer(renderer, window);
-  setPhysicsMap(world_copy); // save the world map to the physics collision map
-  setupCamera(renderer, window);
-  setupCameraMap(world_copy);
-  initInventory(); // fill inventory with empty slots
-  addItemToInventory(WORK_BENCH, 1); // give player 1 workbench
+  generateHills(world_map, time(0));  // generate a hilly world
+  cullHiddenBlocks(world_copy, world_map); // remove blocks that are surrounded
+
+  setPhysicsMap(world_copy); // save the world map to the physics collision map  
+  setup_camera(renderer, window);
+
+  spawn_player();
   
-  /* INIT PHYSICS MUTEX */
-  if (pthread_mutex_init(&physics_lock,NULL) != 0){
-    fprintf(stderr, "Failed to create mutex for physics\n");
-    return -1;
-  }
-
-  /* INIT CAMERA DRAW LOOP MUTEX */
-  if (pthread_mutex_init(&camera_lock,NULL)!=0){
-    fprintf(stderr, "Failed to create mutex for camera\n");
-    return -1;
-  }
-  
-  pthread_t physics_id;
-  pthread_t camera_id;
-  /* Player physics run on a seperate thread to allow for real-time gameplay 
-     rather than turn-based 
-  */
-  pthread_create(&physics_id, NULL, handlePhysics, NULL);
-
-  /* Setup camera so that renderer can function properly */
-  pthread_create(&camera_id, NULL, updateCameraOnTick, NULL);
-
   /* MAIN GAME LOOP */
   bool running_game = true;
   while (running_game){
     SDL_Event e;
+
+    if (get_current_tick() % (TICKS_PER_SECOND / 8) == 0){
+      handle_physics();
+    } else {
+      reset_physics();
+    }
+
+    if (get_current_tick() % 2 == 0){
+      update_camera();
+    }
+    
     while (SDL_PollEvent(&e) > 0){
       switch (e.type){
         case SDL_KEYDOWN:
-	  if (currentUIMode != CRAFTING){
-	    handlePlayerMovement(world_copy, e);
-	    handleBlockSelect(e);
-	    handlePlayerRotation(e);
-	    handleUISwitch(e); // switch between UI modes
-	    switch(e.key.keysym.sym){
-	      /* Mine a block */
-	      case SDLK_m:
-		if (currentUIMode == CRAFTING){
-		  break;
-		}
-		playerMineBlock(world);
-		/* Regenerate the world_copy map, physics map, and solidity map */
-		cullHiddenBlocks(world_copy, world);
-		break;
-		/* Place a block */
-	      case SDLK_n:
-		if (currentUIMode == CRAFTING){
-		  break;
-		}
-		playerPlaceBlock(world, currentBlock);
-		/* Regenerate the world_copy map, physics map, and solidity map */
-		cullHiddenBlocks(world_copy, world);
-		break;
-	    }
-	    break;
-	  } else {
-	    handleCraftingSelect(e);
+	  handlePlayerMovement(world_copy, e);
+	  handlePlayerRotation(e);
+	  switch(e.key.keysym.sym){
+	    /* Mine a block */
+	    case SDLK_m:
+	      playerMineBlock(world_map);
+	      /* Regenerate the world_copy map, physics map, and solidity map */
+	      cullHiddenBlocks(world_copy, world_map);
+	      break;
+	      
+	    /* Place a block */
+	    case SDLK_n:
+	      //playerPlaceBlock(world_map, 0);
+	      /* Regenerate the world_copy map, physics map, and solidity map */
+	      cullHiddenBlocks(world_copy, world_map);
+	      break;
 	  }
 	  break;
         case SDL_QUIT:
@@ -122,8 +93,7 @@ int main(int argc, char ** argv){
     }
   }
 
-  pthread_mutex_destroy(&physics_lock);
-  pthread_mutex_destroy(&camera_lock);
+  SDL_Quit();
   
   return 0;
 }

@@ -11,9 +11,10 @@ solid (0 | 1):
 transparent (0 | 1):
   - whether or not this block has transparency
 
-block (any int >= 0 and <= 255):
-  - the block id that is used in game to
-    represent this block definition
+block[4] (any 4 ints >= 0 and <= 255):
+  - the texture atlas offsets that are used in
+    game to represent this block definition
+    and its 3 other block states
 
 dropped_item (any int >= 0 and <= 255):
   - the block id of the item that is dropped
