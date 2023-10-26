@@ -16,21 +16,6 @@ int y_cursor = 0;
 int ui_x_scale = 1;
 int ui_y_scale = 1;
 
-SDL_Texture * font_texture;
-SDL_Rect font_rect = {
-  0,
-  0,
-  FONT_WIDTH,
-  FONT_HEIGHT
-};
-/* Used for the selecting which character from the font map to draw */
-SDL_Rect font_clip = {
-  0,
-  0,
-  FONT_WIDTH,
-  FONT_HEIGHT
-};
-
 void zero_ui(){
   x_cursor = 0;
   y_cursor = 0;

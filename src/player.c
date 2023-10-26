@@ -21,6 +21,12 @@ int playerYOff;
 int playerZOff;
 int playerHealth = 50;
 
+void spawn_player(){
+  playerX = SPAWN_X;
+  playerY = SPAWN_Y;
+  playerZ = SPAWN_Z;
+}
+
 int player_border_check(){
   return (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1);
 }
@@ -122,11 +128,15 @@ int playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
 /* Allow player to place a block from the inventory */
 void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int block){
   playerOffsetDirection();
+  
   if (player_border_check()){
-    if (!getBlockProperties(map[playerXOff][playerYOff][playerZOff]).solid){
+    /*if (!getBlockProperties(map[playerXOff][playerYOff][playerZOff]).solid){
       map[playerXOff][playerYOff][playerZOff] = block;
       block_hp_map[playerXOff][playerYOff][playerZOff] = getBlockProperties(map[playerXOff][playerYOff][playerZOff]).hp;
     }
+    */
+    states_map[playerXOff][playerYOff][playerZOff]++;
+    states_map[playerXOff][playerYOff][playerZOff] = states_map[playerXOff][playerYOff][playerZOff] % 4;
   }
 
 }

@@ -12,3 +12,4 @@
 #define GRASS 2
 #define TREE_BOTTOM 3
 #define TREE_LEAVES 4
+#define DIRT 5

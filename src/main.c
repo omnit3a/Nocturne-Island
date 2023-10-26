@@ -8,7 +8,6 @@
 #include <time.h>
 #include <player.h>
 #include <physics.h>
-#include <teams.h>
 #include <map_defs.h>
 #include <ticks.h>
 
@@ -38,17 +37,18 @@ int main(int argc, char ** argv){
   }
 
   SDL_UpdateWindowSurface(window);
-  char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
+  //char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
   char world_copy[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
   loadBlockProperties(BLOCK_DATA_PATH, data_map);
-  setTeam(DEFAULT_TEAM, 1);
 
-  generateHills(world, time(0));  // generate a hilly world
-  cullHiddenBlocks(world_copy, world); // remove blocks that are surrounded
+  generateHills(world_map, time(0));  // generate a hilly world
+  cullHiddenBlocks(world_copy, world_map); // remove blocks that are surrounded
 
   setPhysicsMap(world_copy); // save the world map to the physics collision map  
   setup_camera(renderer, window);
+
+  spawn_player();
   
   /* MAIN GAME LOOP */
   bool running_game = true;
@@ -73,16 +73,16 @@ int main(int argc, char ** argv){
 	  switch(e.key.keysym.sym){
 	    /* Mine a block */
 	    case SDLK_m:
-	      playerMineBlock(world);
+	      playerMineBlock(world_map);
 	      /* Regenerate the world_copy map, physics map, and solidity map */
-	      cullHiddenBlocks(world_copy, world);
+	      cullHiddenBlocks(world_copy, world_map);
 	      break;
 	      
 	    /* Place a block */
 	    case SDLK_n:
-	      //playerPlaceBlock(world, currentBlock);
+	      //playerPlaceBlock(world_map, 0);
 	      /* Regenerate the world_copy map, physics map, and solidity map */
-	      cullHiddenBlocks(world_copy, world);
+	      cullHiddenBlocks(world_copy, world_map);
 	      break;
 	  }
 	  break;

@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <map_defs.h>
 
+#define SLOPES_PATH "assets/slopes.bmp"
 #define ATLAS_PATH "assets/3d-atlas.bmp"
 #define LEVEE_PATH "assets/levee.bmp"
 
@@ -35,7 +36,7 @@ typedef struct render_obj_t {
 extern char blocks_in_view[CAMERA_VIEW][CAMERA_VIEW][MAP_HEIGHT];
 
 void get_blocks_in_view(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
-void draw_slope_overlay(render_obj_t * object, render_obj_t * overlay_object);
+void draw_slope_overlay(render_obj_t * object, render_obj_t * overlay);
 void draw_view(render_obj_t * object);
 void draw_player(render_obj_t * object);
 #endif

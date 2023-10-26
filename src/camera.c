@@ -10,6 +10,7 @@
 char camera_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 SDL_Renderer * camera_renderer;
 render_obj_t camera_object;
+render_obj_t overlay_object;
 
 void update_camera_map(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   for (int x = 0 ; x < MAP_WIDTH ; x++){
@@ -24,6 +25,7 @@ void update_camera_map(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
 void setup_camera(SDL_Renderer * renderer, SDL_Window * window){
   camera_object.window = window;
   camera_object.renderer = renderer;
+  overlay_object.renderer = renderer;
 }
 
 void update_camera(){
@@ -35,6 +37,7 @@ void update_camera(){
   get_blocks_in_view(camera_map);
   
   draw_view(&camera_object);
+  //draw_slope_overlay(&camera_object, &overlay_object);
   draw_player(&camera_object);
   draw_ui(&camera_object);
   SDL_RenderPresent(camera_object.renderer);

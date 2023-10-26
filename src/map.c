@@ -13,9 +13,10 @@
 char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 block_data_t data_map[BLOCKS_AMOUNT];
 int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
+char states_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];   
 
 void translateBlockDef(char * def, int line){
-  int values[7] = {0, 0, 0, 0, 0, 0, 0};
+  int values[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   char * token;
   char * delim = " ";
   int field = 0;
@@ -30,10 +31,12 @@ void translateBlockDef(char * def, int line){
   data_map[line].hp = values[0];
   data_map[line].solid = values[1];
   data_map[line].transparent = values[2];
-  data_map[line].block = values[3];
-  data_map[line].dropped_item = values[4];
-  data_map[line].count = values[5];
-  data_map[line].block_type = values[6];
+  for (int state = 0 ; state < BLOCK_STATES ; state++){
+    data_map[line].block[state] = values[3+state];
+  }
+  data_map[line].dropped_item = values[7];
+  data_map[line].count = values[8];
+  data_map[line].block_type = values[9];
   
 }
 
@@ -104,6 +107,7 @@ void fillMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
       for (int n = 0 ; n < MAP_LENGTH ; n++){
 	map[j][n][i] = 0;
 	block_hp_map[j][n][i] = 0;
+	states_map[j][n][i] = 0; 
       }
     }
   }
@@ -128,6 +132,18 @@ void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_
         if ((rand() % 1000) <= TREE_CHANCE+offset){
 	  map[i][j][(int)height_map[i][j]+1] = TREE_BOTTOM;
 	  map[i][j][(int)height_map[i][j]+2] = TREE_LEAVES;
+	}
+      }
+    }
+  }
+}
+
+void rotate_grass(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
+  for (int x = 0 ; x < MAP_WIDTH ; x++){
+    for (int y = 0 ; y < MAP_LENGTH ; y++){
+      for (int z = 0 ; z < MAP_HEIGHT ; z++){
+	if (getBlockProperties(map[x][y][z]).block[0] == GRASS){
+	  states_map[x][y][z] = rand() % 3;
 	}
       }
     }
@@ -276,10 +292,13 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
   for (int i = 0 ; i < MAP_WIDTH ; i++){
     for (int j = 0 ; j < MAP_LENGTH ; j++){
       map[i][j][(int)height_map[i][j]] = GRASS;
-      for (int n = height_map[i][j]-1 ; n > 0 ; n--){
-        map[i][j][n] = STONE;
+      for (int n = height_map[i][j]-1 ; n >= 0 ; n--){
+	if (height_map[i][j] < GROUND_HEIGHT){
+	  map[i][j][n] = DIRT;
+	} else {
+	  map[i][j][n] = STONE;
+	}
       }
-      map[i][j][0] = STONE;
     }
   }
 
@@ -304,6 +323,8 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
       }
     }
   }
+
+  rotate_grass(map);
 }
 
 /* Cull blocks that are surrounded on top, the left and the right */

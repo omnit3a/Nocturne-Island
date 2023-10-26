@@ -18,12 +18,13 @@
 #define SPAWN_RATE_VARIANCE 50
 
 #define BLOCKS_AMOUNT 256
+#define BLOCK_STATES 4
 
 typedef struct block_data_s {
   int hp;
   bool solid;
   bool transparent;
-  int block;
+  int block[BLOCK_STATES];
   int dropped_item;
   int count;
   int block_type;
@@ -32,12 +33,14 @@ typedef struct block_data_s {
 extern char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 extern block_data_t data_map[BLOCKS_AMOUNT];
 extern int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
+extern char states_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
 void translateBlockDef(char * def, int line);
 void loadBlockProperties(char * path, block_data_t * data);
 block_data_t getBlockProperties(int block);
 void fillMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_WIDTH][MAP_LENGTH], int seed);
+void rotate_grass(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void placeOres(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char height_map[MAP_WIDTH][MAP_LENGTH], int seed);
 void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed);
 void cullHiddenBlocks(char dest_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char src_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
