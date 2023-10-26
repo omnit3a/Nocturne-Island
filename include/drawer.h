@@ -10,9 +10,9 @@
 #define ATLAS_PATH "assets/3d-atlas.bmp"
 #define LEVEE_PATH "assets/levee.bmp"
 
-#define TILE_WIDTH 16
-#define TILE_HEIGHT 16
-#define ATLAS_WIDTH TILE_WIDTH * 16
+#define TILE_WIDTH 24
+#define TILE_HEIGHT 34
+#define ATLAS_WIDTH 384
 #define ATLAS_HEIGHT TILE_HEIGHT * 16
 #define DEFAULT_SCREEN_WIDTH 640
 #define DEFAULT_SCREEN_HEIGHT 480
@@ -40,3 +40,4 @@ void draw_slope_overlay(render_obj_t * object, render_obj_t * overlay);
 void draw_view(render_obj_t * object);
 void draw_player(render_obj_t * object);
 #endif
+

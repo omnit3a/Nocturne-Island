@@ -2,7 +2,7 @@
 #define CAMERA_H_
 
 #include <SDL2/SDL.h>
-#include <map.h>
+#include <drawer.h>
 #include <pthread.h>
 #include <time.h>
 

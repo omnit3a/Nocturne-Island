@@ -5,7 +5,10 @@
 #include <drawer.h>
 
 /* Directional arrows textures */
-#define ARROW_UI_PATH "assets/ui/arrow.bmp"
+#define LEFT_UP_ARROW_UI "assets/ui/up-left-arrow.bmp"
+#define RIGHT_UP_ARROW_UI "assets/ui/up-right-arrow.bmp"
+#define LEFT_DOWN_ARROW_UI "assets/ui/down-left-arrow.bmp"
+#define RIGHT_DOWN_ARROW_UI "assets/ui/down-right-arrow.bmp"
 
 /* Font related definitions */
 #define FONT_PATH "assets/ui/font.bmp"

@@ -41,7 +41,6 @@ int main(int argc, char ** argv){
   char world_copy[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
   loadBlockProperties(BLOCK_DATA_PATH, data_map);
-
   generateHills(world_map, time(0));  // generate a hilly world
   cullHiddenBlocks(world_copy, world_map); // remove blocks that are surrounded
 

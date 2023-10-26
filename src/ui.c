@@ -8,6 +8,8 @@
 #include <player.h>
 #include <camera.h>
 #include <messages.h>
+#include <inventory.h>
+#include <crafting.h>
 #include <map_defs.h>
 
 ui_mode_t ui_mode = IDLE;
@@ -73,7 +75,12 @@ void draw_ui(render_obj_t * object){
     case IDLE:
       draw_string(CURRENT_VERSION_MSG, object);
       break;
-    default:
+    case INVENTORY:
+      displayInventory(renderer);
+      displayMessageBar(renderer);
+      break;
+    case CRAFTING:
+      displayCraftableItems(renderer);
       break;
   }
   
@@ -82,7 +89,6 @@ void draw_ui(render_obj_t * object){
 void draw_direction(render_obj_t * object){
   int xOff = 0;
   int yOff = 0;
-  int render_angle = 0;
   /* Determine offset for the player direction arrow
      depending on the direction the player is facing
   */
@@ -91,24 +97,34 @@ void draw_direction(render_obj_t * object){
   object->surface = SDL_LoadBMP(ARROW_UI_PATH);
   switch (playerRotation){
     case NORTH:
-      xOff = x_width * 4;
-      yOff = y_height * 3 - (y_height/4);
-      render_angle = 0;
-      break;
-    case WEST:
-      xOff = x_width * 5 - (x_width/4);
-      yOff = y_height * 4;
-      render_angle = 90;
-      break;
-    case SOUTH:
-      xOff = x_width * 4;
-      yOff = y_height * 5 + (y_height/4);
-      render_angle = 180;
+      sprite_surface = SDL_LoadBMP(LEFT_UP_ARROW_UI);
+      xOff = 0;
+      yOff = 0;
       break;
     case EAST:
-      xOff = x_width * 3 + (x_width/4);
-      yOff = y_height * 4;
-      render_angle = 270;
+      sprite_surface = SDL_LoadBMP(RIGHT_UP_ARROW_UI);
+      xOff = (cameraZoom*2)-cameraZoom;
+      yOff = 0;
+      break;
+    case SOUTH:
+      sprite_surface = SDL_LoadBMP(RIGHT_DOWN_ARROW_UI);
+      xOff = (cameraZoom*2)-cameraZoom;
+      yOff = (cameraZoom*2)-(cameraZoom/5);
+      break;
+    case WEST:
+      sprite_surface = SDL_LoadBMP(LEFT_DOWN_ARROW_UI);
+      xOff = 0;
+      yOff = (cameraZoom*2)-(cameraZoom/5);
+      break;
+  }
+  switch(playerZRotation){
+    case UP:
+      yOff = yOff-((cameraZoom*2)-(cameraZoom/5))/2;
+      break;
+    case DOWN:
+      yOff = yOff+((cameraZoom*2)-(cameraZoom/5))/2;
+      break;
+    default:
       break;
   }
   object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
@@ -121,6 +137,43 @@ void draw_direction(render_obj_t * object){
   SDL_FreeSurface(object->surface);
 }
 
+void handleBlockSelect(SDL_Event event){
+  /* Handle selecting items from the inventory */
+  if (currentUIMode == IDLE){
+    char code = event.key.keysym.sym-48;
+    if (code >= 0 && code <= 9){
+      if (code == 0){
+	currentBlock = inventory[9].block;
+        selected_block = 9;
+      } else {
+	currentBlock = inventory[code-1].block;
+	selected_block = code - 1;
+      }
+    }
+  }
+}
+
 /* Switch between UI Modes */
 void handle_ui(SDL_Event event){
+}
+
+void handleCraftingSelect(SDL_Event event){
+  char code = event.key.keysym.sym-97;
+  if (currentUIMode == CRAFTING){
+    if (code >= 0 && code <= 26){
+      current_recipe = craftable_recipes[(int)code];
+    } else {
+      strcpy(messageBar, UNCRAFTABLE_SELECTION_MSG);
+    }
+    currentUIMode = IDLE;
+  }
+}
+
+void displayCraftableItems(SDL_Renderer * renderer){
+  char line_text[64];
+  drawString(0,0,CRAFTABLE_ITEMS_MSG, renderer);
+  for (int i = 0 ; i < CRAFTABLE_RECIPES_COUNT && craftable_recipes[i].output_block != 0 ; i++){
+    sprintf(line_text, " %c %s", i+97, blockNames[craftable_recipes[i].output_block]);
+    drawString(0, i+1, line_text, renderer);
+  }
 }

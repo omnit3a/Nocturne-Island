@@ -28,7 +28,32 @@ void spawn_player(){
 }
 
 int getMiningSpeed(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
+  /* Check if player has a pickaxe */
+  if (checkInventoryForItem(PICKAXE)){
+    /* If they do, mine STONE_TYPE and METAL_TYPE blocks faster */
+    if (getBlockProperties(map, playerXOff, playerYOff, playerZOff).block_type == STONE_TYPE || getBlockProperties(map, playerXOff, playerYOff, playerZOff).block_type == METAL_TYPE){
+      return 2;
+    }
+  }
+
+  /* Check if player has a shovel */
+  if (checkInventoryForItem(SHOVEL)){
+    /* If they do, mine TERRAIN_TYPE blocks faster */
+    if (getBlockProperties(map, playerXOff, playerYOff, playerZOff).block_type == TERRAIN_TYPE){
+      return 2;
+    }
+  }
+
+  /* Check if player has an axe */
+  if (checkInventoryForItem(AXE)){
+    /* If they do, mine WOODEN_TYPE blocks faster */
+    if (getBlockProperties(map, playerXOff, playerYOff, playerZOff).block_type == WOODEN_TYPE){
+      return 2;
+    }
+  }
+
   return 1;
+
 }
 
 void movePlayer(int xOff, int yOff, int zOff, SDL_Renderer * renderer){
@@ -137,38 +162,32 @@ int playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
 /* Allow player to place a block from the inventory */
 void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int block){
   playerOffsetDirection();
-  
   /*if (!getBlockProperties(map[playerXOff][playerYOff][playerZOff]).solid){
     map[playerXOff][playerYOff][playerZOff] = block;
     block_hp_map[playerXOff][playerYOff][playerZOff] = getBlockProperties(map[playerXOff][playerYOff][playerZOff]).hp;
     }
   */
-  states_map[playerXOff][playerYOff][playerZOff]++;
-  states_map[playerXOff][playerYOff][playerZOff] = states_map[playerXOff][playerYOff][playerZOff] % 4;
-
 }
 
 /* Get user input for the player, then do stuff with it */
 void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event event){
   rotation_t prevRotation = playerRotation;
   playerOffsetDirection();
-  int move_player = 0;
   switch (event.key.keysym.sym){
-    case SDLK_w:
-      setPlayerRotation(NORTH);
-      move_player = 1;
-      break;
     case SDLK_a:
-      setPlayerRotation(EAST);
-      move_player = 1;
+      setPlayerRotation(NORTH);
       break;
     case SDLK_s:
-      setPlayerRotation(SOUTH);
-      move_player = 1;
+      setPlayerRotation(WEST);
+      break;
+    case SDLK_w:
+      setPlayerRotation(EAST);
       break;
     case SDLK_d:
-      setPlayerRotation(WEST);
-      move_player = 1;
+      setPlayerRotation(SOUTH);
+      break;
+    case SDLK_z:
+      interactWithWorkbench(map);
       break;
     case SDLK_SPACE:
       /* Check for empty space above player and solid space below player */
@@ -189,17 +208,17 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
 
 void handlePlayerRotation(SDL_Event event){
   switch (event.key.keysym.sym){
-    case SDLK_i:
+    case SDLK_j:
       playerRotation = NORTH;
       break;
-    case SDLK_j:
-      playerRotation = EAST;
-      break;
     case SDLK_k:
-      playerRotation = SOUTH;
+      playerRotation = WEST;
       break;
     case SDLK_l:
-      playerRotation = WEST;
+      playerRotation = SOUTH;
+      break;
+    case SDLK_i:
+      playerRotation = EAST;
       break;
   }
 }
