@@ -101,8 +101,12 @@ void draw_view(render_obj_t * object){
 	  brightness = 255;
 	}
 
-	SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
-
+	if (is_block_underground(x, y, playerZ+z)){
+	  SDL_SetTextureColorMod(object->texture, 64, 64, 64);
+	} else {
+	  SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
+	}
+	
         object->target.x = (screen_x * (SCREEN_WIDTH/view_x));
         object->target.y = (screen_y * (SCREEN_HEIGHT/view_y));
         object->target.w = SCREEN_WIDTH/view_x;

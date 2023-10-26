@@ -15,8 +15,16 @@ block_data_t data_map[BLOCKS_AMOUNT];
 int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 char states_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];   
 
-int block_offset(int x_off, int y_off, int z_off){
-  return world_map[x_off][y_off][z_off];
+int is_block_underground(int x_pos, int y_pos, int z_pos){
+  if (getBlockProperties(world_map[x_pos][y_pos][z_pos+1]).solid){
+    return 0;
+  }
+  for (int z = z_pos+1 ; z < MAP_HEIGHT ; z++){
+    if (getBlockProperties(world_map[x_pos][y_pos][z]).solid == 1){
+      return 1;
+    }
+  }
+  return 0;
 }
 
 void translateBlockDef(char * def, int line){

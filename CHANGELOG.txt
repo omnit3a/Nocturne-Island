@@ -74,3 +74,4 @@ Alpha Version 0.3.0:
 
 Alpha Version 0.3.1:
   Add variable view distance
+  Add overhang shadows

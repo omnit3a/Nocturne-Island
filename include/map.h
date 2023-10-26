@@ -35,7 +35,7 @@ extern block_data_t data_map[BLOCKS_AMOUNT];
 extern int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 extern char states_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
-int block_offset(int x_off, int y_off, int z_off);
+int is_block_underground(int x_pos, int y_pos, int z_pos);
 void translateBlockDef(char * def, int line);
 void loadBlockProperties(char * path, block_data_t * data);
 block_data_t getBlockProperties(int block);
