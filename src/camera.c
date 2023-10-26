@@ -35,9 +35,9 @@ void update_camera(){
   SDL_RenderClear(camera_object.renderer);
 
   get_blocks_in_view(camera_map);
-  
+
   draw_view(&camera_object);
-  //draw_slope_overlay(&camera_object, &overlay_object);
+  draw_slope_overlay(&camera_object, &overlay_object);
   draw_player(&camera_object);
   draw_ui(&camera_object);
   SDL_RenderPresent(camera_object.renderer);

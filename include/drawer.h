@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <map_defs.h>
 
-#define SLOPES_PATH "assets/slopes.bmp"
+#define WALL_PATH "assets/walls.bmp"
 #define ATLAS_PATH "assets/3d-atlas.bmp"
 #define LEVEE_PATH "assets/levee.bmp"
 

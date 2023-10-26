@@ -7,6 +7,7 @@
 #include <camera.h>
 #include <player.h>
 #include <map_defs.h>
+#include <math.h>
 
 int SCREEN_WIDTH = DEFAULT_SCREEN_WIDTH;
 int SCREEN_HEIGHT = DEFAULT_SCREEN_HEIGHT;
@@ -34,28 +35,44 @@ void get_blocks_in_view(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
 }
 
 void draw_slope_overlay(render_obj_t * object, render_obj_t * overlay){
-  const int SLOPES_WIDTH = 3 * TILE_WIDTH;
-  const int SLOPES_HEIGHT = 3 * TILE_HEIGHT;
-  overlay->surface = SDL_LoadBMP(SLOPES_PATH);
+  overlay->surface = SDL_LoadBMP(WALL_PATH);
   overlay->texture = SDL_CreateTextureFromSurface(overlay->renderer, overlay->surface);
   overlay->clip.w = TILE_WIDTH;
   overlay->clip.h = TILE_HEIGHT;
-  overlay->target.w = SLOPES_WIDTH;
-  overlay->target.h = SLOPES_HEIGHT;
+  overlay->target.w = SCREEN_WIDTH/CAMERA_VIEW;
+  overlay->target.h = SCREEN_HEIGHT/CAMERA_VIEW;
   overlay->clip.x = 0;
   overlay->clip.y = 0;
   
-  for (int z = -10 ; z < 1 ; z++){
+  for (int z = -10 ; z < 2 ; z++){
     for (int x = 0 ; x < CAMERA_VIEW ; x++){
       for (int y = 0 ; y < CAMERA_VIEW ; y++){
 	int world_x = playerX+(x - 4);
 	int world_y = playerY+(y - 4);
-	
+
+	if (world_map[world_x][world_y][playerZ+z] == 0){
+	  continue;
+	}
+
 	overlay->target.x = (x * (SCREEN_WIDTH/CAMERA_VIEW));
-        overlay->target.y = (y * (SCREEN_HEIGHT/CAMERA_VIEW));
-        overlay->target.w = SCREEN_WIDTH/CAMERA_VIEW;
-        overlay->target.h = SCREEN_HEIGHT/CAMERA_VIEW;
-	SDL_RenderCopy(overlay->renderer, overlay->texture, &overlay->clip, &overlay->target);
+	overlay->target.y = (y * (SCREEN_HEIGHT/CAMERA_VIEW));
+
+	if (world_map[world_x-1][world_y][playerZ+z] == 0){
+	  overlay->clip.x = 0;
+	  SDL_RenderCopy(overlay->renderer, overlay->texture, &overlay->clip, &overlay->target);
+	}
+	if (world_map[world_x][world_y-1][playerZ+z] == 0){
+	  overlay->clip.x = 16;
+	  SDL_RenderCopy(overlay->renderer, overlay->texture, &overlay->clip, &overlay->target);
+	}
+	if (world_map[world_x+1][world_y][playerZ+z] == 0){
+	  overlay->clip.x = 32;
+	  SDL_RenderCopy(overlay->renderer, overlay->texture, &overlay->clip, &overlay->target);
+	}
+	if (world_map[world_x][world_y+1][playerZ+z] == 0){
+	  overlay->clip.x = 48;
+	  SDL_RenderCopy(overlay->renderer, overlay->texture, &overlay->clip, &overlay->target);
+	}
       }
     }
   }
@@ -69,10 +86,8 @@ void draw_view(render_obj_t * object){
   object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
   object->clip.w = TILE_WIDTH;
   object->clip.h = TILE_HEIGHT;
-  object->target.w = ATLAS_WIDTH;
-  object->target.h = ATLAS_HEIGHT;
   
-  for (int z = -10 ; z < 1 ; z++){
+  for (int z = -10 ; z < 2 ; z++){
     for (int x = 0 ; x < CAMERA_VIEW ; x++){
       for (int y = 0 ; y < CAMERA_VIEW ; y++){
 	int world_x = playerX+(x - 4);
@@ -81,7 +96,7 @@ void draw_view(render_obj_t * object){
 	
 	int block = getBlockProperties(blocks_in_view[x][y][playerZ+z]).block[block_state];
 	int is_transparent = getBlockProperties(blocks_in_view[x][y][playerZ+z]).transparent;
-	
+
 	if (!is_transparent){
 	  object->clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
 	  object->clip.y = (block / (ATLAS_HEIGHT / TILE_HEIGHT)) * TILE_HEIGHT;
@@ -90,10 +105,17 @@ void draw_view(render_obj_t * object){
 	  object->clip.y = 0;
 	}
 
+	int brightness = 64+((playerZ+z) * 20);
+	if (brightness > 255){
+	  brightness = 255;
+	}
+
+	SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
+
         object->target.x = (x * (SCREEN_WIDTH/CAMERA_VIEW));
         object->target.y = (y * (SCREEN_HEIGHT/CAMERA_VIEW));
-        object->target.w = (SCREEN_WIDTH/CAMERA_VIEW);
-        object->target.h = (SCREEN_HEIGHT/CAMERA_VIEW);
+        object->target.w = SCREEN_WIDTH/CAMERA_VIEW;
+        object->target.h = SCREEN_HEIGHT/CAMERA_VIEW;
 	SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);
       }
     }

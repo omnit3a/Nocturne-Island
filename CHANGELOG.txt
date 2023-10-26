@@ -60,10 +60,8 @@ Alpha Version 0.2.10:
   Minor bug fixes
 
 Alpha Version 0.3.0:
-  Began work on graphical style change
   Removed crafting system. Pending rewrite
   Removed majority of blocks and items
-  Added slope prototype
   Removed Inventory. Pending rewrite
   Rewrote majority of UI code
   Added UI scaling based on window resolution
@@ -71,3 +69,5 @@ Alpha Version 0.3.0:
   Rewrote tick system
   Physics is now tick based
   Removed all multithreading code
+  Added block states
+  Added z-level indication

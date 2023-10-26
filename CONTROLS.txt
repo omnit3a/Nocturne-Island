@@ -1,8 +1,4 @@
 WASD: Move
 Space: Jump
-U: Rotate up and down
 IJKL: Rotate laterally
 M: Mine
-P: Place
-0-9: Select item from inventory
-E: Open Inventory

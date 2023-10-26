@@ -27,10 +27,6 @@ void spawn_player(){
   playerZ = SPAWN_Z;
 }
 
-int player_border_check(){
-  return (playerX > 0 && playerX < MAP_WIDTH-1 && playerY > 0 && playerY < MAP_LENGTH-1);
-}
-
 int getMiningSpeed(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   return 1;
 }
@@ -79,18 +75,34 @@ void playerOffsetDirection(){
   playerZOff = playerZ;
   switch (playerRotation){
     case NORTH:
+      if (playerY == 0){
+	playerYOff = playerY;
+	break;
+      }
       playerXOff = playerX;
       playerYOff = playerY-1;
       break;
     case EAST:
+      if (playerX == 0){
+	playerXOff = playerX;
+	break;
+      }
       playerXOff = playerX-1;
       playerYOff = playerY;
       break;
     case SOUTH:
+      if (playerY == MAP_LENGTH-1){
+	playerYOff = playerY;
+	break;
+      }
       playerXOff = playerX;
       playerYOff = playerY+1;
       break;
     case WEST:
+      if (playerX == MAP_WIDTH-1){
+	playerXOff = playerX;
+	break;
+      }
       playerXOff = playerX+1;
       playerYOff = playerY;
       break;
@@ -100,44 +112,39 @@ void playerOffsetDirection(){
 /* Mine a block in the direction of the player */
 int playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
   playerOffsetDirection();
-  if (player_border_check()){
-    static int temp_block = 0;
-    /* If trying to mine NOKIUM, return from function */
-    /* I probably want to replace this with a hardness value for each block */
-    if (getBlockProperties(map[playerXOff][playerYOff][playerZOff]).hp < -100){
+  static int temp_block = 0;
+  /* If trying to mine NOKIUM, return from function */
+  /* I probably want to replace this with a hardness value for each block */
+  if (getBlockProperties(map[playerXOff][playerYOff][playerZOff]).hp < -100){
+    return map[playerXOff][playerYOff][playerZOff];
+  }
+  /* Check if block is fully mined */
+  if (block_hp_map[playerXOff][playerYOff][playerZOff] != 0){
+    block_hp_map[playerXOff][playerYOff][playerZOff] -= getMiningSpeed(map);
+    if (block_hp_map[playerXOff][playerYOff][playerZOff] > 0){
       return map[playerXOff][playerYOff][playerZOff];
     }
-    /* Check if block is fully mined */
-    if (block_hp_map[playerXOff][playerYOff][playerZOff] != 0){
-      block_hp_map[playerXOff][playerYOff][playerZOff] -= getMiningSpeed(map);
-      if (block_hp_map[playerXOff][playerYOff][playerZOff] > 0){
-	return map[playerXOff][playerYOff][playerZOff];
-      }
-    }
-    
-    if (getBlockProperties(map[playerXOff][playerYOff][playerZOff]).solid == 1){
-      /* Add the mined item to the players inventory */
-      map[playerXOff][playerYOff][playerZOff] = 0;
-      
-    }
-    return temp_block;
   }
-  return 0;
+  
+  if (getBlockProperties(map[playerXOff][playerYOff][playerZOff]).solid == 1){
+    /* Add the mined item to the players inventory */
+    map[playerXOff][playerYOff][playerZOff] = 0;
+    
+  }
+  return temp_block;
 }
 
 /* Allow player to place a block from the inventory */
 void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int block){
   playerOffsetDirection();
   
-  if (player_border_check()){
-    /*if (!getBlockProperties(map[playerXOff][playerYOff][playerZOff]).solid){
-      map[playerXOff][playerYOff][playerZOff] = block;
-      block_hp_map[playerXOff][playerYOff][playerZOff] = getBlockProperties(map[playerXOff][playerYOff][playerZOff]).hp;
+  /*if (!getBlockProperties(map[playerXOff][playerYOff][playerZOff]).solid){
+    map[playerXOff][playerYOff][playerZOff] = block;
+    block_hp_map[playerXOff][playerYOff][playerZOff] = getBlockProperties(map[playerXOff][playerYOff][playerZOff]).hp;
     }
-    */
-    states_map[playerXOff][playerYOff][playerZOff]++;
-    states_map[playerXOff][playerYOff][playerZOff] = states_map[playerXOff][playerYOff][playerZOff] % 4;
-  }
+  */
+  states_map[playerXOff][playerYOff][playerZOff]++;
+  states_map[playerXOff][playerYOff][playerZOff] = states_map[playerXOff][playerYOff][playerZOff] % 4;
 
 }
 
@@ -172,9 +179,6 @@ void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event
   }
   playerOffsetDirection();
   if(!getBlockProperties(map[playerXOff][playerYOff][playerZ]).solid && move_player){
-    if (!player_border_check()){
-      return;
-    }
     playerX = playerXOff;
     playerY = playerYOff;
     playerRotation = prevRotation;

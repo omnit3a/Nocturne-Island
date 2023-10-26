@@ -15,6 +15,10 @@ block_data_t data_map[BLOCKS_AMOUNT];
 int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 char states_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];   
 
+int block_offset(int x_off, int y_off, int z_off){
+  return world_map[x_off][y_off][z_off];
+}
+
 void translateBlockDef(char * def, int line){
   int values[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   char * token;
