@@ -71,3 +71,6 @@ Alpha Version 0.3.0:
   Removed all multithreading code
   Added block states
   Added z-level indication
+
+Alpha Version 0.3.1:
+  Add variable view distance
