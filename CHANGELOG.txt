@@ -88,3 +88,5 @@ Alpha Version 0.3.4:
   Clean up game update code
   Fix bug with entity tag allocation
   Re-implement inventory
+  Added inventory ui
+  Added inventory defragmentation
