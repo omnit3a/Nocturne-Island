@@ -10,6 +10,7 @@
 #include <map_defs.h>
 #include <ticks.h>
 #include <inventory.h>
+#include <ui.h>
 
 int main(int argc, char ** argv){
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
@@ -57,6 +58,7 @@ int main(int argc, char ** argv){
         case SDL_KEYDOWN:
 	  handle_player_movement(event);
 	  handle_player_rotation(event);
+	  handle_ui(event);
 	  switch(event.key.keysym.sym){
 	    /* Mine a block */
 	    case SDLK_m:

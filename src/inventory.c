@@ -68,14 +68,24 @@ inventory_slot_t * get_current_item(){
 }
 
 void sort_inventory(){
-  for (int slot = 0 ; slot < INVENTORY_SIZE-1 ; slot++){
-    for (int offset = slot+1 ; offset < INVENTORY_SIZE - 1 ; offset++){
-      if (compare_blocks(inventory[slot].item, inventory[offset].item)){
-        inventory[offset].is_empty = 1;
-	while(!add_inventory_item(inventory[offset].item, inventory[offset].amount)){
-	  inventory[offset].amount--;
-	}
+  int item_count[BLOCKS_AMOUNT];
+  for (int id = 0 ; id < BLOCKS_AMOUNT ; id++){
+    item_count[id] = 0;
+    for (int slot = 0 ; slot < INVENTORY_SIZE-1 ; slot++){
+      if (get_inventory_item(slot)->item.id == id){
+	item_count[id] += get_inventory_item(slot)->amount;
       }
     }
   }
+  init_inventory();
+  int items_added = 0;
+  for (int id = 0 ; id < BLOCKS_AMOUNT && items_added < INVENTORY_SIZE; id++){
+    if (item_count[id] > 0){
+      inventory[items_added].item = get_block_properties(id);
+      inventory[items_added].amount = item_count[id];
+      inventory[items_added].is_empty = 0;
+      items_added++;
+    }
+  }
 }
+

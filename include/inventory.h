@@ -3,7 +3,7 @@
 #include <map.h>
 
 #define SLOT_SIZE 999
-#define INVENTORY_SIZE 16
+#define INVENTORY_SIZE 10
 
 /* <size> is how many items can fit in the slot */
 typedef struct inventory_slot_s {
