@@ -36,15 +36,12 @@ extern int playerZOff;
 
 void spawn_player();
 int player_border_check();
-int getMiningSpeed(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
-void movePlayer(int xOff, int yOff, int zOff, SDL_Renderer * renderer);
-void setPlayerRotation(rotation_t rotation);
-void rotatePlayerClockwise();
-void rotatePlayerUp();
-void playerOffsetDirection();
-int playerMineBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
-void playerPlaceBlock(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int block);
-void handlePlayerMovement(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], SDL_Event event);
-void handlePlayerRotation(SDL_Event event);
+int get_mining_speed();
+void set_player_rotation(rotation_t rotation);
+void player_offset_direction();
+void player_mine_block();
+void player_place_block(int block);
+void handle_player_movement(SDL_Event event);
+void handle_player_rotation(SDL_Event event);
 
 #endif

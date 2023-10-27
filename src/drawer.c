@@ -15,58 +15,7 @@ int view_x = 0;
 int view_y = 0;
 
 void draw_slope_overlay(render_obj_t * object, render_obj_t * overlay){
-  /* FIXME */
-
-  get_camera_view(&view_x, &view_y);
-  overlay->surface = SDL_LoadBMP(WALL_PATH);
-  overlay->texture = SDL_CreateTextureFromSurface(overlay->renderer, overlay->surface);
-  overlay->clip.w = TILE_WIDTH;
-  overlay->clip.h = TILE_HEIGHT;
-  overlay->target.w = SCREEN_WIDTH/view_x;
-  overlay->target.h = SCREEN_HEIGHT/view_y;
-  overlay->clip.x = 0;
-  overlay->clip.y = 0;
-  int screen_x = 0;
-  int screen_y = 0;
-  
-  for (int z = -10 ; z < 1 ; z++){
-    screen_x = 0;
-    for (int x = playerX-(view_x/2) ; x <= playerX+(view_x/2) ; x++){
-      screen_y = 0;
-      for (int y = playerY-(view_y/2) ; y <= playerY+(view_y/2) ; y++){
-	
-	if (world_map[x][y][playerZ+z] == 0){
-	  continue;
-	}
-
-	overlay->target.x = (screen_x * (SCREEN_WIDTH/view_x));
-	overlay->target.y = (screen_y * (SCREEN_HEIGHT/view_y));
-
-	if (world_map[x-1][y][playerZ+z] == 0){
-	  overlay->clip.x = 0;
-	  SDL_RenderCopy(overlay->renderer, overlay->texture, &overlay->clip, &overlay->target);
-	}
-
-	if (world_map[x][y-1][playerZ+z] == 0){
-	  overlay->clip.x = 16;
-	  SDL_RenderCopy(overlay->renderer, overlay->texture, &overlay->clip, &overlay->target);
-	}
-	if (world_map[x+1][y][playerZ+z] == 0){
-	  overlay->clip.x = 32;
-	  SDL_RenderCopy(overlay->renderer, overlay->texture, &overlay->clip, &overlay->target);
-	}
-	if (world_map[x][y+1][playerZ+z] == 0){
-	  overlay->clip.x = 48;
-	  SDL_RenderCopy(overlay->renderer, overlay->texture, &overlay->clip, &overlay->target);
-	}
-	screen_y++;
-      }
-      screen_x++;
-    }
-  }
-  SDL_BlitSurface(overlay->surface, &overlay->target, object->surface, &object->target);
-  SDL_FreeSurface(overlay->surface);
-  SDL_DestroyTexture(overlay->texture); 
+  /* TODO */
 }
 
 void draw_view(render_obj_t * object){
@@ -83,10 +32,10 @@ void draw_view(render_obj_t * object){
     for (int x = playerX-(view_x/2) ; x <= playerX+(view_x/2) ; x++){
       screen_y = 0;
       for (int y = playerY-(view_y/2) ; y <= playerY+(view_y/2) ; y++){
-	int block_state = states_map[x][y][playerZ+z];
+	int state = get_block(x, y, playerZ+z).current_state;
 	
-	int block = getBlockProperties(world_map[x][y][playerZ+z]).block[block_state];
-	int is_transparent = getBlockProperties(world_map[x][y][playerZ+z]).transparent;
+	int block = get_block(x, y, playerZ+z).block.block[state];
+	int is_transparent = get_block(x, y, playerZ+z).block.transparent;
 
 	if (!is_transparent){
 	  object->clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;

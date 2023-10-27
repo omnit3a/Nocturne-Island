@@ -7,7 +7,6 @@
 #include <map.h>
 #include <ui.h>
 
-char camera_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 SDL_Renderer * camera_renderer;
 render_obj_t camera_object;
 render_obj_t overlay_object;
@@ -15,16 +14,6 @@ render_obj_t overlay_object;
 void get_camera_view(int * x, int * y ){
   *x = 9;
   *y = 9;  
-}
-
-void update_camera_map(char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-      for (int z = 0 ; z < MAP_HEIGHT ; z++){
-	camera_map[x][y][z] = world[x][y][z];
-      }
-    }
-  }
 }
 
 void setup_camera(SDL_Renderer * renderer, SDL_Window * window){
