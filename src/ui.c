@@ -80,14 +80,17 @@ void draw_ui(render_obj_t * object){
 }
 
 void draw_direction(render_obj_t * object){
+  int view_x;
+  int view_y;
   int xOff = 0;
   int yOff = 0;
   int render_angle = 0;
   /* Determine offset for the player direction arrow
      depending on the direction the player is facing
   */
-  int x_width = (SCREEN_WIDTH/CAMERA_VIEW);
-  int y_height = (SCREEN_HEIGHT/CAMERA_VIEW);
+  get_camera_view(&view_x, &view_y);
+  int x_width = (SCREEN_WIDTH/view_x);
+  int y_height = (SCREEN_HEIGHT/view_y);
   object->surface = SDL_LoadBMP(ARROW_UI_PATH);
   switch (playerRotation){
     case NORTH:
@@ -114,8 +117,8 @@ void draw_direction(render_obj_t * object){
   object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
   object->target.x = xOff;
   object->target.y = yOff;
-  object->target.w = (SCREEN_WIDTH/CAMERA_VIEW);
-  object->target.h = (SCREEN_HEIGHT/CAMERA_VIEW);
+  object->target.w = (SCREEN_WIDTH/view_x);
+  object->target.h = (SCREEN_HEIGHT/view_y);
   SDL_RenderCopyEx(object->renderer, object->texture, NULL, &object->target, render_angle, NULL, 0);
   SDL_DestroyTexture(object->texture);
   SDL_FreeSurface(object->surface);

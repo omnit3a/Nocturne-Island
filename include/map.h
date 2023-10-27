@@ -30,20 +30,22 @@ typedef struct block_data_s {
   int block_type;
 } block_data_t;
 
-extern char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
-extern block_data_t data_map[BLOCKS_AMOUNT];
-extern int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
-extern char states_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
+typedef struct world_data_s {
+  block_data_t block;
+  int current_state;
+  int hp;
+  int id;
+} world_data_t;
 
-int block_offset(int x_off, int y_off, int z_off);
-void translateBlockDef(char * def, int line);
-void loadBlockProperties(char * path, block_data_t * data);
-block_data_t getBlockProperties(int block);
-void fillMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
-void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_WIDTH][MAP_LENGTH], int seed);
-void rotate_grass(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
-void placeOres(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char height_map[MAP_WIDTH][MAP_LENGTH], int seed);
-void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed);
-void cullHiddenBlocks(char dest_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char src_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
+void set_block(block_data_t block, int x_pos, int y_pos, int z_pos);
+world_data_t get_block(int x_pos, int y_pos, int z_pos);
+int is_block_underground(int x_pos, int y_pos, int z_pos);
+void translate_block_def(char * def, int line);
+void load_block_properties(char * path);
+block_data_t get_block_properties(int block);
+void fill_map();
+void place_trees(char height_map[MAP_WIDTH][MAP_LENGTH], int seed);
+void rotate_grass();
+void generate_hills(int seed);
 #endif
 

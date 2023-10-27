@@ -10,16 +10,33 @@
 #include <map_defs.h>
 #include <string.h>
 
-char world_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
+world_data_t game_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 block_data_t data_map[BLOCKS_AMOUNT];
-int block_hp_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
-char states_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];   
 
-int block_offset(int x_off, int y_off, int z_off){
-  return world_map[x_off][y_off][z_off];
+void set_block(block_data_t block, int x_pos, int y_pos, int z_pos){
+  game_map[x_pos][y_pos][z_pos].block = block;
+  game_map[x_pos][y_pos][z_pos].current_state = 0;
+  game_map[x_pos][y_pos][z_pos].hp = block.hp;
+  game_map[x_pos][y_pos][z_pos].id = block.block[0];
 }
 
-void translateBlockDef(char * def, int line){
+world_data_t get_block(int x_pos, int y_pos, int z_pos){
+  return game_map[x_pos][y_pos][z_pos];
+}
+
+int is_block_underground(int x_pos, int y_pos, int z_pos){
+  if (get_block(x_pos, y_pos, z_pos+1).block.solid){
+    return 0;
+  }
+  for (int z = z_pos+1 ; z < MAP_HEIGHT ; z++){
+    if (get_block(x_pos, y_pos, z).block.solid){
+      return 1;
+    }
+  }
+  return 0;
+}
+
+void translate_block_def(char * def, int line){
   int values[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   char * token;
   char * delim = " ";
@@ -44,7 +61,7 @@ void translateBlockDef(char * def, int line){
   
 }
 
-void loadBlockProperties(char * path, block_data_t * data){
+void load_block_properties(char * path){
   int block_def_size = 1024;
   char * block_def_copy = malloc(block_def_size);
   char ** block_def_lines = malloc(256 * BLOCKS_AMOUNT);
@@ -89,7 +106,7 @@ void loadBlockProperties(char * path, block_data_t * data){
 
   current_line = 0;
   while (block_def_lines[current_line] != NULL){
-    translateBlockDef(block_def_lines[current_line], current_line);
+    translate_block_def(block_def_lines[current_line], current_line);
     current_line++;
   }
 
@@ -100,18 +117,16 @@ void loadBlockProperties(char * path, block_data_t * data){
   fclose(def_file);
 }
 
-block_data_t getBlockProperties(int block){
+block_data_t get_block_properties(int block){
   return data_map[block];
 }
 
 /* Initialize every tile in map to empty block */
-void fillMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
-  for (int i = 0 ; i < MAP_HEIGHT ; i++){
-    for (int j = 0 ; j < MAP_WIDTH ; j++){
-      for (int n = 0 ; n < MAP_LENGTH ; n++){
-	map[j][n][i] = 0;
-	block_hp_map[j][n][i] = 0;
-	states_map[j][n][i] = 0; 
+void fill_map(){
+  for (int x = 0 ; x < MAP_WIDTH ; x++){
+    for (int y = 0 ; y < MAP_LENGTH ; y++){
+      for (int z = 0 ; z < MAP_HEIGHT ; z++){
+	set_block(get_block_properties(EMPTY), x, y, z);
       }
     }
   }
@@ -122,42 +137,38 @@ void fillMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
  * When a lighting system is implemented, make it so that trees are more likely
  * to spawn in well lit areas.
  */
-void placeTrees(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT],char height_map[MAP_WIDTH][MAP_LENGTH], int seed){
+void place_trees(char height_map[MAP_WIDTH][MAP_LENGTH], int seed){
   srand(seed);
   int offset = 1;
-  for (int i = 0 ; i < MAP_WIDTH ; i++){
-    for (int j = 0 ; j < MAP_LENGTH ; j++){
+  for (int x = 0 ; x < MAP_WIDTH ; x++){
+    for (int y = 0 ; y < MAP_LENGTH ; y++){
       offset = 1;
-      if (height_map[i][j] < MAP_HEIGHT){
-	if (height_map[i][j] == CLIFF_HEIGHT){
+      if (height_map[x][y] < MAP_HEIGHT){
+	if (height_map[x][y] == CLIFF_HEIGHT){
 	  offset = 30;
 	}
 	offset += rand() % SPAWN_RATE_VARIANCE;
         if ((rand() % 1000) <= TREE_CHANCE+offset){
-	  map[i][j][(int)height_map[i][j]+1] = TREE_BOTTOM;
-	  map[i][j][(int)height_map[i][j]+2] = TREE_LEAVES;
+	  set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
+	  set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+1);
 	}
       }
     }
   }
 }
 
-void rotate_grass(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
+void rotate_grass(){
   for (int x = 0 ; x < MAP_WIDTH ; x++){
     for (int y = 0 ; y < MAP_LENGTH ; y++){
       for (int z = 0 ; z < MAP_HEIGHT ; z++){
-	if (getBlockProperties(map[x][y][z]).block[0] == GRASS){
-	  states_map[x][y][z] = rand() % 3;
+	if (get_block(x, y, z).id == GRASS){
+	  game_map[x][y][z].current_state = rand() % 3;
 	}
       }
     }
   }
 }
 
-/* Place Iron and Coal ore inside of mountains */
-void placeOres(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char height_map[MAP_WIDTH][MAP_LENGTH], int seed){
-  /* TODO */
-}
 
 /* World Generation Steps:
  * Step 1:
@@ -177,24 +188,24 @@ void placeOres(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char height_map[MAP_
  * Step 8:
  *   Generate block hp map
  */
-void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
-  fillMap(map);
+void generate_hills(int seed){
+  fill_map();
   srand(seed);
   /* Step 1 */
   int isMountain = 0;
   int prevIsMountain = 0;
   char temp_height_map[MAP_WIDTH][MAP_LENGTH];
   char height_map[MAP_WIDTH][MAP_LENGTH];
-  for (int i = 0 ; i < MAP_WIDTH ; i++){
-    for (int j = 0 ; j < MAP_LENGTH ; j++){
-      height_map[i][j] = 0;
+  for (int x = 0 ; x < MAP_WIDTH ; x++){
+    for (int y = 0 ; y < MAP_LENGTH ; y++){
+      height_map[x][y] = 0;
       if (prevIsMountain){
         isMountain = ((rand() % 100) < 85);
       } else {
         isMountain = ((rand() % 100) < 5);
       }
       if (isMountain){
-        height_map[i][j] = CLIFF_HEIGHT;
+        height_map[x][y] = CLIFF_HEIGHT;
       }
       prevIsMountain = isMountain;
     }
@@ -202,19 +213,19 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
 
   /* Step 2 */
   for (int r = 0 ; r < 100 ; r++){
-    for (int i = 0 ; i < MAP_WIDTH ; i++){
-      for (int j = 0 ; j < MAP_LENGTH ; j++){
-	temp_height_map[i][j] = height_map[i][j];
+    for (int x = 0 ; x < MAP_WIDTH ; x++){
+      for (int y = 0 ; y < MAP_LENGTH ; y++){
+	temp_height_map[x][y] = height_map[x][y];
 	if (r < 75){
-          if (height_map[i-1][j] > 0 && height_map[i+1][j] > 0){
-	    temp_height_map[i][j] = CLIFF_HEIGHT;
+          if (height_map[x-1][y] > 0 && height_map[x+1][y] > 0){
+	    temp_height_map[x][y] = CLIFF_HEIGHT;
 	  }
-	  if (height_map[i][j-1] == 0 && height_map[i][j+1] == 0){
-	    temp_height_map[i][j] = CLIFF_HEIGHT;
+	  if (height_map[x][y-1] == 0 && height_map[x][y+1] == 0){
+	    temp_height_map[x][y] = CLIFF_HEIGHT;
 	  }
 	}
- 	if ((height_map[i-1][j] == 0 && height_map[i+1][j] == 0) || (height_map[i][j-1] == 0 && height_map[i][j+1] == 0)){
-	  temp_height_map[i][j] = 0;
+ 	if ((height_map[x-1][y] == 0 && height_map[x+1][y] == 0) || (height_map[x][y-1] == 0 && height_map[x][y+1] == 0)){
+	  temp_height_map[x][y] = 0;
         }
       }
     }
@@ -222,9 +233,9 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
 
   /* Step 3 */
   int hillChance = 1;
-  for (int i = 0 ; i < MAP_WIDTH ; i++){
-    for (int j = 0 ; j < MAP_LENGTH ; j++){
-      if (temp_height_map[i][j] == 0){
+  for (int x = 0 ; x < MAP_WIDTH ; x++){
+    for (int y = 0 ; y < MAP_LENGTH ; y++){
+      if (temp_height_map[x][y] == 0){
 	if (hillChance == 1){
 	  hillChance = (((rand() % 100) < 75)%2);
 	  if (hillChance){
@@ -247,14 +258,14 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
 	    hillChance = 1;
 	  }
 	}
-	temp_height_map[i][j] = hillChance;
+	temp_height_map[x][y] = hillChance;
       }
     }
   }
 
-  for (int i = 0 ; i < MAP_WIDTH ; i++){
-    for (int j = 0 ; j < MAP_LENGTH ; j++){
-      height_map[i][j] = temp_height_map[i][j];
+  for (int x = 0 ; x < MAP_WIDTH ; x++){
+    for (int y = 0 ; y < MAP_LENGTH ; y++){
+      height_map[x][y] = temp_height_map[x][y];
     }
   }
 
@@ -262,95 +273,52 @@ void generateHills(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], int seed){
   int surroundVals[4] = {0};
   int average = 0;
   for (int r = 0 ; r < 3 ; r++){
-    for (int i = 0 ; i < MAP_WIDTH ; i++){
-      for (int j = 0 ; j < MAP_LENGTH ; j++){
-	if (i > 0) {
-          surroundVals[0] = height_map[i-1][j];
+    for (int x = 0 ; x < MAP_WIDTH ; x++){
+      for (int y = 0 ; y < MAP_LENGTH ; y++){
+	if (x > 0) {
+          surroundVals[0] = height_map[x-1][y];
 	}
-	if (i < MAP_WIDTH-1){
-          surroundVals[1] = height_map[i+1][j];
+	if (x < MAP_WIDTH-1){
+          surroundVals[1] = height_map[x+1][y];
 	}
-	if (j > 0){
-          surroundVals[2] = height_map[i][j-1];
+	if (y > 0){
+          surroundVals[2] = height_map[x][y-1];
 	}
-	if (j < MAP_LENGTH-1){
-          surroundVals[3] = height_map[i][j+1];
+	if (y < MAP_LENGTH-1){
+          surroundVals[3] = height_map[x][y+1];
 	}
         for (int a = 0 ; a < 4 ; a++){
           average += surroundVals[a];
         }
         average = average / 4;
-        temp_height_map[i][j] = average;
+        temp_height_map[x][y] = average;
       }
     }
-    for (int i = 0 ; i < MAP_WIDTH ; i++){
-      for (int j = 0 ; j < MAP_LENGTH ; j++){
-        if (height_map[i][j] < GROUND_HEIGHT){
-	  height_map[i][j] = temp_height_map[i][j];
+    for (int x = 0 ; x < MAP_WIDTH ; x++){
+      for (int y = 0 ; y < MAP_LENGTH ; y++){
+        if (height_map[x][y] < GROUND_HEIGHT){
+	  height_map[x][y] = temp_height_map[x][y];
 	}
       }
     }
   }
 
   /* Step 5 */
-  for (int i = 0 ; i < MAP_WIDTH ; i++){
-    for (int j = 0 ; j < MAP_LENGTH ; j++){
-      map[i][j][(int)height_map[i][j]] = GRASS;
-      for (int n = height_map[i][j]-1 ; n >= 0 ; n--){
-	if (height_map[i][j] < GROUND_HEIGHT){
-	  map[i][j][n] = DIRT;
+  for (int x = 0 ; x < MAP_WIDTH ; x++){
+    for (int y = 0 ; y < MAP_LENGTH ; y++){
+      set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
+      for (int z = height_map[x][y]-1 ; z >= 0 ; z--){
+	if (height_map[x][y] < GROUND_HEIGHT){
+	  set_block(get_block_properties(DIRT), x, y, z);
 	} else {
-	  map[i][j][n] = STONE;
+	  set_block(get_block_properties(STONE), x, y, z);
 	}
       }
     }
   }
 
   /* Step 6 */
-  placeTrees(map, height_map, seed);
-  placeOres(map, height_map, seed);
+  place_trees(height_map, seed);
 
-  /* Step 7 */
-  /* Probably too many caves */
-  /*
-  for (int i = 0 ; i < 400 ; i++){
-    generateCave(map, seed, 500, 20);
-  }
-  */
-
-  /* Step 8 */
-  /* Generate block_hp_map */
-  for (int i = 0 ; i < MAP_WIDTH ; i++){
-    for (int j = 0 ; j < MAP_LENGTH ; j++){
-      for (int n = 0 ; n < MAP_HEIGHT ; n++){
-	block_hp_map[i][j][n] = getBlockProperties(map[i][j][n]).hp;
-      }
-    }
-  }
-
-  rotate_grass(map);
-}
-
-/* Cull blocks that are surrounded on top, the left and the right */
-void cullHiddenBlocks(char dest_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT], char src_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]){
-  for (int i = 0 ; i < MAP_HEIGHT ; i++){
-    for (int j = 0 ; j < MAP_WIDTH ; j++){
-      for (int n = 0 ; n < MAP_LENGTH ; n++){
-	dest_map[j][n][i] = src_map[j][n][i];
-      }
-    }
-  }
-
-  for (int i = 0 ; i < MAP_HEIGHT ; i++){
-    for (int j = 0 ; j < MAP_WIDTH ; j++){
-      for (int n = 0 ; n < MAP_LENGTH ; n++){
-	if (i < MAP_HEIGHT-1 && src_map[j][n][i+1] != 0 && j > MAP_WIDTH-1 && src_map[j+1][n][i] != 0 && n < MAP_LENGTH-1 && src_map[j][n+1][i] != 0){
-	  dest_map[j][n][i] = 0;
-	}
-      }
-    }
-  }
-
-  setPhysicsMap(dest_map);
-  update_camera_map(dest_map);
+  rotate_grass();
 }

@@ -37,17 +37,10 @@ int main(int argc, char ** argv){
   }
 
   SDL_UpdateWindowSurface(window);
-  //char world[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
-  char world_copy[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 
-  loadBlockProperties(BLOCK_DATA_PATH, data_map);
-
-  generateHills(world_map, time(0));  // generate a hilly world
-  cullHiddenBlocks(world_copy, world_map); // remove blocks that are surrounded
-
-  setPhysicsMap(world_copy); // save the world map to the physics collision map  
+  load_block_properties(BLOCK_DATA_PATH);
+  generate_hills(time(0));  // generate a hilly world
   setup_camera(renderer, window);
-
   spawn_player();
   
   /* MAIN GAME LOOP */
@@ -68,21 +61,17 @@ int main(int argc, char ** argv){
     while (SDL_PollEvent(&e) > 0){
       switch (e.type){
         case SDL_KEYDOWN:
-	  handlePlayerMovement(world_copy, e);
-	  handlePlayerRotation(e);
+	  handle_player_movement(e);
+	  handle_player_rotation(e);
 	  switch(e.key.keysym.sym){
 	    /* Mine a block */
 	    case SDLK_m:
-	      playerMineBlock(world_map);
-	      /* Regenerate the world_copy map, physics map, and solidity map */
-	      cullHiddenBlocks(world_copy, world_map);
+	      player_mine_block();
 	      break;
 	      
 	    /* Place a block */
 	    case SDLK_n:
-	      //playerPlaceBlock(world_map, 0);
-	      /* Regenerate the world_copy map, physics map, and solidity map */
-	      cullHiddenBlocks(world_copy, world_map);
+	      player_place_block(0);
 	      break;
 	  }
 	  break;
