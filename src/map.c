@@ -17,7 +17,7 @@ void set_block(block_data_t block, int x_pos, int y_pos, int z_pos){
   game_map[x_pos][y_pos][z_pos].block = block;
   game_map[x_pos][y_pos][z_pos].current_state = 0;
   game_map[x_pos][y_pos][z_pos].hp = block.hp;
-  game_map[x_pos][y_pos][z_pos].id = block.block[0];
+  game_map[x_pos][y_pos][z_pos].id = block.id;
 }
 
 world_data_t get_block(int x_pos, int y_pos, int z_pos){
@@ -40,19 +40,27 @@ int is_block_shaded(int x_pos, int y_pos, int z_pos){
   return 0;
 }
 
-void translate_block_def(char * def, int line){
-  int values[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+void translate_block_def(char * def){
+  int values[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   char * token;
   char * delim = " ";
   int field = 0;
+  char name[BLOCK_NAME_LENGTH];
   
   token = strtok(def, delim);
   
   while (token != NULL){
-    values[field++] = atoi(token);
+    if (field == 0){
+      strcpy(name, token);
+    } else {
+      values[field-1] = atoi(token);
+    }
+    field++;
     token = strtok(NULL, delim);
   }
-  
+
+  int line = values[10];
+  strcpy(data_map[line].name, name);
   data_map[line].hp = values[0];
   data_map[line].solid = values[1];
   data_map[line].transparent = values[2];
@@ -62,7 +70,7 @@ void translate_block_def(char * def, int line){
   data_map[line].dropped_item = values[7];
   data_map[line].count = values[8];
   data_map[line].block_type = values[9];
-  
+  data_map[line].id = values[10];
 }
 
 void load_block_properties(char * path){
@@ -110,7 +118,7 @@ void load_block_properties(char * path){
 
   current_line = 0;
   while (block_def_lines[current_line] != NULL){
-    translate_block_def(block_def_lines[current_line], current_line);
+    translate_block_def(block_def_lines[current_line]);
     current_line++;
   }
 
@@ -325,4 +333,18 @@ void generate_hills(int seed){
   place_trees(height_map, seed);
 
   rotate_grass();
+}
+
+int compare_blocks(block_data_t a, block_data_t b){
+  int equality = 0;
+  equality += a.hp == b.hp;
+  equality += a.solid == b.solid;
+  equality += a.transparent == b.transparent;
+  for (int state = 0 ; state < BLOCK_STATES ; state++){
+    equality += a.block[state] == b.block[state];
+  } 
+  equality += a.dropped_item == b.dropped_item;
+  equality += a.count == b.count;
+  equality += a.block_type == b.block_type;
+  return equality == 10;
 }

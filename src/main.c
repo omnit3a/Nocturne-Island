@@ -1,7 +1,6 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <drawer.h>
 #include <map.h>
 #include <camera.h>
@@ -10,6 +9,8 @@
 #include <physics.h>
 #include <map_defs.h>
 #include <ticks.h>
+#include <inventory.h>
+#include <ui.h>
 
 int main(int argc, char ** argv){
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
@@ -43,28 +44,22 @@ int main(int argc, char ** argv){
   generate_hills(time(0));  // generate a hilly world
   setup_camera(renderer, window);
   init_player_entity();
+  init_inventory();
   
   /* MAIN GAME LOOP */
-  bool running_game = true;
+  int running_game = 1;
   while (running_game){
-    SDL_Event e;
+    SDL_Event event;
 
-    if (get_current_tick() % (TICKS_PER_SECOND / 8) == 0){
-      handle_physics();
-    } else {
-      reset_physics();
-    }
-
-    if (get_current_tick() % 2 == 0){
-      update_camera();
-    }
+    tick_update();
     
-    while (SDL_PollEvent(&e) > 0){
-      switch (e.type){
+    while (SDL_PollEvent(&event) > 0){
+      switch (event.type){
         case SDL_KEYDOWN:
-	  handle_player_movement(e);
-	  handle_player_rotation(e);
-	  switch(e.key.keysym.sym){
+	  handle_player_movement(event);
+	  handle_player_rotation(event);
+	  handle_ui(event);
+	  switch(event.key.keysym.sym){
 	    /* Mine a block */
 	    case SDLK_m:
 	      player_mine_block();
@@ -72,12 +67,12 @@ int main(int argc, char ** argv){
 	      
 	    /* Place a block */
 	    case SDLK_n:
-	      player_place_block(0);
+	      player_place_block();
 	      break;
 	  }
 	  break;
         case SDL_QUIT:
-	  running_game = false;
+	  running_game = 0;
 	  break;
       }
     }

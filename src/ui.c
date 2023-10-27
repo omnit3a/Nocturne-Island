@@ -9,6 +9,7 @@
 #include <camera.h>
 #include <messages.h>
 #include <map_defs.h>
+#include <inventory.h>
 
 ui_mode_t ui_mode = IDLE;
 int x_cursor = 0;
@@ -65,13 +66,31 @@ void draw_string(char * string, render_obj_t * object){
 }
 
 void draw_ui(render_obj_t * object){
+  block_data_t block;
   zero_ui();
   draw_direction(object);
   ui_x_scale = (DEFAULT_SCREEN_WIDTH / COLS);
   ui_y_scale = (DEFAULT_SCREEN_HEIGHT / ROWS); 
   switch(ui_mode){
     case IDLE:
+      block = get_current_item()->item;
       draw_string(CURRENT_VERSION_MSG, object);
+      newline_ui();
+      draw_string(CURRENT_BLOCK_MSG, object);
+      draw_string(block.name, object);
+      break;
+    case INVENTORY:
+      char slot_label[4] = " - ";
+      char amount[20];
+      for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
+	block = get_inventory_item(slot)->item;
+	slot_label[1] = slot + 48;
+	draw_string(slot_label, object);
+	draw_string(block.name, object);
+	sprintf(amount, ": %d", get_inventory_item(slot)->amount);
+	draw_string(amount, object);
+	newline_ui();
+      }
       break;
     default:
       break;
@@ -124,4 +143,13 @@ void draw_direction(render_obj_t * object){
 
 /* Switch between UI Modes */
 void handle_ui(SDL_Event event){
+  switch (event.key.keysym.sym){
+    case SDLK_e:
+      if (ui_mode == INVENTORY){
+	ui_mode = IDLE;
+      } else {
+	ui_mode = INVENTORY;
+      }
+      break;
+  }
 }

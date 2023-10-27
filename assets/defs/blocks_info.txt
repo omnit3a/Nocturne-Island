@@ -1,6 +1,9 @@
 Block definition format:
 Note that block ID is automatically assigned
 
+name (char [80]):
+  - what the block is called in game
+
 hp (any signed int):
   - how many regular hits it takes to mine
   
@@ -34,3 +37,6 @@ block_type (any int >= 0 and <= 5):
     3 = FURNITURE_TYPE
     4 = UNKNOWN_TYPE
     5 = METAL_TYPE
+
+id (any signed int):
+  - the id used to represent this block definition

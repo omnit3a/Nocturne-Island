@@ -9,14 +9,12 @@ typedef struct transform_s {
 } transform_t;
 
 typedef struct tag_s {
-  char * name;
   int id;
   int value;
 } tag_t;
 
 typedef struct sprite_s {
   render_obj_t renderer;
-  char * path;
 } sprite_t;
 
 typedef struct entity_s {

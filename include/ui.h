@@ -17,8 +17,7 @@
 
 typedef enum ui_mode_e {
   IDLE = 0,
-  INVENTORY = 1,
-  CRAFTING = 2
+  INVENTORY = 1
 } ui_mode_t;
 
 void zero_ui();
