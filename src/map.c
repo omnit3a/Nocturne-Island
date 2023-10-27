@@ -61,8 +61,7 @@ void translate_block_def(char * def, int line){
   }
   data_map[line].dropped_item = values[7];
   data_map[line].count = values[8];
-  data_map[line].block_type = values[9];
-  
+  data_map[line].block_type = values[9];  
 }
 
 void load_block_properties(char * path){
@@ -325,4 +324,18 @@ void generate_hills(int seed){
   place_trees(height_map, seed);
 
   rotate_grass();
+}
+
+int compare_blocks(block_data_t a, block_data_t b){
+  int equality = 0;
+  equality += a.hp == b.hp;
+  equality += a.solid == b.solid;
+  equality += a.transparent == b.transparent;
+  for (int state = 0 ; state < BLOCK_STATES ; state++){
+    equality += a.block[state] == b.block[state];
+  } 
+  equality += a.dropped_item == b.dropped_item;
+  equality += a.count == b.count;
+  equality += a.block_type == b.block_type;
+  return equality == 10;
 }

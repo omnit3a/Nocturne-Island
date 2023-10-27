@@ -48,5 +48,6 @@ void fill_map();
 void place_trees(char height_map[MAP_WIDTH][MAP_LENGTH], int seed);
 void rotate_grass();
 void generate_hills(int seed);
+int compare_blocks(block_data_t a, block_data_t b);
 #endif
 

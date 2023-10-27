@@ -20,11 +20,9 @@ void entity_rotate(entity_t * entity, transform_t * offset){
 
 void entity_apply_sprite(entity_t * entity, sprite_t * sprite){
   entity->sprite.renderer = sprite->renderer;
-  strcpy(entity->sprite.path, sprite->path);
 }
 
 void entity_set_tag(entity_t * entity, tag_t * tag){
-  strcpy(entity->tag.name, tag->name);
   entity->tag.id = tag->id;
   entity->tag.value = tag->value;
 }

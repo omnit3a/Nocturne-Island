@@ -12,9 +12,9 @@
 
 void spawn_player();
 int get_mining_speed();
-void player_offset_direction();
+void player_rotate();
 void player_mine_block();
-void player_place_block(int block);
+void player_place_block();
 void handle_player_movement(SDL_Event event);
 void handle_player_rotation(SDL_Event event);
 entity_t * get_player_entity();

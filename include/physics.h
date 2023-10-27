@@ -1,7 +1,5 @@
 #ifndef PHYSICS_H_
 #define PHYSICS_H_
-#include <map.h>
-#include <SDL2/SDL.h>
 
 #define JUMP_LENGTH 500
 

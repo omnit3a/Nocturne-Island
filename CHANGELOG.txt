@@ -83,3 +83,8 @@ Alpha Version 0.3.2:
 Alpha Version 0.3.3:
   Add entity system
   Player is now an entity
+
+Alpha Version 0.3.4:
+  Clean up game update code
+  Fix bug with entity tag allocation
+  Re-implement inventory

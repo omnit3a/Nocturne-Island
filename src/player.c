@@ -3,15 +3,12 @@
 #include <stdlib.h>
 #include <player.h>
 #include <map.h>
-#include <drawer.h>
-#include <camera.h>
 #include <physics.h>
-#include <ui.h>
 #include <map_defs.h>
 #include <entity.h>
+#include <inventory.h>
 
 tag_t player_tag = {
-  "player",
   0,
   0
 };
@@ -36,7 +33,7 @@ int get_mining_speed(){
 }
 
 // add direction offsets for mining and placing blocks
-void player_offset_direction(){
+void player_rotate(){
   transform_t pos = player_entity.position;
   transform_t offset = pos;
 
@@ -49,7 +46,7 @@ void player_offset_direction(){
 
 /* Mine a block in the direction of the player */
 void player_mine_block(){
-  player_offset_direction();
+  player_rotate();
   transform_t rot = player_entity.rotation;
   if (get_block(rot.x, rot.y, rot.z).hp < -100){
     return;
@@ -66,13 +63,19 @@ void player_mine_block(){
   }
   
   if (get_block(rot.x, rot.y, rot.z).block.solid){
-    set_block(get_block_properties(EMPTY), rot.x, rot.y, rot.z);    
+    block_data_t block = get_block_properties(get_block(rot.x, rot.y, rot.z).block.dropped_item);
+    add_inventory_item(block, block.count);
+    set_block(get_block_properties(EMPTY), rot.x, rot.y, rot.z);
   }
 }
 
 /* Allow player to place a block from the inventory */
-void player_place_block(int block){
-  /* TODO */
+void player_place_block(){
+  transform_t rot = player_entity.rotation;
+  int result = remove_inventory_item(get_current_item()->item, 1);
+  if (result && !get_block(rot.x, rot.y, rot.z).block.solid){
+    set_block(get_current_item()->item, rot.x, rot.y, rot.z);
+  }
 }
 
 /* Get user input for the player, then do stuff with it */
@@ -112,13 +115,13 @@ void handle_player_movement(SDL_Event event){
       }
       break;
   }
-  player_offset_direction();
+  player_rotate();
   rot = player_entity.rotation;
   if(!get_block(rot.x, rot.y, rot.z).block.solid && move_player){
     entity_move(&player_entity, &rot);
   }
   current_rotation = prev_rot;
-  player_offset_direction();
+  player_rotate();
 }
 
 void handle_player_rotation(SDL_Event event){
@@ -140,7 +143,7 @@ void handle_player_rotation(SDL_Event event){
       current_rotation.y = 0;
       break;
   }
-  player_offset_direction();
+  player_rotate();
 }
 
 entity_t * get_player_entity(){
@@ -149,7 +152,8 @@ entity_t * get_player_entity(){
 
 void init_player_entity(){
   spawn_player();
-  player_offset_direction();
+  player_rotate();
+  entity_set_tag(&player_entity, &player_tag);
 }
 
 transform_t get_player_direction(){
