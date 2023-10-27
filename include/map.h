@@ -39,7 +39,7 @@ typedef struct world_data_s {
 
 void set_block(block_data_t block, int x_pos, int y_pos, int z_pos);
 world_data_t get_block(int x_pos, int y_pos, int z_pos);
-int is_block_underground(int x_pos, int y_pos, int z_pos);
+int is_block_shaded(int x_pos, int y_pos, int z_pos);
 void translate_block_def(char * def, int line);
 void load_block_properties(char * path);
 block_data_t get_block_properties(int block);

@@ -24,12 +24,12 @@ world_data_t get_block(int x_pos, int y_pos, int z_pos){
   return game_map[x_pos][y_pos][z_pos];
 }
 
-int is_block_underground(int x_pos, int y_pos, int z_pos){
-  if (get_block(x_pos, y_pos, z_pos+1).block.solid){
+int is_block_shaded(int x_pos, int y_pos, int z_pos){
+  if (!get_block(x_pos, y_pos, z_pos+1).block.transparent){
     return 0;
   }
   for (int z = z_pos+1 ; z < MAP_HEIGHT ; z++){
-    if (get_block(x_pos, y_pos, z).block.solid){
+    if (!get_block(x_pos, y_pos, z).block.transparent){
       return 1;
     }
   }
@@ -150,7 +150,7 @@ void place_trees(char height_map[MAP_WIDTH][MAP_LENGTH], int seed){
 	offset += rand() % SPAWN_RATE_VARIANCE;
         if ((rand() % 1000) <= TREE_CHANCE+offset){
 	  set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
-	  set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+1);
+	  set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
 	}
       }
     }

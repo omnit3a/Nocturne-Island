@@ -9,8 +9,6 @@
 #include <map_defs.h>
 #include <math.h>
 
-int SCREEN_WIDTH = DEFAULT_SCREEN_WIDTH;
-int SCREEN_HEIGHT = DEFAULT_SCREEN_HEIGHT;
 int view_x = 0;
 int view_y = 0;
 
@@ -35,9 +33,8 @@ void draw_view(render_obj_t * object){
 	int state = get_block(x, y, playerZ+z).current_state;
 	
 	int block = get_block(x, y, playerZ+z).block.block[state];
-	int is_transparent = get_block(x, y, playerZ+z).block.transparent;
 
-	if (!is_transparent){
+	if (get_block(x, y, playerZ+z).id > 0){
 	  object->clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
 	  object->clip.y = (block / (ATLAS_HEIGHT / TILE_HEIGHT)) * TILE_HEIGHT;
 	} else {
@@ -50,16 +47,16 @@ void draw_view(render_obj_t * object){
 	  brightness = 255;
 	}
 
-	if (is_block_underground(x, y, playerZ+z)){
+	if (is_block_shaded(x, y, playerZ+z)){
 	  SDL_SetTextureColorMod(object->texture, 64, 64, 64);
 	} else {
 	  SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
 	}
 	
-        object->target.x = (screen_x * (SCREEN_WIDTH/view_x));
-        object->target.y = (screen_y * (SCREEN_HEIGHT/view_y));
-        object->target.w = SCREEN_WIDTH/view_x;
-        object->target.h = SCREEN_HEIGHT/view_y;
+        object->target.x = (screen_x * DEFAULT_SCREEN_WIDTH/view_x);
+        object->target.y = (screen_y * DEFAULT_SCREEN_HEIGHT/view_y);
+        object->target.w = DEFAULT_SCREEN_WIDTH/view_x;
+        object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
 	SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);
 	screen_y++;
       }
@@ -76,10 +73,10 @@ void draw_player(render_obj_t * object){
   object->surface = SDL_LoadBMP(LEVEE_PATH);
   object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
 
-  object->target.x = (SCREEN_WIDTH/2)-((SCREEN_WIDTH/view_x)/2);
-  object->target.y = (SCREEN_HEIGHT/2)-((SCREEN_WIDTH/view_y)/2);
-  object->target.w = SCREEN_WIDTH/view_x;
-  object->target.h = SCREEN_HEIGHT/view_y;
+  object->target.x = (DEFAULT_SCREEN_WIDTH/2)-((DEFAULT_SCREEN_WIDTH/view_x)/2);
+  object->target.y = (DEFAULT_SCREEN_HEIGHT/2)-((DEFAULT_SCREEN_HEIGHT/view_y)/2);
+  object->target.w = DEFAULT_SCREEN_WIDTH/view_x;
+  object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
 
   SDL_RenderCopy(object->renderer, object->texture, NULL, &object->target);
   SDL_DestroyTexture(object->texture);
