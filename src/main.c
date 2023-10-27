@@ -42,7 +42,7 @@ int main(int argc, char ** argv){
   load_block_properties(BLOCK_DATA_PATH);
   generate_hills(time(0));  // generate a hilly world
   setup_camera(renderer, window);
-  spawn_player();
+  init_player_entity();
   
   /* MAIN GAME LOOP */
   bool running_game = true;

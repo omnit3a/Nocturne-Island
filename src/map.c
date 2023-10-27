@@ -24,6 +24,10 @@ world_data_t get_block(int x_pos, int y_pos, int z_pos){
   return game_map[x_pos][y_pos][z_pos];
 }
 
+void set_block_state(int state, int x_pos, int y_pos, int z_pos){
+  game_map[x_pos][y_pos][z_pos].current_state = state;
+}
+
 int is_block_shaded(int x_pos, int y_pos, int z_pos){
   if (!get_block(x_pos, y_pos, z_pos+1).block.transparent){
     return 0;

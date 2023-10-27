@@ -8,107 +8,65 @@
 #include <physics.h>
 #include <ui.h>
 #include <map_defs.h>
+#include <entity.h>
 
-int playerX = MAP_WIDTH/2;
-int playerY = MAP_LENGTH/2;
-int playerZ = MAP_HEIGHT-1;
-int playerDirectionX = 1;
-int playerDirectionY = 1;
-rotation_t playerRotation = NORTH;
-z_rotation_t playerZRotation = STRAIGHT;
-int playerXOff;
-int playerYOff;
-int playerZOff;
-int playerHealth = 50;
+tag_t player_tag = {
+  "player",
+  0,
+  0
+};
+sprite_t player_sprite;
+entity_t player_entity;
+transform_t current_rotation;
 
 void spawn_player(){
-  playerX = SPAWN_X;
-  playerY = SPAWN_Y;
-  playerZ = SPAWN_Z;
+  player_entity.position.x = SPAWN_X;
+  player_entity.position.y = SPAWN_Y;
+  player_entity.position.z = SPAWN_Z;
+  player_entity.rotation.x = SPAWN_X;
+  player_entity.rotation.y = SPAWN_Y;
+  player_entity.rotation.z = SPAWN_Z;
+  current_rotation.x = 0;
+  current_rotation.y = -1;
+  current_rotation.z = 0;
 }
 
 int get_mining_speed(){
   return 1;
 }
 
-/* Make the player face a specific direction */
-void set_player_rotation(rotation_t rotation){
-  switch (rotation){
-    case NORTH:
-      playerDirectionX = 0;
-      playerDirectionY = 0;
-      break;
-    case EAST:
-      playerDirectionX = 0;
-      playerDirectionY = 1;
-      break;
-    case SOUTH:
-      playerDirectionX = 1;
-      playerDirectionY = 1;
-      break;
-    case WEST:
-      playerDirectionX = 1;
-      playerDirectionY = 0;
-      break;
-  }
-  playerRotation = rotation;
-}
-
 // add direction offsets for mining and placing blocks
 void player_offset_direction(){
-  playerZOff = playerZ;
-  switch (playerRotation){
-    case NORTH:
-      if (playerY == 0){
-	playerYOff = playerY;
-	break;
-      }
-      playerXOff = playerX;
-      playerYOff = playerY-1;
-      break;
-    case EAST:
-      if (playerX == 0){
-	playerXOff = playerX;
-	break;
-      }
-      playerXOff = playerX-1;
-      playerYOff = playerY;
-      break;
-    case SOUTH:
-      if (playerY == MAP_LENGTH-1){
-	playerYOff = playerY;
-	break;
-      }
-      playerXOff = playerX;
-      playerYOff = playerY+1;
-      break;
-    case WEST:
-      if (playerX == MAP_WIDTH-1){
-	playerXOff = playerX;
-	break;
-      }
-      playerXOff = playerX+1;
-      playerYOff = playerY;
-      break;
-  }
+  transform_t pos = player_entity.position;
+  transform_t offset = pos;
+
+  offset.x = pos.x+current_rotation.x;
+  offset.y = pos.y+current_rotation.y;
+  offset.z = pos.z+current_rotation.z;
+
+  entity_rotate(&player_entity, &offset);
 }
 
 /* Mine a block in the direction of the player */
 void player_mine_block(){
   player_offset_direction();
-  if (get_block(playerXOff, playerYOff, playerZOff).hp < -100){
+  transform_t rot = player_entity.rotation;
+  if (get_block(rot.x, rot.y, rot.z).hp < -100){
     return;
   }
 
-  if (get_block(playerXOff, playerYOff, playerZOff).hp > 1){
-    block_data_t block = get_block(playerXOff, playerYOff, playerZOff).block;
+  if (get_block(rot.x, rot.y, rot.z).hp > 1){
+    int state = get_block(rot.x, rot.y, rot.z).current_state;
+    block_data_t block = get_block(rot.x, rot.y, rot.z).block;
     block.hp--;
-    set_block(block, playerXOff, playerYOff, playerZOff);
+    set_block(block, rot.x, rot.y, rot.z);
+    // prevent reseting of block_state to 0
+    set_block_state(state, rot.x, rot.y, rot.z);
     return;
   }
   
-  if (get_block(playerXOff, playerYOff, playerZOff).block.solid){
-    set_block(get_block_properties(EMPTY), playerXOff, playerYOff, playerZOff);    
+  if (get_block(rot.x, rot.y, rot.z).block.solid){
+    set_block(get_block_properties(EMPTY), rot.x, rot.y, rot.z);    
   }
 }
 
@@ -119,56 +77,81 @@ void player_place_block(int block){
 
 /* Get user input for the player, then do stuff with it */
 void handle_player_movement(SDL_Event event){
-  rotation_t prevRotation = playerRotation;
-  player_offset_direction();
+  transform_t pos = player_entity.position;
+  transform_t prev_rot = current_rotation;
+  transform_t rot;
+  
   int move_player = 0;
+  
   switch (event.key.keysym.sym){
     case SDLK_w:
-      set_player_rotation(NORTH);
+      current_rotation.x = 0;
+      current_rotation.y = -1;
       move_player = 1;
       break;
     case SDLK_a:
-      set_player_rotation(EAST);
+      current_rotation.x = -1;
+      current_rotation.y = 0;
       move_player = 1;
       break;
     case SDLK_s:
-      set_player_rotation(SOUTH);
+      current_rotation.x = 0;
+      current_rotation.y = 1;
       move_player = 1;
       break;
     case SDLK_d:
-      set_player_rotation(WEST);
+      current_rotation.x = 1;
+      current_rotation.y = 0;
       move_player = 1;
       break;
     case SDLK_SPACE:
       /* Check for empty space above player and solid space below player */
-      if (!get_block(playerX,playerY,playerZ+1).block.solid && get_block(playerX,playerY,playerZ-1).block.solid){
+      if (!get_block(pos.x, pos.y, pos.z+1).block.solid &&
+	  get_block(pos.x, pos.y, pos.z-1).block.solid){
 	player_jump();
       }
       break;
   }
   player_offset_direction();
-  if(!get_block(playerXOff, playerYOff, playerZ).block.solid && move_player){
-    playerX = playerXOff;
-    playerY = playerYOff;
-    playerRotation = prevRotation;
-  } else {
-    playerRotation = prevRotation;
+  rot = player_entity.rotation;
+  if(!get_block(rot.x, rot.y, rot.z).block.solid && move_player){
+    entity_move(&player_entity, &rot);
   }
+  current_rotation = prev_rot;
+  player_offset_direction();
 }
 
 void handle_player_rotation(SDL_Event event){
   switch (event.key.keysym.sym){
     case SDLK_i:
-      playerRotation = NORTH;
+      current_rotation.x = 0;
+      current_rotation.y = -1;
       break;
     case SDLK_j:
-      playerRotation = EAST;
+      current_rotation.x = -1;
+      current_rotation.y = 0;
       break;
     case SDLK_k:
-      playerRotation = SOUTH;
+      current_rotation.x = 0;
+      current_rotation.y = 1;
       break;
     case SDLK_l:
-      playerRotation = WEST;
+      current_rotation.x = 1;
+      current_rotation.y = 0;
       break;
   }
+  player_offset_direction();
+}
+
+entity_t * get_player_entity(){
+  return &player_entity;
+}
+
+void init_player_entity(){
+  spawn_player();
+  player_offset_direction();
+}
+
+transform_t get_player_direction(){
+  return current_rotation;
 }

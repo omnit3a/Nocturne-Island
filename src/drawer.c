@@ -7,14 +7,10 @@
 #include <camera.h>
 #include <player.h>
 #include <map_defs.h>
-#include <math.h>
+#include <entity.h>
 
 int view_x = 0;
 int view_y = 0;
-
-void draw_slope_overlay(render_obj_t * object, render_obj_t * overlay){
-  /* TODO */
-}
 
 void draw_view(render_obj_t * object){
   get_camera_view(&view_x, &view_y);
@@ -24,17 +20,18 @@ void draw_view(render_obj_t * object){
   object->clip.h = TILE_HEIGHT;
   int screen_x = 0;
   int screen_y = 0;
+  transform_t pos = get_player_entity()->position;
   
   for (int z = -10 ; z < 1 ; z++){
     screen_x = 0;
-    for (int x = playerX-(view_x/2) ; x <= playerX+(view_x/2) ; x++){
+    for (int x = pos.x-(view_x/2) ; x <= pos.x+(view_x/2) ; x++){
       screen_y = 0;
-      for (int y = playerY-(view_y/2) ; y <= playerY+(view_y/2) ; y++){
-	int state = get_block(x, y, playerZ+z).current_state;
+      for (int y = pos.y-(view_y/2) ; y <= pos.y+(view_y/2) ; y++){
+	int state = get_block(x, y, pos.z+z).current_state;
 	
-	int block = get_block(x, y, playerZ+z).block.block[state];
+	int block = get_block(x, y, pos.z+z).block.block[state];
 
-	if (get_block(x, y, playerZ+z).id > 0){
+	if (get_block(x, y, pos.z+z).id > 0){
 	  object->clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
 	  object->clip.y = (block / (ATLAS_HEIGHT / TILE_HEIGHT)) * TILE_HEIGHT;
 	} else {
@@ -42,12 +39,12 @@ void draw_view(render_obj_t * object){
 	  object->clip.y = 0;
 	}
 
-	int brightness = 64+((playerZ+z) * 25);
+	int brightness = 64+((pos.z+z) * 25);
 	if (brightness > 255){
 	  brightness = 255;
 	}
 
-	if (is_block_shaded(x, y, playerZ+z)){
+	if (is_block_shaded(x, y, pos.z+z)){
 	  SDL_SetTextureColorMod(object->texture, 64, 64, 64);
 	} else {
 	  SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
