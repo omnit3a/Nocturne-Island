@@ -154,6 +154,7 @@ entity_t * get_player_entity(){
 void init_player_entity(){
   spawn_player();
   player_rotate();
+  init_inventory();
   entity_set_tag(&player_entity, &player_tag);
 }
 

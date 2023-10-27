@@ -27,5 +27,6 @@ void draw_string(char * string, render_obj_t * object);
 void draw_ui(render_obj_t * object); 
 void draw_direction(render_obj_t * object);
 void handle_ui(SDL_Event event);
+void handle_block_select(SDL_Event event);
 
 #endif

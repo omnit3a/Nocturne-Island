@@ -9,7 +9,6 @@
 #include <physics.h>
 #include <map_defs.h>
 #include <ticks.h>
-#include <inventory.h>
 #include <ui.h>
 
 int main(int argc, char ** argv){
@@ -44,7 +43,6 @@ int main(int argc, char ** argv){
   generate_hills(time(0));  // generate a hilly world
   setup_camera(renderer, window);
   init_player_entity();
-  init_inventory();
   
   /* MAIN GAME LOOP */
   int running_game = 1;

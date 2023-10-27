@@ -8,7 +8,7 @@ inventory_slot_t inventory[INVENTORY_SIZE];
 int current_slot;
 
 void init_inventory(){
-  current_slot = 0;
+  current_slot = 1;
   inventory_slot_t empty = {
     get_block_properties(EMPTY),
     0,
@@ -67,8 +67,14 @@ inventory_slot_t * get_current_item(){
   return &inventory[current_slot];
 }
 
+void set_current_item(int slot){
+  current_slot = slot;
+}
+
+
 void sort_inventory(){
   int item_count[BLOCKS_AMOUNT];
+  int prev_slot = current_slot;
   for (int id = 0 ; id < BLOCKS_AMOUNT ; id++){
     item_count[id] = 0;
     for (int slot = 0 ; slot < INVENTORY_SIZE-1 ; slot++){
@@ -78,14 +84,21 @@ void sort_inventory(){
     }
   }
   init_inventory();
-  int items_added = 0;
-  for (int id = 0 ; id < BLOCKS_AMOUNT && items_added < INVENTORY_SIZE; id++){
+  int items_added = 1;
+  for (int id = 0 ; id < BLOCKS_AMOUNT && items_added < INVENTORY_SIZE+1; id++){
     if (item_count[id] > 0){
+      if (items_added == INVENTORY_SIZE){
+	items_added = 0;
+      }
       inventory[items_added].item = get_block_properties(id);
       inventory[items_added].amount = item_count[id];
       inventory[items_added].is_empty = 0;
+      if (items_added == 0){
+	break;
+      }
       items_added++;
     }
   }
+  set_current_item(prev_slot);
 }
 

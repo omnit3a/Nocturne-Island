@@ -19,4 +19,5 @@ int add_inventory_item(block_data_t item, int amount);
 int remove_inventory_item(block_data_t item, int count);
 inventory_slot_t * get_inventory_item(int slot);
 inventory_slot_t * get_current_item();
+void set_current_item(int slot);
 void sort_inventory();

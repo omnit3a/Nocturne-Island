@@ -82,7 +82,10 @@ void draw_ui(render_obj_t * object){
     case INVENTORY:
       char slot_label[4] = " - ";
       char amount[20];
-      for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
+      for (int slot = 1 ; slot < INVENTORY_SIZE+1 ; slot++){
+	if (slot == INVENTORY_SIZE){
+	  slot = 0;
+	}
 	block = get_inventory_item(slot)->item;
 	slot_label[1] = slot + 48;
 	draw_string(slot_label, object);
@@ -90,6 +93,9 @@ void draw_ui(render_obj_t * object){
 	sprintf(amount, ": %d", get_inventory_item(slot)->amount);
 	draw_string(amount, object);
 	newline_ui();
+	if (slot == 0){
+	  break;
+	}
       }
       break;
     default:
@@ -143,6 +149,7 @@ void draw_direction(render_obj_t * object){
 
 /* Switch between UI Modes */
 void handle_ui(SDL_Event event){
+  handle_block_select(event);
   switch (event.key.keysym.sym){
     case SDLK_e:
       if (ui_mode == INVENTORY){
@@ -151,5 +158,20 @@ void handle_ui(SDL_Event event){
 	ui_mode = INVENTORY;
       }
       break;
+  }
+}
+
+void handle_block_select(SDL_Event event){
+  if (ui_mode != IDLE){
+    return;
+  }
+  char code = event.key.keysym.sym-48;
+  if (code < 0 || code > 9){
+    return;
+  }
+  if (code == 0){
+    set_current_item(9);
+  } else {
+    set_current_item(code);
   }
 }
