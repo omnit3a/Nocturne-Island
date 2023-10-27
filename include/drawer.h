@@ -14,13 +14,8 @@
 #define TILE_HEIGHT 16
 #define ATLAS_WIDTH TILE_WIDTH * 16
 #define ATLAS_HEIGHT TILE_HEIGHT * 16
-#define DEFAULT_SCREEN_WIDTH 640
-#define DEFAULT_SCREEN_HEIGHT 480
-
-#define BASE_DEPTH_BRIGHTNESS 75
-
-extern int SCREEN_WIDTH;
-extern int SCREEN_HEIGHT;
+#define DEFAULT_SCREEN_WIDTH 208 * 4
+#define DEFAULT_SCREEN_HEIGHT 144 * 4
 
 typedef struct render_obj_t {
   SDL_Renderer * renderer;

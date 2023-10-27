@@ -19,9 +19,9 @@ int main(int argc, char ** argv){
 
   SDL_Window * window;
   SDL_Renderer * renderer;
-  SDL_CreateWindowAndRenderer(SCREEN_WIDTH,
-			      SCREEN_HEIGHT,
-			      SDL_RENDERER_PRESENTVSYNC,
+  SDL_CreateWindowAndRenderer(DEFAULT_SCREEN_WIDTH,
+			      DEFAULT_SCREEN_HEIGHT,
+			      SDL_RENDERER_PRESENTVSYNC | SDL_WINDOW_RESIZABLE,
 			      &window,
 			      &renderer);
   
@@ -36,6 +36,7 @@ int main(int argc, char ** argv){
     return -1;
   }
 
+  SDL_RenderSetLogicalSize(renderer, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
   SDL_UpdateWindowSurface(window);
 
   load_block_properties(BLOCK_DATA_PATH);
