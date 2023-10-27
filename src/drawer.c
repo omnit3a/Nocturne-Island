@@ -12,10 +12,6 @@
 int view_x = 0;
 int view_y = 0;
 
-void draw_slope_overlay(render_obj_t * object, render_obj_t * overlay){
-  /* TODO */
-}
-
 void draw_view(render_obj_t * object){
   get_camera_view(&view_x, &view_y);
   object->surface = SDL_LoadBMP(ATLAS_PATH);

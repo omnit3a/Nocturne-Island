@@ -75,8 +75,7 @@ void draw_ui(render_obj_t * object){
       break;
     default:
       break;
-  }
-  
+  }  
 }
 
 void draw_direction(render_obj_t * object){

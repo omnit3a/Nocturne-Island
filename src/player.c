@@ -101,9 +101,12 @@ void player_mine_block(){
   }
 
   if (get_block(playerXOff, playerYOff, playerZOff).hp > 1){
+    int state = get_block(playerXOff, playerYOff, playerZOff).current_state;
     block_data_t block = get_block(playerXOff, playerYOff, playerZOff).block;
     block.hp--;
     set_block(block, playerXOff, playerYOff, playerZOff);
+    // prevent reseting of block_state to 0
+    set_block_state(state, playerXOff, playerYOff, playerZOff);
     return;
   }
   

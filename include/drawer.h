@@ -28,7 +28,6 @@ typedef struct render_obj_t {
 
 #include <camera.h>
 
-void draw_slope_overlay(render_obj_t * object, render_obj_t * overlay);
 void draw_view(render_obj_t * object);
 void draw_player(render_obj_t * object);
 #endif
