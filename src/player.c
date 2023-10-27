@@ -72,9 +72,10 @@ void player_mine_block(){
 /* Allow player to place a block from the inventory */
 void player_place_block(){
   transform_t rot = player_entity.rotation;
+  block_data_t block = get_current_item()->item;
   int result = remove_inventory_item(get_current_item()->item, 1);
   if (result && !get_block(rot.x, rot.y, rot.z).block.solid){
-    set_block(get_current_item()->item, rot.x, rot.y, rot.z);
+    set_block(block, rot.x, rot.y, rot.z);
   }
 }
 

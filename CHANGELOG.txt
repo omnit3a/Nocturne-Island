@@ -90,3 +90,4 @@ Alpha Version 0.3.4:
   Re-implement inventory
   Added inventory ui
   Added inventory defragmentation
+  Fixed bug where blocks couldnt be placed if item count was 1
