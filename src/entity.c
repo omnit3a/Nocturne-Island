@@ -7,19 +7,15 @@
 #include <map.h>
 
 void entity_move(entity_t * entity, transform_t * offset){
-  entity->position.x += offset->x;
-  entity->position.y += offset->y;
-  entity->position.z += offset->z;
+  entity->position.x = offset->x;
+  entity->position.y = offset->y;
+  entity->position.z = offset->z;
 }
 
 void entity_rotate(entity_t * entity, transform_t * offset){
-  entity->rotation.x += offset->x;
-  entity->rotation.y += offset->y;
-  entity->rotation.z += offset->z;
-
-  entity->rotation.x = entity->rotation.x % 4;
-  entity->rotation.y = entity->rotation.y % 4;
-  entity->rotation.z = entity->rotation.z % 4;
+  entity->rotation.x = offset->x;
+  entity->rotation.y = offset->y;
+  entity->rotation.z = offset->z;
 }
 
 void entity_apply_sprite(entity_t * entity, sprite_t * sprite){

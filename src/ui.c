@@ -81,43 +81,42 @@ void draw_ui(render_obj_t * object){
 void draw_direction(render_obj_t * object){
   int view_x;
   int view_y;
-  int xOff = 0;
-  int yOff = 0;
+  int x_off = 0;
+  int y_off = 0;
   int render_angle = 0;
-  /* Determine offset for the player direction arrow
-     depending on the direction the player is facing
-  */
+  transform_t direction = get_player_direction();
+  
   get_camera_view(&view_x, &view_y);
-  int x_width = (DEFAULT_SCREEN_WIDTH/view_x);
-  int y_height = (DEFAULT_SCREEN_HEIGHT/view_y);
+  int width = DEFAULT_SCREEN_WIDTH/view_x;
+  int height = DEFAULT_SCREEN_HEIGHT/view_y;
   object->surface = SDL_LoadBMP(ARROW_UI_PATH);
-  switch (playerRotation){
-    case NORTH:
-      xOff = x_width * (view_x/2);
-      yOff = y_height * (view_y/2-1) - (y_height/4);
-      render_angle = 0;
-      break;
-    case WEST:
-      xOff = x_width * (view_x/2+1) - (x_width/4);
-      yOff = y_height * (view_y/2);
-      render_angle = 90;
-      break;
-    case SOUTH:
-      xOff = x_width * (view_x/2);
-      yOff = y_height * (view_y/2+1) + (y_height/4);
-      render_angle = 180;
-      break;
-    case EAST:
-      xOff = x_width * (view_x/2-1) + (x_width/4);
-      yOff = y_height * (view_y/2);
-      render_angle = 270;
-      break;
+
+  if (direction.y == -1){
+    x_off = width * (view_x/2);
+    y_off = height * (view_y/2-1) - (height/4);
+    render_angle = 0;
   }
+  if (direction.y == 1){
+    x_off = width * (view_x/2);
+    y_off = height * (view_y/2+1) + (height/4);
+    render_angle = 180;
+  }
+  if (direction.x == -1){
+    x_off = width * (view_x/2-1);
+    y_off = height * (view_y/2);
+    render_angle = 270;
+  }
+  if (direction.x == 1){
+    x_off = width * (view_x/2+1);
+    y_off = height * (view_y/2);
+    render_angle = 90;
+  }
+
   object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
-  object->target.x = xOff;
-  object->target.y = yOff;
-  object->target.w = (DEFAULT_SCREEN_WIDTH/view_x);
-  object->target.h = (DEFAULT_SCREEN_HEIGHT/view_y);
+  object->target.x = x_off;
+  object->target.y = y_off;
+  object->target.w = DEFAULT_SCREEN_WIDTH/view_x;
+  object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
   SDL_RenderCopyEx(object->renderer, object->texture, NULL, &object->target, render_angle, NULL, 0);
   SDL_DestroyTexture(object->texture);
   SDL_FreeSurface(object->surface);

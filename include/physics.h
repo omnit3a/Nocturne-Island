@@ -5,9 +5,6 @@
 
 #define JUMP_LENGTH 500
 
-extern char physics_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
-
-void setPhysicsMap(char map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT]);
 void player_jump();
 void handle_gravity();
 void reset_physics();

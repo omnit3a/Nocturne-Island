@@ -27,6 +27,7 @@ void update_camera(){
   draw_view(&camera_object);
   draw_player(&camera_object);
   draw_ui(&camera_object);
+  draw_direction(&camera_object);
   
   SDL_RenderPresent(camera_object.renderer);
 }

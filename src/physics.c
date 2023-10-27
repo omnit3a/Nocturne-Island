@@ -5,23 +5,28 @@
 #include <player.h>
 #include <map.h>
 #include <ticks.h>
+#include <entity.h>
 
-int playerIsJumping = 0;
+int player_is_jumping = 0;
 
 int ticked = 0;
 int jump_timeout = 0;
 
 /* Make the player jump */
 void player_jump(){
+  transform_t pos = get_player_entity()->position;
   jump_timeout = SDL_GetTicks() + JUMP_LENGTH;
-  playerIsJumping = 1;
-  playerZ++;
+  player_is_jumping = 1;
+  pos.z++;
+  entity_move(get_player_entity(), &pos);
 }
 
 void handle_gravity(){
-  if (playerIsJumping == 0){
-    if(!get_block(playerX, playerY, playerZ-1).block.solid){
-      playerZ--;
+  transform_t pos = get_player_entity()->position;
+  if (player_is_jumping == 0){
+    if(!get_block(pos.x, pos.y, pos.z-1).block.solid){
+      pos.z--;
+      entity_move(get_player_entity(), &pos);
     }
   }
 }
@@ -29,7 +34,7 @@ void handle_gravity(){
 void reset_physics(){
   ticked = 0;
   if (SDL_GetTicks() >= jump_timeout){
-    playerIsJumping = 0;
+    player_is_jumping = 0;
   }
 }
 
