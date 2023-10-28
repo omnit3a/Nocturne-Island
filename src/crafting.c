@@ -3,6 +3,7 @@
 #include <string.h>
 #include <crafting.h>
 #include <map.h>
+#include <inventory.h>
 
 crafting_recipe_t recipes[CRAFTING_RECIPE_AMOUNT];
 
@@ -20,6 +21,11 @@ void translate_recipe_def(char * def){
   
   token = strtok(def, delim);
 
+  for (int item = 0 ; item < 8 ; item++){
+    ingredients[item].item = get_block_properties(0);
+    ingredients[item].amount = 0;
+  }
+  
   while (token != NULL){
     if (in_list){
       if (strcmp(end_list, token) == 0){
@@ -119,4 +125,37 @@ void load_crafting_recipes(char * path){
   free(recipe_def_lines);
   free(recipe_def_copy);
   fclose(def_file);
+}
+
+int is_recipe_craftable(int recipe){
+  int max_items = 0;
+  int found_items = 0;
+  for (int item = 0 ; recipes[recipe].ingredients[item].item.id != 0 ; item++){
+    max_items++;
+    if (check_inventory_item(recipes[recipe].ingredients[item].item,
+			     recipes[recipe].ingredients[item].amount)){
+      found_items++;
+    }
+  }
+
+  if (found_items == max_items){
+    return 1;
+  }
+  
+  return 0;
+}
+
+int craft_item(int recipe){
+  if (is_recipe_craftable(recipe) && !is_inventory_full()){
+    add_inventory_item(recipes[recipe].output, recipes[recipe].amount);
+    
+    for (int item = 0 ; recipes[recipe].ingredients[item].item.id != 0 ; item++){
+      remove_inventory_item(recipes[recipe].ingredients[item].item,
+			    recipes[recipe].ingredients[item].amount);
+    }
+    
+    return 1;
+  } else {
+    return 0;
+  }
 }

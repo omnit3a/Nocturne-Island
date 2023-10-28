@@ -97,3 +97,6 @@ Alpha Version 0.3.5:
   Added 10 minute day/night cycle
   Fixed bug with text scaling
   Added menu system
+
+Alpha Version 0.3.6:
+  Re-implemented crafting

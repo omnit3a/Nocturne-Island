@@ -12,6 +12,7 @@
 #include <inventory.h>
 #include <ticks.h>
 #include <menu_defs.h>
+#include <crafting.h>
 
 int x_cursor = 0;
 int y_cursor = 0;
@@ -148,7 +149,7 @@ int handle_game_ui(SDL_Event event){
     case SDLK_e:
       active_menu = INVENTORY_UI_ID;
       return HANDLE_CLOSE;
-      
+
     case SDLK_ESCAPE:
       active_menu = PAUSE_UI_ID;
       return HANDLE_CLOSE;

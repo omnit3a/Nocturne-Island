@@ -102,3 +102,21 @@ void sort_inventory(){
   set_current_item(prev_slot);
 }
 
+int check_inventory_item(block_data_t item, int amount){
+  for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
+    if (compare_blocks(inventory[slot].item, item) &&
+	inventory[slot].amount >= amount){
+      return 1;
+    }
+  }
+  return 0;
+}
+
+int is_inventory_full(){
+  for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
+    if (inventory[slot].is_empty){
+      return 0;
+    }
+  }
+  return 1;
+}

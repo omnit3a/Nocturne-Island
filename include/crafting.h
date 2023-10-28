@@ -22,3 +22,5 @@ typedef struct crafting_recipe_s {
 
 void translate_recipe_def(char * def);
 void load_crafting_recipes(char * path);
+int is_recipe_craftable(int recipe);
+int craft_item(int recipe);
