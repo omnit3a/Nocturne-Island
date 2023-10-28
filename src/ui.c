@@ -208,17 +208,17 @@ void draw_pause_ui(render_obj_t * object){
   init_ui();
   draw_string("Nocturne Island", object);
   newline_ui();
-  draw_string("Press enter to continue", object);
+  draw_string("Press ESC to continue", object);
   newline_ui();
-  draw_string("Press ESC to exit", object);
+  draw_string("Press Q to exit", object);
   newline_ui();
 }
 
 int handle_pause_ui(SDL_Event event){
   switch(event.key.keysym.sym){
-    case SDLK_ESCAPE:
+    case SDLK_q:
       return HANDLE_EXIT;
-    case SDLK_RETURN:
+    case SDLK_ESCAPE:
       active_menu = GAME_UI_ID;
       return HANDLE_CLOSE;
   }
