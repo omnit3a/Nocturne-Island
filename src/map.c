@@ -348,3 +348,7 @@ int compare_blocks(block_data_t a, block_data_t b){
   equality += a.block_type == b.block_type;
   return equality == 10;
 }
+
+int is_block_mineable(block_data_t block){
+  return block.hp >= 0;
+}

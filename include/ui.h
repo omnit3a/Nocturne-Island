@@ -13,18 +13,37 @@
 #define FONT_HEIGHT 16
 #define FONT_ATLAS_SIZE 16
 
-typedef enum ui_mode_e {
-  IDLE = 0,
-  INVENTORY = 1
-} ui_mode_t;
+typedef struct ui_menu_s {
+  int (*update)(SDL_Event event);
+  void (*draw)(render_obj_t * object);
+  int active;
+  int id;
+  int fallback_id;
+} ui_menu_t;
+
+void init_ui();
 
 void zero_ui();
 void newline_ui();
 void draw_letter(char letter, render_obj_t * object);
 void draw_string(char * string, render_obj_t * object);
-void draw_ui(render_obj_t * object); 
 void draw_direction(render_obj_t * object);
-void handle_ui(SDL_Event event);
+
+void draw_game_ui(render_obj_t * object);
+int handle_game_ui(SDL_Event event);
+
+void draw_inventory_ui(render_obj_t * object);
+int handle_inventory_ui(SDL_Event event);
 void handle_block_select(SDL_Event event);
+
+void draw_pause_ui(render_obj_t * object);
+int handle_pause_ui(SDL_Event event);
+
+void draw_menu(render_obj_t * object);
+void handle_menu(int * exit, SDL_Event event);
+void get_menu_info(ui_menu_t * info, int id);
+void open_menu(ui_menu_t * menu);
+void close_menu(ui_menu_t * menu);
+int get_current_menu_id();
 
 #endif

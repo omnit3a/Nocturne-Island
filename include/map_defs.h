@@ -13,3 +13,5 @@
 #define TREE_BOTTOM 3
 #define TREE_LEAVES 4
 #define DIRT 5
+#define BOARDS 6
+#define WORKBENCH 7

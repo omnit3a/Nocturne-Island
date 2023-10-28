@@ -95,3 +95,5 @@ Alpha Version 0.3.4:
 Alpha Version 0.3.5:
   Fix bug with block select
   Added 10 minute day/night cycle
+  Fixed bug with text scaling
+  Added menu system
