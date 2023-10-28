@@ -12,6 +12,7 @@
 #include <ui.h>
 #include <inventory.h>
 #include <menu_defs.h>
+#include <crafting.h>
 
 int main(int argc, char ** argv){
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
@@ -42,6 +43,8 @@ int main(int argc, char ** argv){
   SDL_UpdateWindowSurface(window);
 
   load_block_properties(BLOCK_DATA_PATH);
+  load_crafting_recipes(CRAFTING_DATA_PATH);
+  
   generate_hills(time(0));  // generate a hilly world
   setup_camera(renderer, window);
   init_player_entity();
