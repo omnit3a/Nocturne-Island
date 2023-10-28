@@ -48,7 +48,7 @@ void player_rotate(){
 void player_mine_block(){
   player_rotate();
   transform_t rot = player_entity.rotation;
-  if (get_block(rot.x, rot.y, rot.z).hp < -100){
+  if (!is_block_mineable(get_block(rot.x, rot.y, rot.z).block)){
     return;
   }
 
@@ -64,7 +64,8 @@ void player_mine_block(){
   
   if (get_block(rot.x, rot.y, rot.z).block.solid){
     block_data_t block = get_block_properties(get_block(rot.x, rot.y, rot.z).block.dropped_item);
-    add_inventory_item(block, block.count);
+    int count = get_block(rot.x, rot.y, rot.z).block.count;
+    add_inventory_item(block, count);
     set_block(get_block_properties(EMPTY), rot.x, rot.y, rot.z);
   }
 }

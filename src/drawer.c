@@ -8,6 +8,7 @@
 #include <player.h>
 #include <map_defs.h>
 #include <entity.h>
+#include <ticks.h>
 
 int view_x = 0;
 int view_y = 0;
@@ -39,7 +40,7 @@ void draw_view(render_obj_t * object){
 	  object->clip.y = 0;
 	}
 
-	int brightness = 64+((pos.z+z) * 25);
+	int brightness = (64 * is_daytime())+((pos.z+z) * 25);
 	if (brightness > 255){
 	  brightness = 255;
 	}

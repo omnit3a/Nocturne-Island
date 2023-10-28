@@ -6,6 +6,7 @@ name (char [80]):
 
 hp (any signed int):
   - how many regular hits it takes to mine
+    negative values mean unbreakable
   
 solid (0 | 1):
   - whether or not the player can pass through

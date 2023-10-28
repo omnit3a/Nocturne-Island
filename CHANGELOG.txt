@@ -91,3 +91,9 @@ Alpha Version 0.3.4:
   Added inventory ui
   Added inventory defragmentation
   Fixed bug where blocks couldnt be placed if item count was 1
+
+Alpha Version 0.3.5:
+  Fix bug with block select
+  Added 10 minute day/night cycle
+  Fixed bug with text scaling
+  Added menu system

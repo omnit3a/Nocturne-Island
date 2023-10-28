@@ -9,8 +9,9 @@
 #include <physics.h>
 #include <map_defs.h>
 #include <ticks.h>
-#include <inventory.h>
 #include <ui.h>
+#include <inventory.h>
+#include <menu_defs.h>
 
 int main(int argc, char ** argv){
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
@@ -45,6 +46,11 @@ int main(int argc, char ** argv){
   setup_camera(renderer, window);
   init_player_entity();
   init_inventory();
+  add_inventory_item(get_block_properties(WORKBENCH), 1);
+
+  ui_menu_t start_menu;
+  get_menu_info(&start_menu, GAME_UI_ID);
+  open_menu(&start_menu);
   
   /* MAIN GAME LOOP */
   int running_game = 1;
@@ -56,9 +62,11 @@ int main(int argc, char ** argv){
     while (SDL_PollEvent(&event) > 0){
       switch (event.type){
         case SDL_KEYDOWN:
+
+	  handle_menu(&running_game, event);
+	  
 	  handle_player_movement(event);
 	  handle_player_rotation(event);
-	  handle_ui(event);
 	  switch(event.key.keysym.sym){
 	    /* Mine a block */
 	    case SDLK_m:
