@@ -12,8 +12,6 @@
 #define FONT_WIDTH 8
 #define FONT_HEIGHT 16
 #define FONT_ATLAS_SIZE 16
-#define COLS 80
-#define ROWS 24
 
 typedef enum ui_mode_e {
   IDLE = 0,

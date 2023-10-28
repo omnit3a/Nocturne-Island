@@ -17,6 +17,8 @@ int x_cursor = 0;
 int y_cursor = 0;
 int ui_x_scale = 1;
 int ui_y_scale = 1;
+int cols = 0;
+int rows = 0;
 
 void zero_ui(){
   x_cursor = 0;
@@ -26,7 +28,7 @@ void zero_ui(){
 void newline_ui(){
   x_cursor = 0;
   y_cursor++;
-  y_cursor = y_cursor % ROWS;
+  y_cursor = y_cursor % rows;
 }
 
 /* Draw and individual character from the font map */
@@ -43,8 +45,8 @@ void draw_letter(char letter, render_obj_t * object){
   }
 
   x_cursor++;
-  x_cursor = x_cursor % COLS;
-  if (x_cursor == COLS-1){
+  x_cursor = x_cursor % cols;
+  if (x_cursor == cols-1){
     newline_ui();
   }
     
@@ -68,10 +70,13 @@ void draw_string(char * string, render_obj_t * object){
 
 void draw_ui(render_obj_t * object){
   block_data_t block;
+  get_camera_view(&cols, &rows);
+  cols = cols * 4;
+  rows = rows * 2;
   zero_ui();
   draw_direction(object);
-  ui_x_scale = (DEFAULT_SCREEN_WIDTH / COLS);
-  ui_y_scale = (DEFAULT_SCREEN_HEIGHT / ROWS); 
+  ui_x_scale = (DEFAULT_SCREEN_WIDTH / cols);
+  ui_y_scale = (DEFAULT_SCREEN_HEIGHT / rows); 
   switch(ui_mode){
     case IDLE:
       block = get_current_item()->item;
@@ -79,18 +84,10 @@ void draw_ui(render_obj_t * object){
 
       newline_ui();
       
-      draw_string(CURRENT_TIME_MSG, object);
-      if (is_daytime()){
-	draw_string(DAYTIME_MSG, object);
-      } else {
-	draw_string(NIGHTTIME_MSG, object);
-      }
-      
-      newline_ui();
-      
       draw_string(CURRENT_BLOCK_MSG, object);
       draw_string(block.name, object);
       break;
+      
     case INVENTORY:
       char slot_label[4] = " - ";
       char amount[20];
@@ -104,12 +101,15 @@ void draw_ui(render_obj_t * object){
 	draw_string(block.name, object);
 	sprintf(amount, ": %d", get_inventory_item(slot)->amount);
 	draw_string(amount, object);
+
 	newline_ui();
+
 	if (slot == 0){
 	  break;
 	}
       }
       break;
+      
     default:
       break;
   }  
