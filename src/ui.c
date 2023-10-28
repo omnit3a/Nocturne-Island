@@ -273,8 +273,5 @@ void close_menu(ui_menu_t * menu){
 }
 
 int get_current_menu_id(){
-  if (game_menus[active_menu].active){
-    return active_menu;
-  }
-  return 0;
+  return active_menu;
 }

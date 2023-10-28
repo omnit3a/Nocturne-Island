@@ -100,3 +100,4 @@ Alpha Version 0.3.5:
 
 Alpha Version 0.3.6:
   Re-implemented crafting
+  Player can no longer move while in a menu
