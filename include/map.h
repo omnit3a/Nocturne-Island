@@ -11,8 +11,6 @@
 
 #define GROUND_LEVEL 2 /* Base ground thickness */
 #define TREE_CHANCE 25 /* Chance out of 1000 that a tree spawns on a tile */
-#define IRON_CHANCE 300
-#define COAL_CHANCE 300
 #define CLIFF_HEIGHT 10
 #define GROUND_HEIGHT 5
 #define SPAWN_RATE_VARIANCE 50

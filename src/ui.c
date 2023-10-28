@@ -10,6 +10,7 @@
 #include <messages.h>
 #include <map_defs.h>
 #include <inventory.h>
+#include <ticks.h>
 
 ui_mode_t ui_mode = IDLE;
 int x_cursor = 0;
@@ -75,7 +76,18 @@ void draw_ui(render_obj_t * object){
     case IDLE:
       block = get_current_item()->item;
       draw_string(CURRENT_VERSION_MSG, object);
+
       newline_ui();
+      
+      draw_string(CURRENT_TIME_MSG, object);
+      if (is_daytime()){
+	draw_string(DAYTIME_MSG, object);
+      } else {
+	draw_string(NIGHTTIME_MSG, object);
+      }
+      
+      newline_ui();
+      
       draw_string(CURRENT_BLOCK_MSG, object);
       draw_string(block.name, object);
       break;

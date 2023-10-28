@@ -10,6 +10,7 @@
 #include <map_defs.h>
 #include <ticks.h>
 #include <ui.h>
+#include <inventory.h>
 
 int main(int argc, char ** argv){
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
@@ -43,6 +44,7 @@ int main(int argc, char ** argv){
   generate_hills(time(0));  // generate a hilly world
   setup_camera(renderer, window);
   init_player_entity();
+  init_inventory();
   
   /* MAIN GAME LOOP */
   int running_game = 1;
