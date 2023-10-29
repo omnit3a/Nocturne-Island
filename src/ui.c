@@ -133,6 +133,12 @@ void draw_direction(render_obj_t * object){
     render_angle = 90;
   }
 
+  if (direction.z == 1){
+    y_off -= (view_y+1);
+  } else if (direction.z == -1){
+    y_off += (view_y-1);
+  }
+
   object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
   object->target.x = x_off;
   object->target.y = y_off;

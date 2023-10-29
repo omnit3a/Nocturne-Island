@@ -54,7 +54,7 @@ void draw_view(render_obj_t * object){
 	}
 
 	if (is_block_shaded(x, y, z)){
-	  SDL_SetTextureColorMod(object->texture, 64, 64, 64);
+	  SDL_SetTextureColorMod(object->texture, 16, 16, 16);
 	} else {
 	  SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
 	}

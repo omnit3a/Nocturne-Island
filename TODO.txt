@@ -1,4 +1,4 @@
-Add Z rotation
+Add Z rotation [DONE]
 Add better terrain generator
 Add lighting
 Add LIGHT_SOURCE parameter to block data

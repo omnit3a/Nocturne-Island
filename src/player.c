@@ -141,6 +141,7 @@ void handle_player_movement(SDL_Event event){
   }
   player_rotate();
   rot = player_entity.rotation;
+  rot.z = pos.z;
   if(!get_block(rot.x, rot.y, rot.z).block.solid && move_player){
     entity_move(&player_entity, &rot);
   }
@@ -170,6 +171,12 @@ void handle_player_rotation(SDL_Event event){
     case SDLK_l:
       current_rotation.x = 1;
       current_rotation.y = 0;
+      break;
+    case SDLK_u:
+      current_rotation.z = current_rotation.z - 1;
+      if (current_rotation.z == -2){
+	current_rotation.z = 1;
+      }
       break;
   }
   player_rotate();

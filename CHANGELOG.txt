@@ -104,3 +104,6 @@ Alpha Version 0.3.6:
   Game is now viewed from MAP_HEIGHT if player is outdoors
   Added jump animation
   Player now changes brightness depending on environment
+
+Alpha Version 0.3.7:
+  Add Z rotation
