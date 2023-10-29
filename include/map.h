@@ -15,7 +15,7 @@
 #define GROUND_HEIGHT 5
 #define SPAWN_RATE_VARIANCE 50
 
-#define BLOCK_NAME_LENGTH 80
+#define BLOCK_NAME_LENGTH 24
 #define BLOCKS_AMOUNT 256
 #define BLOCK_STATES 4
 
@@ -51,5 +51,6 @@ void rotate_grass();
 void generate_hills(int seed);
 int compare_blocks(block_data_t a, block_data_t b);
 int is_block_mineable(block_data_t block);
+int is_next_to_block(block_data_t block, int x_pos, int y_pos, int z_pos);
 #endif
 

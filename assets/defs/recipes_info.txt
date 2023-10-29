@@ -1,0 +1,22 @@
+Recipe Defintion Format:
+
+name (char [24]):
+  - the name of the crafting recipe in game
+
+ingredients (up to 8 crafting_item_t):
+  - defines the needed ingredients to craft
+    the item
+
+output (block_data_t):
+  - the item that is given after crafting
+
+amount (any unsigned int):
+  - the amount of <output> that is given
+
+id (any unsigned int):
+  - the id associated with this crafting recipe
+
+Notes:
+  the <crafting_item_t> type stores the following data:
+      block_data_t item;
+      int amount;

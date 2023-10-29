@@ -7,6 +7,8 @@
 #include <map_defs.h>
 #include <entity.h>
 #include <inventory.h>
+#include <ui.h>
+#include <menu_defs.h>
 
 tag_t player_tag = {
   0,
@@ -46,8 +48,14 @@ void player_rotate(){
 
 /* Mine a block in the direction of the player */
 void player_mine_block(){
+
+  if (get_current_menu_id() != GAME_UI_ID){
+    return;
+  }
+  
   player_rotate();
   transform_t rot = player_entity.rotation;
+
   if (!is_block_mineable(get_block(rot.x, rot.y, rot.z).block)){
     return;
   }
@@ -74,8 +82,18 @@ void player_mine_block(){
 void player_place_block(){
   transform_t rot = player_entity.rotation;
   block_data_t block = get_current_item()->item;
+
+  if (get_current_menu_id() != GAME_UI_ID){
+    return;
+  }
+
+  if (get_block(rot.x, rot.y, rot.z).block.solid){
+    return;
+  }
+  
   int result = remove_inventory_item(get_current_item()->item, 1);
-  if (result && !get_block(rot.x, rot.y, rot.z).block.solid){
+  
+  if (result){
     set_block(block, rot.x, rot.y, rot.z);
   }
 }
@@ -87,6 +105,10 @@ void handle_player_movement(SDL_Event event){
   transform_t rot;
   
   int move_player = 0;
+
+  if (get_current_menu_id() != GAME_UI_ID){
+    return;
+  }
   
   switch (event.key.keysym.sym){
     case SDLK_w:
@@ -127,6 +149,11 @@ void handle_player_movement(SDL_Event event){
 }
 
 void handle_player_rotation(SDL_Event event){
+
+  if (get_current_menu_id() != GAME_UI_ID){
+    return;
+  }
+  
   switch (event.key.keysym.sym){
     case SDLK_i:
       current_rotation.x = 0;

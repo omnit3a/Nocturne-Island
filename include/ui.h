@@ -39,6 +39,9 @@ void handle_block_select(SDL_Event event);
 void draw_pause_ui(render_obj_t * object);
 int handle_pause_ui(SDL_Event event);
 
+void draw_crafting_ui(render_obj_t * object);
+int handle_crafting_ui(SDL_Event event);
+
 void draw_menu(render_obj_t * object);
 void handle_menu(int * exit, SDL_Event event);
 void get_menu_info(ui_menu_t * info, int id);

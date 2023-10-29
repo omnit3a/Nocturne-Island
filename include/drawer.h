@@ -9,6 +9,10 @@
 #define WALL_PATH "assets/walls.bmp"
 #define ATLAS_PATH "assets/3d-atlas.bmp"
 #define LEVEE_PATH "assets/levee.bmp"
+#define LEVEE_WIDTH 64
+#define LEVEE_HEIGHT 64
+#define LEVEE_ATLAS_WIDTH LEVEE_WIDTH * 2
+#define LEVEE_ATLAS_HEIGHT LEVEE_HEIGHT * 1
 
 #define TILE_WIDTH 16
 #define TILE_HEIGHT 16

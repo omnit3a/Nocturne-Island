@@ -44,3 +44,7 @@ void handle_physics(){
     ticked = 1;
   }
 }
+
+int is_player_jumping(){
+  return player_is_jumping;
+}
