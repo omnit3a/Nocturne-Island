@@ -10,8 +10,8 @@
 #define MAP_HEIGHT 50
 
 #define GROUND_LEVEL 2 /* Base ground thickness */
-#define TREE_CHANCE 25 /* Chance out of 1000 that a tree spawns on a tile */
-#define CLIFF_HEIGHT 10
+#define TREE_CHANCE 40 /* Chance out of 1000 that a tree spawns on a tile */
+#define CLIFF_HEIGHT 5
 #define GROUND_HEIGHT 5
 #define SPAWN_RATE_VARIANCE 50
 
@@ -38,6 +38,7 @@ typedef struct world_data_s {
   int id;
 } world_data_t;
 
+int hash_input(int input);
 void set_block(block_data_t block, int x_pos, int y_pos, int z_pos);
 world_data_t get_block(int x_pos, int y_pos, int z_pos);
 void set_block_state(int state, int x_pos, int y_pos, int z_pos);

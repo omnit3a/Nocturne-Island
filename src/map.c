@@ -9,6 +9,7 @@
 #include <physics.h>
 #include <map_defs.h>
 #include <string.h>
+#include <perlin.h>
 
 world_data_t game_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 block_data_t data_map[BLOCKS_AMOUNT];
@@ -155,6 +156,9 @@ void place_trees(char height_map[MAP_WIDTH][MAP_LENGTH], int seed){
   for (int x = 0 ; x < MAP_WIDTH ; x++){
     for (int y = 0 ; y < MAP_LENGTH ; y++){
       offset = 1;
+      if (height_map[x][y] == 0){
+	continue;
+      }
       if (height_map[x][y] < MAP_HEIGHT){
 	if (height_map[x][y] == CLIFF_HEIGHT){
 	  offset = 30;
@@ -182,109 +186,24 @@ void rotate_grass(){
 }
 
 
-/* World Generation Steps:
- * Step 1:
- *   Place random high points
- * Step 2:
- *   Make cliffs/mountains from those high points
- * Step 3:
- *   Make all non-cliffs/mountains into randomly rough terrain
- * Step 4:
- *   Average the heights of the non-cliffs/mountains
- * Step 5:
- *   Place NOKIUM (unbreakable block) at bottom of world
- * Step 6:
- *   Place trees
- * Step 7:
- *   Place caves
- * Step 8:
- *   Generate block hp map
- */
 void generate_hills(int seed){
   fill_map();
   srand(seed);
   /* Step 1 */
-  int isMountain = 0;
-  int prevIsMountain = 0;
   char temp_height_map[MAP_WIDTH][MAP_LENGTH];
   char height_map[MAP_WIDTH][MAP_LENGTH];
   for (int x = 0 ; x < MAP_WIDTH ; x++){
     for (int y = 0 ; y < MAP_LENGTH ; y++){
-      height_map[x][y] = 0;
-      if (prevIsMountain){
-        isMountain = ((rand() % 100) < 85);
-      } else {
-        isMountain = ((rand() % 100) < 5);
-      }
-      if (isMountain){
-        height_map[x][y] = CLIFF_HEIGHT;
-      }
-      prevIsMountain = isMountain;
-    }
-  }
-
-  /* Step 2 */
-  for (int r = 0 ; r < 100 ; r++){
-    for (int x = 0 ; x < MAP_WIDTH ; x++){
-      for (int y = 0 ; y < MAP_LENGTH ; y++){
-	temp_height_map[x][y] = height_map[x][y];
-	if (r < 75){
-          if (height_map[x-1][y] > 0 && height_map[x+1][y] > 0){
-	    temp_height_map[x][y] = CLIFF_HEIGHT;
-	  }
-	  if (height_map[x][y-1] == 0 && height_map[x][y+1] == 0){
-	    temp_height_map[x][y] = CLIFF_HEIGHT;
-	  }
-	}
- 	if ((height_map[x-1][y] == 0 && height_map[x+1][y] == 0) || (height_map[x][y-1] == 0 && height_map[x][y+1] == 0)){
-	  temp_height_map[x][y] = 0;
-        }
+      height_map[x][y] = ((int)pnoise2d(x, y, 0.75, 10, seed) * 6);
+      if (height_map[x][y] < 2){
+	height_map[x][y] = 2;
       }
     }
   }
 
-  /* Step 3 */
-  int hillChance = 1;
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-      if (temp_height_map[x][y] == 0){
-	if (hillChance == 1){
-	  hillChance = (((rand() % 100) < 75)%2);
-	  if (hillChance){
-	    hillChance = 1;
-	  } else {
-	    hillChance = 2;
-	  }
-	} else if (hillChance == 2){
-	  hillChance = (((rand() % 100) < 75)%2);
-	  if (hillChance){
-	    hillChance = 2;
-	  } else {
-	    hillChance = 3;
-	  }
-	} else if (hillChance == 3){
-	  hillChance = (((rand() % 100) < 75)%2);
-	  if (hillChance){
-	    hillChance = 3;
-	  } else {
-	    hillChance = 1;
-	  }
-	}
-	temp_height_map[x][y] = hillChance;
-      }
-    }
-  }
-
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-      height_map[x][y] = temp_height_map[x][y];
-    }
-  }
-
-  /* Step 4 */
   int surroundVals[4] = {0};
   int average = 0;
-  for (int r = 0 ; r < 3 ; r++){
+  for (int r = 0 ; r < 5 ; r++){
     for (int x = 0 ; x < MAP_WIDTH ; x++){
       for (int y = 0 ; y < MAP_LENGTH ; y++){
 	if (x > 0) {
@@ -315,23 +234,22 @@ void generate_hills(int seed){
     }
   }
 
-  /* Step 5 */
   for (int x = 0 ; x < MAP_WIDTH ; x++){
     for (int y = 0 ; y < MAP_LENGTH ; y++){
+
       set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
+ 
       for (int z = height_map[x][y]-1 ; z >= 0 ; z--){
-	if (height_map[x][y] < GROUND_HEIGHT){
-	  set_block(get_block_properties(DIRT), x, y, z);
-	} else {
+	if (height_map[x][y] >= CLIFF_HEIGHT){
 	  set_block(get_block_properties(STONE), x, y, z);
+	  continue;
 	}
+	set_block(get_block_properties(DIRT), x, y, z);
       }
     }
   }
 
-  /* Step 6 */
   place_trees(height_map, seed);
-
   rotate_grass();
 }
 

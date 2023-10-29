@@ -107,3 +107,4 @@ Alpha Version 0.3.6:
 
 Alpha Version 0.3.7:
   Add Z rotation
+  Begin work on new terrain generator
