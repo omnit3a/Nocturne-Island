@@ -1,0 +1,5 @@
+Add items, which are different from blocks
+Add full animation support
+Add better terrain generator
+Add Z rotation
+vim keybindings
