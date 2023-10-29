@@ -22,17 +22,24 @@ void draw_view(render_obj_t * object){
   int screen_x = 0;
   int screen_y = 0;
   transform_t pos = get_player_entity()->position;
+  int drawing_height = MAP_HEIGHT;
   
-  for (int z = -10 ; z < 1 ; z++){
+  for (int z = 0 ; z < drawing_height ; z++){
     screen_x = 0;
     for (int x = pos.x-(view_x/2) ; x <= pos.x+(view_x/2) ; x++){
       screen_y = 0;
       for (int y = pos.y-(view_y/2) ; y <= pos.y+(view_y/2) ; y++){
-	int state = get_block(x, y, pos.z+z).current_state;
-	
-	int block = get_block(x, y, pos.z+z).block.block[state];
 
-	if (get_block(x, y, pos.z+z).id > 0){
+	if (is_block_shaded(pos.x, pos.y, pos.z-1)){
+	  drawing_height = pos.z;
+	} else {
+	  drawing_height = MAP_HEIGHT;
+	}
+	
+	int state = get_block(x, y, z).current_state;
+	int block = get_block(x, y, z).block.block[state];
+
+	if (get_block(x, y, z).id > 0){
 	  object->clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
 	  object->clip.y = (block / (ATLAS_HEIGHT / TILE_HEIGHT)) * TILE_HEIGHT;
 	} else {
@@ -40,12 +47,12 @@ void draw_view(render_obj_t * object){
 	  object->clip.y = 0;
 	}
 
-	int brightness = (64 * is_daytime())+((pos.z+z) * 25);
+	int brightness = (32 * is_daytime())+((z) * 25);
 	if (brightness > 255){
 	  brightness = 255;
 	}
 
-	if (is_block_shaded(x, y, pos.z+z)){
+	if (is_block_shaded(x, y, z)){
 	  SDL_SetTextureColorMod(object->texture, 64, 64, 64);
 	} else {
 	  SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);

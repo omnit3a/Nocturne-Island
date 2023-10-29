@@ -352,3 +352,19 @@ int compare_blocks(block_data_t a, block_data_t b){
 int is_block_mineable(block_data_t block){
   return block.hp >= 0;
 }
+
+int is_next_to_block(block_data_t block, int x_pos, int y_pos, int z_pos){
+  if (compare_blocks(get_block(x_pos-1, y_pos, z_pos).block, block)){
+    return 1;
+  }
+  if (compare_blocks(get_block(x_pos, y_pos-1, z_pos).block, block)){
+    return 1;
+  }
+  if (compare_blocks(get_block(x_pos+1, y_pos, z_pos).block, block)){
+    return 1;
+  }
+  if (compare_blocks(get_block(x_pos, y_pos+1, z_pos).block, block)){
+    return 1;
+  }
+  return 0;
+}

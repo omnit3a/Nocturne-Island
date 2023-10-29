@@ -55,6 +55,7 @@ void player_mine_block(){
   
   player_rotate();
   transform_t rot = player_entity.rotation;
+
   if (!is_block_mineable(get_block(rot.x, rot.y, rot.z).block)){
     return;
   }
@@ -81,13 +82,18 @@ void player_mine_block(){
 void player_place_block(){
   transform_t rot = player_entity.rotation;
   block_data_t block = get_current_item()->item;
-  int result = remove_inventory_item(get_current_item()->item, 1);
 
   if (get_current_menu_id() != GAME_UI_ID){
     return;
   }
 
-  if (result && !get_block(rot.x, rot.y, rot.z).block.solid){
+  if (get_block(rot.x, rot.y, rot.z).block.solid){
+    return;
+  }
+  
+  int result = remove_inventory_item(get_current_item()->item, 1);
+  
+  if (result){
     set_block(block, rot.x, rot.y, rot.z);
   }
 }

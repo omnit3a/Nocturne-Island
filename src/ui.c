@@ -27,6 +27,7 @@ ui_menu_t game_menus[MENU_AMOUNT] = {
   {&handle_game_ui, &draw_game_ui, 0, GAME_UI_ID, PAUSE_UI_ID},
   {&handle_pause_ui, &draw_pause_ui, 0, PAUSE_UI_ID, GAME_UI_ID},
   {&handle_inventory_ui, &draw_inventory_ui, 0, INVENTORY_UI_ID, GAME_UI_ID},
+  {&handle_crafting_ui, &draw_crafting_ui, 0, CRAFTING_UI_ID, GAME_UI_ID},
 };
 
 void init_ui(){
@@ -144,12 +145,20 @@ void draw_direction(render_obj_t * object){
 
 /* Switch between UI Modes */
 int handle_game_ui(SDL_Event event){
+  transform_t pos = get_player_entity()->position;
   handle_block_select(event);
   switch (event.key.keysym.sym){
     case SDLK_e:
       active_menu = INVENTORY_UI_ID;
       return HANDLE_CLOSE;
 
+    case SDLK_c:
+      if (!is_next_to_block(get_block_properties(WORKBENCH), pos.x, pos.y, pos.z)){
+	return HANDLE_REGULAR;
+      }
+      active_menu = CRAFTING_UI_ID;
+      return HANDLE_CLOSE;
+      
     case SDLK_ESCAPE:
       active_menu = PAUSE_UI_ID;
       return HANDLE_CLOSE;
@@ -183,7 +192,7 @@ void draw_inventory_ui(render_obj_t * object){
 
 int handle_inventory_ui(SDL_Event event){
   switch(event.key.keysym.sym){
-    case SDLK_e:
+    case SDLK_ESCAPE:
       active_menu = GAME_UI_ID;
       return HANDLE_CLOSE;
   }
@@ -191,9 +200,6 @@ int handle_inventory_ui(SDL_Event event){
 }
 
 void handle_block_select(SDL_Event event){
-  if (get_current_menu_id() != GAME_UI_ID){
-    return;
-  }
   char code = event.key.keysym.sym-48;
   if (code < 0 || code > 9){
     return;
@@ -219,6 +225,42 @@ int handle_pause_ui(SDL_Event event){
   switch(event.key.keysym.sym){
     case SDLK_q:
       return HANDLE_EXIT;
+    case SDLK_ESCAPE:
+      active_menu = GAME_UI_ID;
+      return HANDLE_CLOSE;
+  }
+  return HANDLE_REGULAR;
+}
+
+void draw_crafting_ui(render_obj_t * object){
+  init_ui();
+  crafting_recipe_t recipe_list[CRAFTABLE_LIST_AMOUNT];
+  get_craftable_recipes(recipe_list);
+  int line_number = 1;
+  char slot_label[4] = " - ";
+  
+  while (line_number <= CRAFTABLE_LIST_AMOUNT){
+    slot_label[1] = line_number+96;
+    draw_string(slot_label, object);
+    draw_string(recipe_list[line_number].name, object);
+    newline_ui();
+    line_number++;
+  }
+}
+
+int handle_crafting_ui(SDL_Event event){
+  crafting_recipe_t recipe_list[CRAFTABLE_LIST_AMOUNT];
+  get_craftable_recipes(recipe_list);
+
+  char code = event.key.keysym.sym-96;
+  if (code >= 0 && code <= CRAFTABLE_LIST_AMOUNT){
+    if (craft_item(recipe_list, code)){
+      return HANDLE_CLOSE;
+    } else {
+      return HANDLE_REGULAR;
+    }
+  }
+  switch(event.key.keysym.sym){
     case SDLK_ESCAPE:
       active_menu = GAME_UI_ID;
       return HANDLE_CLOSE;

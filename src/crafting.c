@@ -6,6 +6,7 @@
 #include <inventory.h>
 
 crafting_recipe_t recipes[CRAFTING_RECIPE_AMOUNT];
+crafting_recipe_t craftable_recipes[CRAFTABLE_LIST_AMOUNT];
 
 void translate_recipe_def(char * def){
   int values[4] = {0, 0, 0, 0};
@@ -127,13 +128,13 @@ void load_crafting_recipes(char * path){
   fclose(def_file);
 }
 
-int is_recipe_craftable(int recipe){
+int is_recipe_craftable(crafting_recipe_t * list, int recipe){
   int max_items = 0;
   int found_items = 0;
-  for (int item = 0 ; recipes[recipe].ingredients[item].item.id != 0 ; item++){
+  for (int item = 0 ; list[recipe].ingredients[item].item.id != 0 ; item++){
     max_items++;
-    if (check_inventory_item(recipes[recipe].ingredients[item].item,
-			     recipes[recipe].ingredients[item].amount)){
+    if (check_inventory_item(list[recipe].ingredients[item].item,
+			     list[recipe].ingredients[item].amount)){
       found_items++;
     }
   }
@@ -145,17 +146,32 @@ int is_recipe_craftable(int recipe){
   return 0;
 }
 
-int craft_item(int recipe){
-  if (is_recipe_craftable(recipe) && !is_inventory_full()){
-    add_inventory_item(recipes[recipe].output, recipes[recipe].amount);
+int craft_item(crafting_recipe_t * list, int recipe){
+  if (is_recipe_craftable(list, recipe) && !is_inventory_full()){
+    add_inventory_item(list[recipe].output, list[recipe].amount);
     
-    for (int item = 0 ; recipes[recipe].ingredients[item].item.id != 0 ; item++){
-      remove_inventory_item(recipes[recipe].ingredients[item].item,
-			    recipes[recipe].ingredients[item].amount);
+    for (int item = 0 ; list[recipe].ingredients[item].item.id != 0 ; item++){
+      remove_inventory_item(list[recipe].ingredients[item].item,
+			    list[recipe].ingredients[item].amount);
     }
     
     return 1;
   } else {
     return 0;
+  }
+}
+
+void get_craftable_recipes(crafting_recipe_t * recipe_list){
+  int filled_list = 0;
+  for (int item = 0 ; item < CRAFTABLE_LIST_AMOUNT ; item++){
+    recipe_list[item].id = 0;
+  }
+  for (int item = 0 ; filled_list < CRAFTABLE_LIST_AMOUNT &&
+	 item < CRAFTING_RECIPE_AMOUNT; item++){
+    if (is_recipe_craftable(recipes, item)){
+      memcpy(&recipe_list[filled_list], &recipes[item], sizeof(crafting_recipe_t));
+      recipe_list[filled_list].id = filled_list;
+      filled_list++;
+    }
   }
 }
