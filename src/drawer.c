@@ -9,6 +9,7 @@
 #include <map_defs.h>
 #include <entity.h>
 #include <ticks.h>
+#include <physics.h>
 
 int view_x = 0;
 int view_y = 0;
@@ -74,6 +75,8 @@ void draw_view(render_obj_t * object){
   
 /* Draw player */
 void draw_player(render_obj_t * object){
+  transform_t pos = get_player_entity()->position;
+
   get_camera_view(&view_x, &view_y);
   object->surface = SDL_LoadBMP(LEVEE_PATH);
   object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
@@ -82,8 +85,22 @@ void draw_player(render_obj_t * object){
   object->target.y = (DEFAULT_SCREEN_HEIGHT/2)-((DEFAULT_SCREEN_HEIGHT/view_y)/2);
   object->target.w = DEFAULT_SCREEN_WIDTH/view_x;
   object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
+  object->clip.w = LEVEE_WIDTH;
+  object->clip.h = LEVEE_HEIGHT;
+  object->clip.x = LEVEE_WIDTH * is_player_jumping();
+  object->clip.y = 0;
 
-  SDL_RenderCopy(object->renderer, object->texture, NULL, &object->target);
+  int brightness = (32 * is_daytime())+((pos.z) * 25);
+  if (brightness > 255){
+    brightness = 255;
+  }
+  if (is_block_shaded(pos.x, pos.y, pos.z-1)){
+    SDL_SetTextureColorMod(object->texture, 16, 16, 16);
+  } else {
+    SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);                   
+  }
+  
+  SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);
   SDL_DestroyTexture(object->texture);
   SDL_FreeSurface(object->surface);
 }

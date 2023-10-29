@@ -101,3 +101,6 @@ Alpha Version 0.3.5:
 Alpha Version 0.3.6:
   Re-implemented crafting
   Player can no longer move while in a menu
+  Game is now viewed from MAP_HEIGHT if player is outdoors
+  Added jump animation
+  Player now changes brightness depending on environment

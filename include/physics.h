@@ -7,5 +7,6 @@ void player_jump();
 void handle_gravity();
 void reset_physics();
 void handle_physics();
+int is_player_jumping();
 
 #endif
