@@ -96,6 +96,10 @@ void draw_game_ui(render_obj_t * object){
   newline_ui();
       
   draw_string(CURRENT_BLOCK_MSG, object);
+  if (block.id == 0){
+    draw_string("Nothing", object);
+    return;
+  }
   draw_string(block.name, object);
 }
 
@@ -184,6 +188,14 @@ void draw_inventory_ui(render_obj_t * object){
     block = get_inventory_item(slot)->item;
     slot_label[1] = slot + 48;
     draw_string(slot_label, object);
+    if (block.id == 0){
+      draw_string("Nothing", object);
+      newline_ui();
+      if (slot == 0){
+	break;
+      }
+      continue;
+    }
     draw_string(block.name, object);
     sprintf(amount, ": %d", get_inventory_item(slot)->amount);
     draw_string(amount, object);

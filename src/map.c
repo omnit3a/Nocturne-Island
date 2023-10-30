@@ -30,11 +30,11 @@ void set_block_state(int state, int x_pos, int y_pos, int z_pos){
 }
 
 int is_block_shaded(int x_pos, int y_pos, int z_pos){
-  if (!get_block(x_pos, y_pos, z_pos+1).block.transparent){
+  if (get_block(x_pos, y_pos, z_pos+1).block.solid){
     return 0;
   }
   for (int z = z_pos+1 ; z < MAP_HEIGHT ; z++){
-    if (!get_block(x_pos, y_pos, z).block.transparent){
+    if (get_block(x_pos, y_pos, z).block.solid){
       return 1;
     }
   }

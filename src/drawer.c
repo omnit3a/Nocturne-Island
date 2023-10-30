@@ -32,7 +32,7 @@ void draw_view(render_obj_t * object){
       for (int y = pos.y-(view_y/2) ; y <= pos.y+(view_y/2) ; y++){
 
 	if (is_block_shaded(pos.x, pos.y, pos.z-1)){
-	  drawing_height = pos.z+1;
+	  drawing_height = pos.z;
 	} else {
 	  drawing_height = MAP_HEIGHT;
 	}
@@ -48,16 +48,13 @@ void draw_view(render_obj_t * object){
 	  object->clip.y = 0;
 	}
 
-	int brightness = (32 * is_daytime())+(z * 25);
+	int brightness = (32 * is_daytime())+((z) * 25);
 	if (brightness > 255){
 	  brightness = 255;
 	}
-	if (brightness < 0){
-	  brightness = 0;
-	}
 
 	if (is_block_shaded(x, y, z)){
-	  SDL_SetTextureColorMod(object->texture, 16, 16, 16);
+	  SDL_SetTextureColorMod(object->texture, 64, 64, 64);
 	} else {
 	  SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
 	}
