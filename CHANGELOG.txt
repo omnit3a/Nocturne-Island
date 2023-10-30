@@ -109,3 +109,4 @@ Alpha Version 0.3.7:
   Add Z rotation
   Begin work on new terrain generator
   Fix big with indoor view clipping
+  Improve rendering preformance

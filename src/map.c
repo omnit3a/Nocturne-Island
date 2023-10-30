@@ -14,11 +14,27 @@
 world_data_t game_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 block_data_t data_map[BLOCKS_AMOUNT];
 
+void get_height(int * result, int x_pos, int y_pos){
+  for (int z = 0 ; z < MAP_HEIGHT ; z++){
+    if (!get_block(x_pos, y_pos, z).block.solid){
+      if (is_block_shaded(x_pos, y_pos, z-1)){
+	continue;
+      }
+      *result = z-1;
+      return;
+    }
+  }
+  *result = 0;
+}
+
 void set_block(block_data_t block, int x_pos, int y_pos, int z_pos){
+  int height;
+  get_height(&height, x_pos, y_pos);
   game_map[x_pos][y_pos][z_pos].block = block;
   game_map[x_pos][y_pos][z_pos].current_state = 0;
   game_map[x_pos][y_pos][z_pos].hp = block.hp;
   game_map[x_pos][y_pos][z_pos].id = block.id;
+  game_map[x_pos][y_pos][z_pos].height_map = height;
 }
 
 world_data_t get_block(int x_pos, int y_pos, int z_pos){

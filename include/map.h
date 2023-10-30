@@ -36,9 +36,10 @@ typedef struct world_data_s {
   int current_state;
   int hp;
   int id;
+  int height_map;
 } world_data_t;
 
-int hash_input(int input);
+void get_height(int * result, int x_pos, int y_pos);
 void set_block(block_data_t block, int x_pos, int y_pos, int z_pos);
 world_data_t get_block(int x_pos, int y_pos, int z_pos);
 void set_block_state(int state, int x_pos, int y_pos, int z_pos);

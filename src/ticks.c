@@ -9,19 +9,22 @@ int day_tick = 0;
 int is_day = 1;
 int switch_day = 0;
 
+#define SPEED 1 / (1000 / TICKS_PER_SECOND)
+
 int get_current_tick(){
-  current_tick = (SDL_GetTicks() / (1000 / TICKS_PER_SECOND) % TICKS_PER_SECOND) + 1;
+  current_tick = (SDL_GetTicks() * SPEED & (TICKS_PER_SECOND-1)) + 1;
   return current_tick;
 }
 
 void tick_update(){
-  if (get_current_tick() % (TICKS_PER_SECOND / 8) == 0){
+  get_current_tick();
+  if ((current_tick & (20 - 1)) == 0){
     handle_physics();
   } else {
     reset_physics();
   }
 
-  if (get_current_tick() % 2 == 0){
+  if ((current_tick & (4 - 1)) == 0){
     update_camera();
   }
 
