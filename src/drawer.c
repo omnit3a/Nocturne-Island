@@ -21,8 +21,8 @@ void draw_view(render_obj_t * object){
   object->clip.w = TILE_WIDTH;
   object->clip.h = TILE_HEIGHT;
   transform_t pos = get_player_entity()->position;
-  int drawing_height = MAP_HEIGHT;
   int draw_indoors = 0;
+  int drawing_height = 0;
   int z;
   int start_index = ((pos.y-view_y/2) * MAP_WIDTH) + pos.x-view_x/2;
   int end_index = (((pos.y+view_y/2)+1) * MAP_WIDTH) + (pos.x+view_x/2+1);
@@ -33,6 +33,11 @@ void draw_view(render_obj_t * object){
     get_height(&z, x, y);
     
     if (is_block_shaded(pos.x, pos.y, pos.z-1)){
+      drawing_height = pos.z-1;
+      z = 0;
+      draw_indoors = 1;
+    } else if (get_block(x, y, z).block.transparent){
+      drawing_height = z;
       z = 0;
       draw_indoors = 1;
     } else {
@@ -67,7 +72,7 @@ void draw_view(render_obj_t * object){
       object->target.w = DEFAULT_SCREEN_WIDTH/view_x;
       object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
       SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);
-    } while (draw_indoors && z++ != pos.z);
+    } while (draw_indoors && z++ <= drawing_height);
   }
   SDL_FreeSurface(object->surface);
   SDL_DestroyTexture(object->texture);

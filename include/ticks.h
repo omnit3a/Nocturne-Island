@@ -7,3 +7,5 @@ int get_current_tick();
 void tick_update();
 void day_night_update();
 int is_daytime();
+void set_fps_start();
+int get_fps();

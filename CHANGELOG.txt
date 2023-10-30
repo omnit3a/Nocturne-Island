@@ -110,3 +110,4 @@ Alpha Version 0.3.7:
   Begin work on new terrain generator
   Fix big with indoor view clipping
   Improve rendering preformance
+  Added Wooden Boards

@@ -92,9 +92,8 @@ void draw_game_ui(render_obj_t * object){
   init_ui();
   block = get_current_item()->item;
   draw_string(CURRENT_VERSION_MSG, object);
-
   newline_ui();
-      
+
   draw_string(CURRENT_BLOCK_MSG, object);
   if (block.id == 0){
     draw_string("Nothing", object);
