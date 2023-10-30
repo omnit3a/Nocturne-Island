@@ -86,19 +86,26 @@ void draw_player(render_obj_t * object){
   object->surface = SDL_LoadBMP(LEVEE_PATH);
   object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
 
-  object->target.x = (DEFAULT_SCREEN_WIDTH/2)-((DEFAULT_SCREEN_WIDTH/view_x)/2);
+  object->target.x = (DEFAULT_SCREEN_WIDTH/2)-((DEFAULT_SCREEN_WIDTH/view_x)/2)+4;
   object->target.y = (DEFAULT_SCREEN_HEIGHT/2)-((DEFAULT_SCREEN_HEIGHT/view_y)/2);
-  object->target.w = DEFAULT_SCREEN_WIDTH/view_x;
+  object->target.w = (DEFAULT_SCREEN_WIDTH/view_x)-8;
   object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
   object->clip.w = LEVEE_WIDTH;
   object->clip.h = LEVEE_HEIGHT;
-  object->clip.x = LEVEE_WIDTH * is_player_jumping();
+  object->clip.x = get_player_entity()->sprite.frame_offset * LEVEE_WIDTH;
   object->clip.y = 0;
 
   int brightness = (32 * is_daytime())+((pos.z) * 25);
   if (brightness > 255){
     brightness = 255;
   }
+
+  if (is_player_jumping()){
+    object->clip.y = LEVEE_HEIGHT;
+  } else {
+    object->clip.y = 0;
+  }
+  
   if (is_block_shaded(pos.x, pos.y, pos.z-1)){
     SDL_SetTextureColorMod(object->texture, 16, 16, 16);
   } else {

@@ -19,7 +19,7 @@ void entity_rotate(entity_t * entity, transform_t * offset){
 }
 
 void entity_apply_sprite(entity_t * entity, sprite_t * sprite){
-  entity->sprite.renderer = sprite->renderer;
+  entity->sprite.frame_offset = 0;
 }
 
 void entity_set_tag(entity_t * entity, tag_t * tag){

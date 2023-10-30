@@ -3,12 +3,13 @@
 #include <physics.h>
 #include <camera.h>
 
+#define SPEED 1 / (1000 / TICKS_PER_SECOND)
+
 int current_tick = 0;
 int starting_tick = 0;
 int day_tick = 0;
 int is_day = 1;
 int switch_day = 0;
-Uint64 fps_start = 0;
 
 #define SPEED 1 / (1000 / TICKS_PER_SECOND)
 
@@ -41,14 +42,4 @@ void day_night_update(){
 
 int is_daytime(){
   return is_day;
-}
-
-void set_fps_start(){
-  fps_start = SDL_GetPerformanceCounter();
-}
-
-int get_fps(){
-  Uint64 end = SDL_GetPerformanceCounter();
-  int elapsed = (end - fps_start) / SDL_GetPerformanceFrequency();
-  return elapsed;
 }

@@ -14,7 +14,7 @@ typedef struct tag_s {
 } tag_t;
 
 typedef struct sprite_s {
-  render_obj_t renderer;
+  int frame_offset;
 } sprite_t;
 
 typedef struct entity_s {

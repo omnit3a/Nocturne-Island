@@ -159,18 +159,22 @@ void handle_player_rotation(SDL_Event event){
     case SDLK_i:
       current_rotation.x = 0;
       current_rotation.y = -1;
+      player_entity.sprite.frame_offset = 2;
       break;
     case SDLK_j:
       current_rotation.x = -1;
       current_rotation.y = 0;
+      player_entity.sprite.frame_offset = 3;
       break;
     case SDLK_k:
       current_rotation.x = 0;
       current_rotation.y = 1;
+      player_entity.sprite.frame_offset = 0;
       break;
     case SDLK_l:
       current_rotation.x = 1;
       current_rotation.y = 0;
+      player_entity.sprite.frame_offset = 1;
       break;
     case SDLK_u:
       current_rotation.z = current_rotation.z - 1;

@@ -1,4 +1,4 @@
- Alpha Version 0.1.2:
+Alpha Version 0.1.2:
   Added placing and mining blocks above and below the player
   Improved terrain gen to make it more similar to rubydung terrain gen
   Changed player sprite to be more mediveal
@@ -111,3 +111,5 @@ Alpha Version 0.3.7:
   Fix big with indoor view clipping
   Improve rendering preformance
   Added Wooden Boards
+  Created new art for player
+  Added directional spritesheet
