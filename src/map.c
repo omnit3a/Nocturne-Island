@@ -167,23 +167,12 @@ void fill_map(){
  * to spawn in well lit areas.
  */
 void place_trees(char height_map[MAP_WIDTH][MAP_LENGTH], int seed){
-  srand(seed);
-  int offset = 1;
   for (int x = 0 ; x < MAP_WIDTH ; x++){
     for (int y = 0 ; y < MAP_LENGTH ; y++){
-      offset = 1;
-      if (height_map[x][y] == 0){
-	continue;
-      }
-      if (height_map[x][y] < MAP_HEIGHT){
-	if (height_map[x][y] == CLIFF_HEIGHT){
-	  offset = 30;
-	}
-	offset += rand() % SPAWN_RATE_VARIANCE;
-        if ((rand() % 1000) <= TREE_CHANCE+offset){
-	  set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
-	  set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
-	}
+      float noise = pnoise2d(x, y, 0.75, 10, seed);
+      if (noise < -1.2){
+	set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
+	set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
       }
     }
   }
