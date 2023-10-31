@@ -81,38 +81,57 @@ void draw_view(render_obj_t * object){
 /* Draw player */
 void draw_player(render_obj_t * object){
   transform_t pos = get_player_entity()->position;
-
+  transform_t rot = get_player_direction();
+  
   get_camera_view(&view_x, &view_y);
-  object->surface = SDL_LoadBMP(LEVEE_PATH);
-  object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
-
-  object->target.x = (DEFAULT_SCREEN_WIDTH/2)-((DEFAULT_SCREEN_WIDTH/view_x)/2)+4;
-  object->target.y = (DEFAULT_SCREEN_HEIGHT/2)-((DEFAULT_SCREEN_HEIGHT/view_y)/2);
-  object->target.w = (DEFAULT_SCREEN_WIDTH/view_x)-8;
-  object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
-  object->clip.w = LEVEE_WIDTH;
-  object->clip.h = LEVEE_HEIGHT;
-  object->clip.x = get_player_entity()->sprite.frame_offset * LEVEE_WIDTH;
-  object->clip.y = 0;
-
-  int brightness = (32 * is_daytime())+((pos.z) * 25);
-  if (brightness > 255){
-    brightness = 255;
-  }
-
-  if (is_player_jumping()){
-    object->clip.y = LEVEE_HEIGHT;
-  } else {
+  for (int stage = 0 ; stage < 2 ; stage++){
+    object->surface = SDL_LoadBMP(LEVEE_HEAD_PATH);
+    if (stage == 0){
+      object->surface = SDL_LoadBMP(LEVEE_BODY_PATH);
+    }
+    
+    object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
+    
+    object->target.x = (DEFAULT_SCREEN_WIDTH/2)-((DEFAULT_SCREEN_WIDTH/view_x)/2)+4;
+    object->target.y = (DEFAULT_SCREEN_HEIGHT/2)-((DEFAULT_SCREEN_HEIGHT/view_y)/2);
+    object->target.w = (DEFAULT_SCREEN_WIDTH/view_x)-8;
+    object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
+    object->clip.w = LEVEE_WIDTH;
+    object->clip.h = LEVEE_HEIGHT;
+    object->clip.x = get_player_entity()->sprite.frame_offset * LEVEE_WIDTH;
     object->clip.y = 0;
+
+    if (stage == 1){
+      switch (rot.z){
+        case -1:
+	  object->clip.y = 0;
+	  break;
+        case 0:
+	  object->clip.y = LEVEE_HEIGHT;
+	  break;
+        case 1:
+	  object->clip.y = LEVEE_HEIGHT * 2;
+	  break;
+      }
+    }
+    
+    int brightness = (32 * is_daytime())+((pos.z) * 25);
+    if (brightness > 255){
+      brightness = 255;
+    }
+    
+    if (is_player_jumping()){
+      object->target.y = ((DEFAULT_SCREEN_HEIGHT/2)-8)-((DEFAULT_SCREEN_HEIGHT/view_y)/2);
+    }
+    
+    if (is_block_shaded(pos.x, pos.y, pos.z-1)){
+      SDL_SetTextureColorMod(object->texture, 16, 16, 16);
+    } else {
+      SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);                   
+    }
+    
+    SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);
+    SDL_DestroyTexture(object->texture);
+    SDL_FreeSurface(object->surface);
   }
-  
-  if (is_block_shaded(pos.x, pos.y, pos.z-1)){
-    SDL_SetTextureColorMod(object->texture, 16, 16, 16);
-  } else {
-    SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);                   
-  }
-  
-  SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);
-  SDL_DestroyTexture(object->texture);
-  SDL_FreeSurface(object->surface);
 }
