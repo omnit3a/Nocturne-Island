@@ -26,7 +26,7 @@ void draw_view(render_obj_t * object){
   int z;
   int start_index = ((pos.y-view_y/2) * MAP_WIDTH) + pos.x-view_x/2;
   int end_index = (((pos.y+view_y/2)+1) * MAP_WIDTH) + (pos.x+view_x/2+1);
-  
+
   for (int index = start_index ; index < end_index ; index++){
     int x = index % MAP_WIDTH;
     int y = index / MAP_LENGTH;

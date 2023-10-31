@@ -4,9 +4,6 @@
 #include <SDL2/SDL.h>
 #include <drawer.h>
 
-/* Directional arrows textures */
-#define ARROW_UI_PATH "assets/ui/arrow.bmp"
-
 /* Font related definitions */
 #define FONT_PATH "assets/ui/font.bmp"
 #define FONT_WIDTH 8
@@ -27,7 +24,6 @@ void zero_ui();
 void newline_ui();
 void draw_letter(char letter, render_obj_t * object);
 void draw_string(char * string, render_obj_t * object);
-void draw_direction(render_obj_t * object);
 
 void draw_game_ui(render_obj_t * object);
 int handle_game_ui(SDL_Event event);

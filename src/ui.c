@@ -102,56 +102,6 @@ void draw_game_ui(render_obj_t * object){
   draw_string(block.name, object);
 }
 
-void draw_direction(render_obj_t * object){
-  int view_x;
-  int view_y;
-  int x_off = 0;
-  int y_off = 0;
-  int render_angle = 0;
-  transform_t direction = get_player_direction();
-  
-  get_camera_view(&view_x, &view_y);
-  int width = DEFAULT_SCREEN_WIDTH/view_x;
-  int height = DEFAULT_SCREEN_HEIGHT/view_y;
-  object->surface = SDL_LoadBMP(ARROW_UI_PATH);
-
-  if (direction.y == -1){
-    x_off = width * (view_x/2);
-    y_off = height * (view_y/2-1) - (height/4);
-    render_angle = 0;
-  }
-  if (direction.y == 1){
-    x_off = width * (view_x/2);
-    y_off = height * (view_y/2+1) + (height/4);
-    render_angle = 180;
-  }
-  if (direction.x == -1){
-    x_off = width * (view_x/2-1);
-    y_off = height * (view_y/2);
-    render_angle = 270;
-  }
-  if (direction.x == 1){
-    x_off = width * (view_x/2+1);
-    y_off = height * (view_y/2);
-    render_angle = 90;
-  }
-
-  if (direction.z == 1){
-    y_off -= (view_y+1);
-  } else if (direction.z == -1){
-    y_off += (view_y-1);
-  }
-
-  object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
-  object->target.x = x_off;
-  object->target.y = y_off;
-  object->target.w = DEFAULT_SCREEN_WIDTH/view_x;
-  object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
-  SDL_RenderCopyEx(object->renderer, object->texture, NULL, &object->target, render_angle, NULL, 0);
-  SDL_DestroyTexture(object->texture);
-  SDL_FreeSurface(object->surface);
-}
-
 /* Switch between UI Modes */
 int handle_game_ui(SDL_Event event){
   transform_t pos = get_player_entity()->position;
