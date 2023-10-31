@@ -26,7 +26,7 @@ void spawn_player(){
   player_entity.rotation.y = SPAWN_Y;
   player_entity.rotation.z = SPAWN_Z;
   current_rotation.x = 0;
-  current_rotation.y = -1;
+  current_rotation.y = 1;
   current_rotation.z = 0;
 }
 
