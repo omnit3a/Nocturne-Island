@@ -18,3 +18,5 @@
 #define WATER 8
 #define SAND 9
 #define NOKIUM 10
+#define BOARDS 11
+#define CLAY 12

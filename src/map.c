@@ -302,3 +302,7 @@ int is_next_to_block(block_data_t block, int x_pos, int y_pos, int z_pos){
   }
   return 0;
 }
+
+int is_next_to_workshop(int workshop_id, int x_pos, int y_pos, int z_pos){
+  return is_next_to_block(get_block_properties(workshop_id),x_pos,y_pos,z_pos);
+}

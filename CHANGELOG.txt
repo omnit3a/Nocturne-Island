@@ -113,3 +113,5 @@ Alpha Version 0.3.7:
   Added Wooden Boards
   Created new art for player
   Added directional spritesheet
+  Added kiln
+  Added support for different crafting workshops

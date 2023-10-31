@@ -112,9 +112,6 @@ int handle_game_ui(SDL_Event event){
       return HANDLE_CLOSE;
 
     case SDLK_c:
-      if (!is_next_to_block(get_block_properties(WORKBENCH), pos.x, pos.y, pos.z)){
-	return HANDLE_REGULAR;
-      }
       active_menu = CRAFTING_UI_ID;
       return HANDLE_CLOSE;
       
@@ -218,7 +215,7 @@ void draw_crafting_ui(render_obj_t * object){
 int handle_crafting_ui(SDL_Event event){
   crafting_recipe_t recipe_list[CRAFTABLE_LIST_AMOUNT];
   get_craftable_recipes(recipe_list);
-
+  
   char code = event.key.keysym.sym-96;
   if (code >= 0 && code <= CRAFTABLE_LIST_AMOUNT){
     if (craft_item(recipe_list, code)){

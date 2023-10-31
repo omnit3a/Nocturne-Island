@@ -4,12 +4,14 @@
 #include <crafting.h>
 #include <map.h>
 #include <inventory.h>
+#include <player.h>
 
 crafting_recipe_t recipes[CRAFTING_RECIPE_AMOUNT];
 crafting_recipe_t craftable_recipes[CRAFTABLE_LIST_AMOUNT];
+int craftable_recipe_count = 0;
 
 void translate_recipe_def(char * def){
-  int values[4] = {0, 0, 0, 0};
+  int values[5] = {0, 0, 0, 0, 0};
   crafting_item_t ingredients[8];
   char * token;
   char * delim = " ";
@@ -69,7 +71,7 @@ void translate_recipe_def(char * def){
   recipes[line].output = get_block_properties(values[0]);
   recipes[line].amount = values[1];
   recipes[line].id = line;
-  
+  recipes[line].workshop_id = values[3];
 }
 
 void load_crafting_recipes(char * path){
@@ -129,6 +131,7 @@ void load_crafting_recipes(char * path){
 }
 
 int is_recipe_craftable(crafting_recipe_t * list, int recipe){
+  transform_t pos = get_player_entity()->position;
   int max_items = 0;
   int found_items = 0;
   for (int item = 0 ; list[recipe].ingredients[item].item.id != 0 ; item++){
@@ -163,15 +166,26 @@ int craft_item(crafting_recipe_t * list, int recipe){
 
 void get_craftable_recipes(crafting_recipe_t * recipe_list){
   int filled_list = 0;
+  craftable_recipe_count = 0;
+  transform_t pos = get_player_entity()->position;
   for (int item = 0 ; item < CRAFTABLE_LIST_AMOUNT ; item++){
     recipe_list[item].id = 0;
   }
   for (int item = 0 ; filled_list < CRAFTABLE_LIST_AMOUNT &&
-	 item < CRAFTING_RECIPE_AMOUNT; item++){
-    if (is_recipe_craftable(recipes, item)){
+	 item < CRAFTING_RECIPE_AMOUNT ; item++){
+    if (is_recipe_craftable(recipes, item) && is_next_to_workshop(recipes[item].workshop_id, pos.x, pos.y, pos.z)){
       memcpy(&recipe_list[filled_list], &recipes[item], sizeof(crafting_recipe_t));
-      recipe_list[filled_list].id = filled_list;
+      recipe_list[filled_list].id = filled_list; 
       filled_list++;
+      craftable_recipe_count++;
     }
   }
+}
+
+crafting_recipe_t * get_recipe_list(){
+  return recipes;
+}
+
+int get_craftable_recipe_count(){
+  return craftable_recipe_count;
 }
