@@ -1,7 +1,8 @@
 ESC: Exit menu
 WASD: Move
 Space: Jump
-IJKL: Rotate laterally
+U: Rotate vertically
+IJKL: Rotate horizontally
 M: Mine
 E: Inventory
 C: Crafting

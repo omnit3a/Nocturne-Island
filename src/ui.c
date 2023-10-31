@@ -92,60 +92,18 @@ void draw_game_ui(render_obj_t * object){
   init_ui();
   block = get_current_item()->item;
   draw_string(CURRENT_VERSION_MSG, object);
-
   newline_ui();
-      
+
   draw_string(CURRENT_BLOCK_MSG, object);
+  if (block.id == 0){
+    draw_string("Nothing", object);
+    return;
+  }
   draw_string(block.name, object);
-}
-
-void draw_direction(render_obj_t * object){
-  int view_x;
-  int view_y;
-  int x_off = 0;
-  int y_off = 0;
-  int render_angle = 0;
-  transform_t direction = get_player_direction();
-  
-  get_camera_view(&view_x, &view_y);
-  int width = DEFAULT_SCREEN_WIDTH/view_x;
-  int height = DEFAULT_SCREEN_HEIGHT/view_y;
-  object->surface = SDL_LoadBMP(ARROW_UI_PATH);
-
-  if (direction.y == -1){
-    x_off = width * (view_x/2);
-    y_off = height * (view_y/2-1) - (height/4);
-    render_angle = 0;
-  }
-  if (direction.y == 1){
-    x_off = width * (view_x/2);
-    y_off = height * (view_y/2+1) + (height/4);
-    render_angle = 180;
-  }
-  if (direction.x == -1){
-    x_off = width * (view_x/2-1);
-    y_off = height * (view_y/2);
-    render_angle = 270;
-  }
-  if (direction.x == 1){
-    x_off = width * (view_x/2+1);
-    y_off = height * (view_y/2);
-    render_angle = 90;
-  }
-
-  object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
-  object->target.x = x_off;
-  object->target.y = y_off;
-  object->target.w = DEFAULT_SCREEN_WIDTH/view_x;
-  object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
-  SDL_RenderCopyEx(object->renderer, object->texture, NULL, &object->target, render_angle, NULL, 0);
-  SDL_DestroyTexture(object->texture);
-  SDL_FreeSurface(object->surface);
 }
 
 /* Switch between UI Modes */
 int handle_game_ui(SDL_Event event){
-  transform_t pos = get_player_entity()->position;
   handle_block_select(event);
   switch (event.key.keysym.sym){
     case SDLK_e:
@@ -153,9 +111,6 @@ int handle_game_ui(SDL_Event event){
       return HANDLE_CLOSE;
 
     case SDLK_c:
-      if (!is_next_to_block(get_block_properties(WORKBENCH), pos.x, pos.y, pos.z)){
-	return HANDLE_REGULAR;
-      }
       active_menu = CRAFTING_UI_ID;
       return HANDLE_CLOSE;
       
@@ -178,6 +133,14 @@ void draw_inventory_ui(render_obj_t * object){
     block = get_inventory_item(slot)->item;
     slot_label[1] = slot + 48;
     draw_string(slot_label, object);
+    if (block.id == 0){
+      draw_string("Nothing", object);
+      newline_ui();
+      if (slot == 0){
+	break;
+      }
+      continue;
+    }
     draw_string(block.name, object);
     sprintf(amount, ": %d", get_inventory_item(slot)->amount);
     draw_string(amount, object);
@@ -251,7 +214,7 @@ void draw_crafting_ui(render_obj_t * object){
 int handle_crafting_ui(SDL_Event event){
   crafting_recipe_t recipe_list[CRAFTABLE_LIST_AMOUNT];
   get_craftable_recipes(recipe_list);
-
+  
   char code = event.key.keysym.sym-96;
   if (code >= 0 && code <= CRAFTABLE_LIST_AMOUNT){
     if (craft_item(recipe_list, code)){

@@ -22,12 +22,13 @@ void player_jump(){
 }
 
 void handle_gravity(){
+  if (player_is_jumping){
+    return;
+  }
   transform_t pos = get_player_entity()->position;
-  if (player_is_jumping == 0){
-    if(!get_block(pos.x, pos.y, pos.z-1).block.solid){
-      pos.z--;
-      entity_move(get_player_entity(), &pos);
-    }
+  if(!get_block(pos.x, pos.y, pos.z-1).block.solid){
+    pos.z--;
+    entity_move(get_player_entity(), &pos);
   }
 }
 
@@ -39,10 +40,11 @@ void reset_physics(){
 }
 
 void handle_physics(){
-  if (ticked == 0){
-    handle_gravity();
-    ticked = 1;
+  if (ticked == 1){
+    return;
   }
+  handle_gravity();
+  ticked = 1;
 }
 
 int is_player_jumping(){

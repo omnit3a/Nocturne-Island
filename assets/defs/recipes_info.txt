@@ -16,6 +16,9 @@ amount (any unsigned int):
 id (any unsigned int):
   - the id associated with this crafting recipe
 
+workshop_id (any int):
+  - the id of the block that is used to craft this recipe
+
 Notes:
   the <crafting_item_t> type stores the following data:
       block_data_t item;

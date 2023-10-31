@@ -26,7 +26,7 @@ void spawn_player(){
   player_entity.rotation.y = SPAWN_Y;
   player_entity.rotation.z = SPAWN_Z;
   current_rotation.x = 0;
-  current_rotation.y = -1;
+  current_rotation.y = 1;
   current_rotation.z = 0;
 }
 
@@ -141,6 +141,7 @@ void handle_player_movement(SDL_Event event){
   }
   player_rotate();
   rot = player_entity.rotation;
+  rot.z = pos.z;
   if(!get_block(rot.x, rot.y, rot.z).block.solid && move_player){
     entity_move(&player_entity, &rot);
   }
@@ -158,18 +159,28 @@ void handle_player_rotation(SDL_Event event){
     case SDLK_i:
       current_rotation.x = 0;
       current_rotation.y = -1;
+      player_entity.sprite.frame_offset = 2;
       break;
     case SDLK_j:
       current_rotation.x = -1;
       current_rotation.y = 0;
+      player_entity.sprite.frame_offset = 3;
       break;
     case SDLK_k:
       current_rotation.x = 0;
       current_rotation.y = 1;
+      player_entity.sprite.frame_offset = 0;
       break;
     case SDLK_l:
       current_rotation.x = 1;
       current_rotation.y = 0;
+      player_entity.sprite.frame_offset = 1;
+      break;
+    case SDLK_u:
+      current_rotation.z = current_rotation.z - 1;
+      if (current_rotation.z == -2){
+	current_rotation.z = 1;
+      }
       break;
   }
   player_rotate();

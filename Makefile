@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -I$(HDRDIR) -lm -lpthread -lSDL2 -O2
+CFLAGS=-Wall -I$(HDRDIR) -lm -lSDL2
 
 HDRDIR=include/
 
