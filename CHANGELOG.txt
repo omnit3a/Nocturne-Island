@@ -115,3 +115,4 @@ Alpha Version 0.3.7:
   Added directional spritesheet
   Added kiln
   Added support for different crafting workshops
+  Trees are now placed based on perlin noise
