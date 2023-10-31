@@ -104,7 +104,6 @@ void draw_game_ui(render_obj_t * object){
 
 /* Switch between UI Modes */
 int handle_game_ui(SDL_Event event){
-  transform_t pos = get_player_entity()->position;
   handle_block_select(event);
   switch (event.key.keysym.sym){
     case SDLK_e:

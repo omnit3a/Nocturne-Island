@@ -131,7 +131,6 @@ void load_crafting_recipes(char * path){
 }
 
 int is_recipe_craftable(crafting_recipe_t * list, int recipe){
-  transform_t pos = get_player_entity()->position;
   int max_items = 0;
   int found_items = 0;
   for (int item = 0 ; list[recipe].ingredients[item].item.id != 0 ; item++){
