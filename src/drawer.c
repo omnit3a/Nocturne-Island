@@ -24,12 +24,12 @@ void draw_view(render_obj_t * object){
   int draw_indoors = 0;
   int drawing_height = 0;
   int z;
-  int start_index = ((pos.y-view_y/2) * MAP_WIDTH) + pos.x-view_x/2;
-  int end_index = (((pos.y+view_y/2)+1) * MAP_WIDTH) + (pos.x+view_x/2+1);
+  int start_index = ((pos.y - view_y/2) * CHUNK_WIDTH) + pos.x - view_x/2;
+  int end_index = (((pos.y + view_y/2)+1) * CHUNK_WIDTH) + (pos.x + view_x/2)+1;
 
   for (int index = start_index ; index < end_index ; index++){
-    int x = index % MAP_WIDTH;
-    int y = index / MAP_LENGTH;
+    int x = (index % CHUNK_WIDTH);
+    int y = (index / CHUNK_LENGTH);
     get_height(&z, x, y);
     
     if (is_block_shaded(pos.x, pos.y, pos.z-1)){

@@ -19,6 +19,9 @@ sprite_t player_sprite;
 entity_t player_entity;
 transform_t current_rotation;
 
+int x_pos_offset = 0;
+int y_pos_offset = 0;
+
 void spawn_player(){
   player_entity.position.x = SPAWN_X;
   player_entity.position.y = SPAWN_Y;
@@ -35,28 +38,17 @@ int get_mining_speed(){
   return 1;
 }
 
-// add direction offsets for mining and placing blocks
-void player_rotate(){
-  transform_t pos = player_entity.position;
-  transform_t offset = pos;
-
-  offset.x = pos.x+current_rotation.x;
-  offset.y = pos.y+current_rotation.y;
-  offset.z = pos.z+current_rotation.z;
-
-  entity_rotate(&player_entity, &offset);
-}
-
 /* Mine a block in the direction of the player */
 void player_mine_block(){
-
+  transform_t rot = player_entity.rotation;
+  rot.x += current_rotation.x;
+  rot.y += current_rotation.y;
+  rot.z += current_rotation.z;
+  
   if (get_active_menu() != GAME_UI_ID){
     return;
   }
   
-  player_rotate();
-  transform_t rot = player_entity.rotation;
-
   if (!is_block_mineable(get_block(rot.x, rot.y, rot.z).block)){
     return;
   }
@@ -76,6 +68,7 @@ void player_mine_block(){
     int count = get_block(rot.x, rot.y, rot.z).block.count;
     add_inventory_item(block, count);
     set_block(get_block_properties(EMPTY), rot.x, rot.y, rot.z);
+    printf("test\n");
   }
 }
 
@@ -83,7 +76,10 @@ void player_mine_block(){
 void player_place_block(){
   transform_t rot = player_entity.rotation;
   block_data_t block = get_current_item()->item;
-
+  rot.x += current_rotation.x;
+  rot.y += current_rotation.y;
+  rot.z += current_rotation.z;
+  
   if (get_active_menu() != GAME_UI_ID){
     return;
   }
@@ -102,8 +98,7 @@ void player_place_block(){
 /* Get user input for the player, then do stuff with it */
 void handle_player_movement(SDL_Event event){
   transform_t pos = player_entity.position;
-  transform_t prev_rot = current_rotation;
-  transform_t rot;
+  transform_t rot = player_entity.rotation;
   
   int move_player = 0;
 
@@ -140,14 +135,15 @@ void handle_player_movement(SDL_Event event){
       }
       break;
   }
-  player_rotate();
-  rot = player_entity.rotation;
+  rot.x += current_rotation.x;
+  rot.y += current_rotation.y;
   rot.z = pos.z;
+  
   if(!get_block(rot.x, rot.y, rot.z).block.solid && move_player){
-    entity_move(&player_entity, &rot);
+    x_pos_offset += current_rotation.x;
+    y_pos_offset += current_rotation.y;
+    generate_hills(x_pos_offset, y_pos_offset);
   }
-  current_rotation = prev_rot;
-  player_rotate();
 }
 
 void handle_player_rotation(SDL_Event event){
@@ -184,7 +180,6 @@ void handle_player_rotation(SDL_Event event){
       }
       break;
   }
-  player_rotate();
 }
 
 entity_t * get_player_entity(){
@@ -193,7 +188,6 @@ entity_t * get_player_entity(){
 
 void init_player_entity(){
   spawn_player();
-  player_rotate();
   entity_set_tag(&player_entity, &player_tag);
 }
 

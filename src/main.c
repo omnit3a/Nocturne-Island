@@ -44,8 +44,9 @@ int main(int argc, char ** argv){
 
   load_block_properties(BLOCK_DATA_PATH);
   load_crafting_recipes(CRAFTING_DATA_PATH);
-  
-  generate_hills(time(0));  // generate a hilly world
+
+  set_map_seed(time(0));
+  generate_hills(0, 0);  // generate a hilly world
   setup_camera(renderer, window);
   init_player_entity();
   init_inventory();
