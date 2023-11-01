@@ -14,8 +14,9 @@
 block_data_t data_map[BLOCKS_AMOUNT];
 world_data_t chunk_map[CHUNK_WIDTH * CHUNK_LENGTH * CHUNK_HEIGHT];
 
-int changed_blocks_size = 256;
-world_data_t * changed_blocks;
+int changed_blocks_size = 0;
+int changed_blocks_index = 0;
+change_data_t * changed_blocks;
 
 int map_seed = 0;
 
@@ -211,6 +212,15 @@ void generate_hills(int x_off, int y_off){
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
+
+    for (int change = 0 ; change < get_changed_blocks_size() ; change++){
+      int change_x = get_changed_blocks(change).x;
+      int change_y = get_changed_blocks(change).y;
+      int change_z = get_changed_blocks(change).z;
+      int x_pos = change_x - x_off;
+      int y_pos = change_y - y_off;
+
+    }
     
     set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
     set_block(get_block_properties(NOKIUM), x, y, 0);
@@ -264,24 +274,36 @@ int is_next_to_workshop(int workshop_id, int x_pos, int y_pos, int z_pos){
   return is_next_to_block(get_block_properties(workshop_id),x_pos,y_pos,z_pos);
 }
 
-void set_changed_blocks(world_data_t data, int index){
-  if (index >= changed_blocks_size){
-    reallocate_changed_blocks(256);
-  }
-  changed_blocks[index] = data;
+int get_changed_blocks_size(){
+  return changed_blocks_size;
 }
 
-world_data_t get_changed_blocks(int index){
+int get_changed_blocks_index(){
+  return changed_blocks_index;
+}
+
+void set_changed_blocks(world_data_t data, int x_pos, int y_pos, int z_pos){
+  if (changed_blocks_index >= changed_blocks_size){
+    reallocate_changed_blocks(1);
+  }
+  changed_blocks[changed_blocks_index].data = data;
+  changed_blocks[changed_blocks_index].x = x_pos;
+  changed_blocks[changed_blocks_index].y = y_pos;
+  changed_blocks[changed_blocks_index].z = z_pos;
+  changed_blocks_index++;
+}
+
+change_data_t get_changed_blocks(int index){
   return changed_blocks[index];
 }
 
 void allocate_changed_blocks(){
-  changed_blocks = malloc(changed_blocks_size * sizeof(world_data_t));
+  changed_blocks = malloc(changed_blocks_size * sizeof(change_data_t));
 }
 
 void reallocate_changed_blocks(int size_offset){
   changed_blocks_size += size_offset;
-  changed_blocks = realloc(changed_blocks, changed_blocks_size * sizeof(world_data_t));
+  changed_blocks = realloc(changed_blocks, changed_blocks_size * sizeof(change_data_t));
 }
 
 void free_changed_blocks(){

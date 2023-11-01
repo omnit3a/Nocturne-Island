@@ -19,8 +19,8 @@ sprite_t player_sprite;
 entity_t player_entity;
 transform_t current_rotation;
 
-int x_pos_offset = 0;
-int y_pos_offset = 0;
+int x_pos_offset = SPAWN_X;
+int y_pos_offset = SPAWN_Y;
 
 void spawn_player(){
   player_entity.position.x = SPAWN_X;
@@ -40,10 +40,11 @@ int get_mining_speed(){
 
 /* Mine a block in the direction of the player */
 void player_mine_block(){
+  transform_t pos = player_entity.position;
   transform_t rot = player_entity.rotation;
   rot.x += current_rotation.x;
   rot.y += current_rotation.y;
-  rot.z += current_rotation.z;
+  rot.z = pos.z+current_rotation.z;
   
   if (get_active_menu() != GAME_UI_ID){
     return;
@@ -53,11 +54,11 @@ void player_mine_block(){
     return;
   }
 
-  if (get_block(rot.x, rot.y, rot.z).hp > 1){
+  if (get_block(rot.x, rot.y, rot.z).block.hp > 1){
     int state = get_block(rot.x, rot.y, rot.z).current_state;
-    block_data_t block = get_block(rot.x, rot.y, rot.z).block;
-    block.hp--;
-    set_block(block, rot.x, rot.y, rot.z);
+    world_data_t block = get_block(rot.x, rot.y, rot.z);
+    block.block.hp--;
+    set_block(block.block, rot.x, rot.y, rot.z);
     // prevent reseting of block_state to 0
     set_block_state(state, rot.x, rot.y, rot.z);
     return;
@@ -74,11 +75,12 @@ void player_mine_block(){
 
 /* Allow player to place a block from the inventory */
 void player_place_block(){
+  transform_t pos = player_entity.position;
   transform_t rot = player_entity.rotation;
   block_data_t block = get_current_item()->item;
   rot.x += current_rotation.x;
   rot.y += current_rotation.y;
-  rot.z += current_rotation.z;
+  rot.z = pos.z+current_rotation.z;
   
   if (get_active_menu() != GAME_UI_ID){
     return;
@@ -92,6 +94,10 @@ void player_place_block(){
   
   if (result){
     set_block(block, rot.x, rot.y, rot.z);
+    set_changed_blocks(get_block(rot.x, rot.y, rot.z),
+		       x_pos_offset,
+		       y_pos_offset,
+		       pos.z+current_rotation.z);
   }
 }
 
@@ -99,6 +105,7 @@ void player_place_block(){
 void handle_player_movement(SDL_Event event){
   transform_t pos = player_entity.position;
   transform_t rot = player_entity.rotation;
+  transform_t prev_rot = current_rotation;
   
   int move_player = 0;
 
@@ -144,6 +151,9 @@ void handle_player_movement(SDL_Event event){
     y_pos_offset += current_rotation.y;
     generate_hills(x_pos_offset, y_pos_offset);
   }
+  current_rotation.x = prev_rot.x;
+  current_rotation.y = prev_rot.y;
+  current_rotation.z = prev_rot.z;
 }
 
 void handle_player_rotation(SDL_Event event){

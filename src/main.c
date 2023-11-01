@@ -46,7 +46,9 @@ int main(int argc, char ** argv){
   load_crafting_recipes(CRAFTING_DATA_PATH);
 
   set_map_seed(time(0));
+  allocate_changed_blocks();
   generate_hills(0, 0);  // generate a hilly world
+
   setup_camera(renderer, window);
   init_player_entity();
   init_inventory();
@@ -90,6 +92,7 @@ int main(int argc, char ** argv){
     }
   }
 
+  free_changed_blocks();
   SDL_Quit();
   
   return 0;

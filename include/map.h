@@ -41,6 +41,13 @@ typedef struct world_data_s {
   int height_map;
 } world_data_t;
 
+typedef struct change_data_s {
+  world_data_t data;
+  int x;
+  int y;
+  int z;
+} change_data_t;
+
 int get_map_seed();
 void set_map_seed(int seed);
 int get_chunk_index(int x_pos, int y_pos, int z_pos);
@@ -60,8 +67,10 @@ int is_block_mineable(block_data_t block);
 int is_next_to_block(block_data_t block, int x_pos, int y_pos, int z_pos);
 int is_next_to_workshop(int workshop_id, int x_pos, int y_pos, int z_pos);
 
-void set_changed_blocks(world_data_t data, int index);
-world_data_t get_changed_blocks(int index);
+int get_changed_blocks_size();
+int get_changed_blocks_index();
+void set_changed_blocks(world_data_t data, int x_pos, int y_pos, int z_pos);
+change_data_t get_changed_blocks(int index);
 void allocate_changed_blocks();
 void reallocate_changed_blocks(int size_offset);
 void free_changed_blocks();
