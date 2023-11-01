@@ -9,6 +9,7 @@
 #include <inventory.h>
 #include <ui.h>
 #include <menu_defs.h>
+#include <menu.h>
 
 tag_t player_tag = {
   0,
@@ -49,7 +50,7 @@ void player_rotate(){
 /* Mine a block in the direction of the player */
 void player_mine_block(){
 
-  if (get_current_menu_id() != GAME_UI_ID){
+  if (get_active_menu() != GAME_UI_ID){
     return;
   }
   
@@ -83,7 +84,7 @@ void player_place_block(){
   transform_t rot = player_entity.rotation;
   block_data_t block = get_current_item()->item;
 
-  if (get_current_menu_id() != GAME_UI_ID){
+  if (get_active_menu() != GAME_UI_ID){
     return;
   }
 
@@ -106,7 +107,7 @@ void handle_player_movement(SDL_Event event){
   
   int move_player = 0;
 
-  if (get_current_menu_id() != GAME_UI_ID){
+  if (get_active_menu() != GAME_UI_ID){
     return;
   }
   
@@ -151,7 +152,7 @@ void handle_player_movement(SDL_Event event){
 
 void handle_player_rotation(SDL_Event event){
 
-  if (get_current_menu_id() != GAME_UI_ID){
+  if (get_active_menu() != GAME_UI_ID){
     return;
   }
   

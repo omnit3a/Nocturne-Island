@@ -25,18 +25,7 @@ void newline_ui();
 void draw_letter(char letter, render_obj_t * object);
 void draw_string(char * string, render_obj_t * object);
 
-void draw_game_ui(render_obj_t * object);
-int handle_game_ui(SDL_Event event);
-
-void draw_inventory_ui(render_obj_t * object);
-int handle_inventory_ui(SDL_Event event);
 void handle_block_select(SDL_Event event);
-
-void draw_pause_ui(render_obj_t * object);
-int handle_pause_ui(SDL_Event event);
-
-void draw_crafting_ui(render_obj_t * object);
-int handle_crafting_ui(SDL_Event event);
 
 void draw_menu(render_obj_t * object);
 void handle_menu(int * exit, SDL_Event event);
