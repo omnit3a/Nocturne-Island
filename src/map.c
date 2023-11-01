@@ -152,11 +152,11 @@ block_data_t get_block_properties(int block){
 
 /* Initialize every tile in map to empty block */
 void fill_map(){
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-      for (int z = 0 ; z < MAP_HEIGHT ; z++){
-	set_block(get_block_properties(EMPTY), x, y, z);
-      }
+  for (int index = 0 ; index < MAP_WIDTH * MAP_LENGTH ; index++){
+    int x = index % MAP_WIDTH;
+    int y = index / MAP_LENGTH;
+    for (int z = 0 ; z < MAP_HEIGHT ; z++){
+      set_block(get_block_properties(EMPTY), x, y, z);
     }
   }
 }
@@ -167,24 +167,24 @@ void fill_map(){
  * to spawn in well lit areas.
  */
 void place_trees(char height_map[MAP_WIDTH][MAP_LENGTH], int seed){
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-      float noise = pnoise2d(x, y, 0.75, 10, seed);
-      if (noise < -1.2){
-	set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
-	set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
-      }
+  for (int index = 0 ; index < MAP_WIDTH * MAP_LENGTH ; index++){
+    int x = index % MAP_WIDTH;
+    int y = index / MAP_LENGTH;
+    float noise = pnoise2d(x, y, 0.75, 10, seed);
+    if (noise < -1.2){
+      set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
+      set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
     }
   }
 }
 
 void rotate_grass(){
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-      for (int z = 0 ; z < MAP_HEIGHT ; z++){
-	if (get_block(x, y, z).id == GRASS){
-	  game_map[x][y][z].current_state = rand() % 3;
-	}
+  for (int index = 0 ; index < MAP_WIDTH * MAP_LENGTH ; index++){
+    int x = index % MAP_WIDTH;
+    int y = index / MAP_LENGTH;
+    for (int z = 0 ; z < MAP_HEIGHT ; z++){
+      if (get_block(x, y, z).id == GRASS){
+	game_map[x][y][z].current_state = rand() % 3;
       }
     }
   }
@@ -197,60 +197,60 @@ void generate_hills(int seed){
   /* Step 1 */
   char temp_height_map[MAP_WIDTH][MAP_LENGTH];
   char height_map[MAP_WIDTH][MAP_LENGTH];
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-      height_map[x][y] = ((int)pnoise2d(x, y, 0.75, 10, seed) * 6);
-      if (height_map[x][y] < 2){
-	height_map[x][y] = 2;
-      }
+  for (int index = 0 ; index < MAP_WIDTH * MAP_LENGTH ; index++){
+    int x = index % MAP_WIDTH;
+    int y = index / MAP_LENGTH;
+    height_map[x][y] = ((int)pnoise2d(x, y, 0.75, 10, seed) * 6);
+    if (height_map[x][y] < 2){
+      height_map[x][y] = 2;
     }
   }
 
   int surroundVals[4] = {0};
   int average = 0;
   for (int r = 0 ; r < 5 ; r++){
-    for (int x = 0 ; x < MAP_WIDTH ; x++){
-      for (int y = 0 ; y < MAP_LENGTH ; y++){
-	if (x > 0) {
-          surroundVals[0] = height_map[x-1][y];
-	}
-	if (x < MAP_WIDTH-1){
-          surroundVals[1] = height_map[x+1][y];
-	}
-	if (y > 0){
-          surroundVals[2] = height_map[x][y-1];
-	}
-	if (y < MAP_LENGTH-1){
-          surroundVals[3] = height_map[x][y+1];
-	}
-        for (int a = 0 ; a < 4 ; a++){
-          average += surroundVals[a];
-        }
-        average = average / 4;
-        temp_height_map[x][y] = average;
+    for (int index = 0 ; index < MAP_WIDTH * MAP_LENGTH ; index++){
+      int x = index % MAP_WIDTH;
+      int y = index / MAP_LENGTH;
+      if (x > 0) {
+	surroundVals[0] = height_map[x-1][y];
       }
+      if (x < MAP_WIDTH-1){
+	surroundVals[1] = height_map[x+1][y];
+      }
+      if (y > 0){
+	surroundVals[2] = height_map[x][y-1];
+      }
+      if (y < MAP_LENGTH-1){
+	surroundVals[3] = height_map[x][y+1];
+      }
+      for (int a = 0 ; a < 4 ; a++){
+	average += surroundVals[a];
+      }
+      average = average / 4;
+      temp_height_map[x][y] = average;
     }
-    for (int x = 0 ; x < MAP_WIDTH ; x++){
-      for (int y = 0 ; y < MAP_LENGTH ; y++){
-        if (height_map[x][y] < GROUND_HEIGHT){
-	  height_map[x][y] = temp_height_map[x][y];
-	}
+    for (int index = 0 ; index < MAP_WIDTH * MAP_LENGTH ; index++){
+      int x = index % MAP_WIDTH;
+      int y = index / MAP_LENGTH;
+      if (height_map[x][y] < GROUND_HEIGHT){
+	height_map[x][y] = temp_height_map[x][y];
       }
     }
   }
 
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-
-      set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
- 
-      for (int z = height_map[x][y]-1 ; z >= 0 ; z--){
-	if (height_map[x][y] >= CLIFF_HEIGHT){
-	  set_block(get_block_properties(STONE), x, y, z);
-	  continue;
-	}
-	set_block(get_block_properties(DIRT), x, y, z);
+  for (int index = 0 ; index < MAP_WIDTH * MAP_LENGTH ; index++){
+    int x = index % MAP_WIDTH;
+    int y = index / MAP_LENGTH;
+    
+    set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
+    
+    for (int z = height_map[x][y]-1 ; z >= 0 ; z--){
+      if (height_map[x][y] >= CLIFF_HEIGHT){
+	set_block(get_block_properties(STONE), x, y, z);
+	continue;
       }
+      set_block(get_block_properties(DIRT), x, y, z);
     }
   }
 
