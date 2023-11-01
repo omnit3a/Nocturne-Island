@@ -39,6 +39,7 @@ typedef struct world_data_s {
   int height_map;
 } world_data_t;
 
+int get_world_index(int x_pos, int y_pos, int z_pos);
 void get_height(int * result, int x_pos, int y_pos);
 void set_block(block_data_t block, int x_pos, int y_pos, int z_pos);
 world_data_t get_block(int x_pos, int y_pos, int z_pos);

@@ -11,8 +11,12 @@
 #include <string.h>
 #include <perlin.h>
 
-world_data_t game_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
+world_data_t game_map[MAP_WIDTH * MAP_LENGTH * MAP_HEIGHT];
 block_data_t data_map[BLOCKS_AMOUNT];
+
+int get_world_index(int x_pos, int y_pos, int z_pos){
+  return x_pos + y_pos * MAP_WIDTH + z_pos * MAP_WIDTH * MAP_LENGTH;;
+}
 
 void get_height(int * result, int x_pos, int y_pos){
   for (int z = 0 ; z < MAP_HEIGHT ; z++){
@@ -29,20 +33,23 @@ void get_height(int * result, int x_pos, int y_pos){
 
 void set_block(block_data_t block, int x_pos, int y_pos, int z_pos){
   int height;
+  int world_index = get_world_index(x_pos, y_pos, z_pos);
   get_height(&height, x_pos, y_pos);
-  game_map[x_pos][y_pos][z_pos].block = block;
-  game_map[x_pos][y_pos][z_pos].current_state = 0;
-  game_map[x_pos][y_pos][z_pos].hp = block.hp;
-  game_map[x_pos][y_pos][z_pos].id = block.id;
-  game_map[x_pos][y_pos][z_pos].height_map = height;
+  game_map[world_index].block = block;
+  game_map[world_index].current_state = 0;
+  game_map[world_index].hp = block.hp;
+  game_map[world_index].id = block.id;
+  game_map[world_index].height_map = height;
 }
 
 world_data_t get_block(int x_pos, int y_pos, int z_pos){
-  return game_map[x_pos][y_pos][z_pos];
+  int world_index = get_world_index(x_pos, y_pos, z_pos);
+  return game_map[world_index];
 }
 
 void set_block_state(int state, int x_pos, int y_pos, int z_pos){
-  game_map[x_pos][y_pos][z_pos].current_state = state;
+  int world_index = get_world_index(x_pos, y_pos, z_pos);
+  game_map[world_index].current_state = state;
 }
 
 int is_block_shaded(int x_pos, int y_pos, int z_pos){
@@ -184,7 +191,7 @@ void rotate_grass(){
     int y = index / MAP_LENGTH;
     for (int z = 0 ; z < MAP_HEIGHT ; z++){
       if (get_block(x, y, z).id == GRASS){
-	game_map[x][y][z].current_state = rand() % 3;
+	set_block_state(rand() % 3, x, y, z);
       }
     }
   }
@@ -244,7 +251,7 @@ void generate_hills(int seed){
     int y = index / MAP_LENGTH;
     
     set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
-    
+    set_block(get_block_properties(NOKIUM), x, y, 0);
     for (int z = height_map[x][y]-1 ; z >= 0 ; z--){
       if (height_map[x][y] >= CLIFF_HEIGHT){
 	set_block(get_block_properties(STONE), x, y, z);
