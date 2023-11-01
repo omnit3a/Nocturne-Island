@@ -14,7 +14,7 @@
 #define CHUNK_HEIGHT MAP_HEIGHT
 
 #define GROUND_LEVEL 2 /* Base ground thickness */
-#define CLIFF_HEIGHT 5
+#define CLIFF_HEIGHT 4
 #define GROUND_HEIGHT 5
 
 #define BLOCK_NAME_LENGTH 24
@@ -60,7 +60,7 @@ void translate_block_def(char * def);
 void load_block_properties(char * path);
 block_data_t get_block_properties(int block);
 void fill_map();
-void place_trees(int x_off, int y_off, char height_map[MAP_WIDTH][MAP_LENGTH]);
+void place_trees(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]);
 void generate_hills(int x_off, int y_off);
 int compare_blocks(block_data_t a, block_data_t b);
 int is_block_mineable(block_data_t block);

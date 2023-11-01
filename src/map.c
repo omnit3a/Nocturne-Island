@@ -182,14 +182,14 @@ void fill_map(){
   }
 }
 
-void place_trees(int x_off, int y_off, char height_map[MAP_WIDTH][MAP_LENGTH]){
+void place_trees(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int height;
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
     get_height(&height, x, y);
     float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
-    if (noise > 1.4){
+    if (noise > 1.8){
       set_block(get_block_properties(TREE_BOTTOM), x, y, height+1);
       set_block(get_block_properties(TREE_LEAVES), x, y, height+2);
     }
@@ -199,17 +199,18 @@ void place_trees(int x_off, int y_off, char height_map[MAP_WIDTH][MAP_LENGTH]){
 void generate_hills(int x_off, int y_off){
   fill_map();
   /* Step 1 */
-  float height_map[MAP_WIDTH][MAP_LENGTH];
+  float height_map[CHUNK_WIDTH][CHUNK_LENGTH];
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
-    height_map[x][y] = pnoise2d(x+x_off, y+y_off, 1, 15, get_map_seed()) + 2;
-    height_map[x][y] *= 2.5;
-    height_map[x][y] = (int)height_map[x][y];
-    if (height_map[x][y] < 1){
-      height_map[x][y] = 1;
+    height_map[x][y] = pnoise2d(x+x_off, y+y_off, 0.5, 10, get_map_seed()) + 1;
+    height_map[x][y] *= 6;
+    if (height_map[x][y] < 2){
+      height_map[x][y] = 2;
     }
   }
+
+  int average = 0;
   
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
