@@ -18,6 +18,7 @@ tag_t player_tag = {
 sprite_t player_sprite;
 entity_t player_entity;
 transform_t current_rotation;
+transform_t chunk_position;
 
 int x_pos_offset = SPAWN_X;
 int y_pos_offset = SPAWN_Y;
@@ -32,6 +33,9 @@ void spawn_player(){
   current_rotation.x = 0;
   current_rotation.y = 1;
   current_rotation.z = 0;
+  chunk_position.x = SPAWN_X;
+  chunk_position.y = SPAWN_Y;
+  chunk_position.z = SPAWN_Z;
 }
 
 int get_mining_speed(){
@@ -69,7 +73,6 @@ void player_mine_block(){
     int count = get_block(rot.x, rot.y, rot.z).block.count;
     add_inventory_item(block, count);
     set_block(get_block_properties(EMPTY), rot.x, rot.y, rot.z);
-    printf("test\n");
   }
 }
 
@@ -95,9 +98,9 @@ void player_place_block(){
   if (result){
     set_block(block, rot.x, rot.y, rot.z);
     set_changed_blocks(get_block(rot.x, rot.y, rot.z),
-		       x_pos_offset,
-		       y_pos_offset,
-		       pos.z+current_rotation.z);
+		       SPAWN_X+x_pos_offset+current_rotation.x,
+		       SPAWN_Y+y_pos_offset+current_rotation.y,
+		       rot.z);
   }
 }
 
@@ -149,6 +152,10 @@ void handle_player_movement(SDL_Event event){
   if(!get_block(rot.x, rot.y, rot.z).block.solid && move_player){
     x_pos_offset += current_rotation.x;
     y_pos_offset += current_rotation.y;
+    chunk_position.x += current_rotation.x;
+    chunk_position.x = chunk_position.x % CHUNK_WIDTH;
+    chunk_position.y += current_rotation.y;
+    chunk_position.y = chunk_position.y % CHUNK_LENGTH;
     generate_hills(x_pos_offset, y_pos_offset);
   }
   current_rotation.x = prev_rot.x;

@@ -47,7 +47,7 @@ int main(int argc, char ** argv){
 
   set_map_seed(time(0));
   allocate_changed_blocks();
-  generate_hills(0, 0);  // generate a hilly world
+  generate_hills(SPAWN_X, SPAWN_Y);  // generate a hilly world
 
   setup_camera(renderer, window);
   init_player_entity();
