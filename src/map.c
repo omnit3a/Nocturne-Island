@@ -188,8 +188,8 @@ void place_trees(int x_off, int y_off, char height_map[MAP_WIDTH][MAP_LENGTH]){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
     get_height(&height, x, y);
-    float noise = pnoise2d(x+x_off, y+y_off, 0.75, 10, get_map_seed());
-    if (noise < -1.2){
+    float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
+    if (noise > 1.4){
       set_block(get_block_properties(TREE_BOTTOM), x, y, height+1);
       set_block(get_block_properties(TREE_LEAVES), x, y, height+2);
     }
@@ -199,50 +199,52 @@ void place_trees(int x_off, int y_off, char height_map[MAP_WIDTH][MAP_LENGTH]){
 void generate_hills(int x_off, int y_off){
   fill_map();
   /* Step 1 */
-  char height_map[MAP_WIDTH][MAP_LENGTH];
+  float height_map[MAP_WIDTH][MAP_LENGTH];
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
-    height_map[x][y] = 0;
-    if (height_map[x][y] < 2){
-      height_map[x][y] = 2;
+    height_map[x][y] = pnoise2d(x+x_off, y+y_off, 1, 15, get_map_seed()) + 2;
+    height_map[x][y] *= 2.5;
+    height_map[x][y] = (int)height_map[x][y];
+    if (height_map[x][y] < 1){
+      height_map[x][y] = 1;
     }
   }
-
-    for (int change = 0 ; change < changed_blocks_index ; change++){
-      for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
-	int x = index % CHUNK_WIDTH;
-	int y = index / CHUNK_LENGTH;
-	
-	int change_x = get_changed_blocks(change).x;
-	int change_y = get_changed_blocks(change).y;
-	int change_z = get_changed_blocks(change).z;
-	
-	int x_pos = x + x_off;
-	int y_pos = y + y_off;
-	
-	if (x_pos == change_x && y_pos == change_y){
-	  set_block(get_changed_blocks(change).data.block, x, y, change_z);
-	}
+  
+  for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
+    int x = index % CHUNK_WIDTH;
+    int y = index / CHUNK_LENGTH;
+    set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
+    set_block_state(rand() % 3, x, y, height_map[x][y]);
+    for (int z = height_map[x][y]-1 ; z > 0 ; z--){
+      if (height_map[x][y] >= CLIFF_HEIGHT){
+	set_block(get_block_properties(STONE), x, y, z);
+      } else {
+	set_block(get_block_properties(DIRT), x, y, z);
       }
     }
-
+    set_block(get_block_properties(NOKIUM), x, y, 0);
+  }
+  
+  place_trees(x_off, y_off, height_map);
+  
+  for (int change = 0 ; change < changed_blocks_index ; change++){
     for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
       int x = index % CHUNK_WIDTH;
       int y = index / CHUNK_LENGTH;
-      set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
-    /*set_block(get_block_properties(NOKIUM), x, y, 0);
-      for (int z = height_map[x][y]-1 ; z >= 0 ; z--){
-      if (height_map[x][y] >= CLIFF_HEIGHT){
-      set_block(get_block_properties(STONE), x, y, z);
-      continue;
+      
+      int change_x = get_changed_blocks(change).x;
+      int change_y = get_changed_blocks(change).y;
+      int change_z = get_changed_blocks(change).z;
+      
+      int x_pos = x + x_off;
+      int y_pos = y + y_off;
+      
+      if (x_pos == change_x && y_pos == change_y){
+	set_block(get_changed_blocks(change).data.block, x, y, change_z);
       }
-      set_block(get_block_properties(DIRT), x, y, z);
-      }
-    */
+    }
   }
-
-  place_trees(x_off, y_off, height_map);
 }
 
 int compare_blocks(block_data_t a, block_data_t b){

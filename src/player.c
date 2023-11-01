@@ -65,6 +65,10 @@ void player_mine_block(){
     set_block(block.block, rot.x, rot.y, rot.z);
     // prevent reseting of block_state to 0
     set_block_state(state, rot.x, rot.y, rot.z);
+    set_changed_blocks(get_block(rot.x, rot.y, rot.z),
+		       SPAWN_X+x_pos_offset+current_rotation.x,
+		       SPAWN_Y+y_pos_offset+current_rotation.y,
+		       rot.z);
     return;
   }
   
@@ -73,6 +77,10 @@ void player_mine_block(){
     int count = get_block(rot.x, rot.y, rot.z).block.count;
     add_inventory_item(block, count);
     set_block(get_block_properties(EMPTY), rot.x, rot.y, rot.z);
+    set_changed_blocks(get_block(rot.x, rot.y, rot.z),
+		       SPAWN_X+x_pos_offset+current_rotation.x,
+		       SPAWN_Y+y_pos_offset+current_rotation.y,
+		       rot.z);
   }
 }
 
