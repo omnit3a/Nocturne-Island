@@ -14,7 +14,7 @@
 #define CHUNK_HEIGHT MAP_HEIGHT
 
 #define GROUND_LEVEL 2 /* Base ground thickness */
-#define CLIFF_HEIGHT 4
+#define CLIFF_HEIGHT 6
 #define GROUND_HEIGHT 5
 
 #define BLOCK_NAME_LENGTH 24

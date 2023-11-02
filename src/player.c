@@ -18,7 +18,6 @@ tag_t player_tag = {
 sprite_t player_sprite;
 entity_t player_entity;
 transform_t current_rotation;
-transform_t chunk_position;
 
 int x_pos_offset = SPAWN_X;
 int y_pos_offset = SPAWN_Y;
@@ -33,9 +32,6 @@ void spawn_player(){
   current_rotation.x = 0;
   current_rotation.y = 1;
   current_rotation.z = 0;
-  chunk_position.x = SPAWN_X;
-  chunk_position.y = SPAWN_Y;
-  chunk_position.z = SPAWN_Z;
 }
 
 int get_mining_speed(){
@@ -160,10 +156,6 @@ void handle_player_movement(SDL_Event event){
   if(!get_block(rot.x, rot.y, rot.z).block.solid && move_player){
     x_pos_offset += current_rotation.x;
     y_pos_offset += current_rotation.y;
-    chunk_position.x += current_rotation.x;
-    chunk_position.x = chunk_position.x % CHUNK_WIDTH;
-    chunk_position.y += current_rotation.y;
-    chunk_position.y = chunk_position.y % CHUNK_LENGTH;
     generate_hills(x_pos_offset, y_pos_offset);
   }
   current_rotation.x = prev_rot.x;

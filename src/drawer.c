@@ -56,7 +56,7 @@ void draw_view(render_obj_t * object){
 	object->clip.y = 0;
       }
       
-      int brightness = (32 * is_daytime())+((z) * 25);
+      int brightness = (32 * is_daytime())+((z) * 20);
       if (brightness > 255){
 	brightness = 255;
       }
