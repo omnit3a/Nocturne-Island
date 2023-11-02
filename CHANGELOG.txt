@@ -121,3 +121,4 @@ Alpha Version 0.3.8:
   Fixed a bug with craftable recipe list
   Optimize map generation
   Added infinite map generation
+  Rewrote terrain generator

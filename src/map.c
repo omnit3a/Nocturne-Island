@@ -206,18 +206,16 @@ void generate_hills(int x_off, int y_off){
     height_map[x][y] = 0;
   }
 
-  for (int rep = 0 ; rep < 1 ; rep++){
-    for (int index = 0 ; index < CHUNK_WIDTH*CHUNK_LENGTH ; index++){
-      int x = index % CHUNK_WIDTH;
-      int y = index / CHUNK_LENGTH;
-      height_map[x][y] += (pnoise2d((x+x_off)-1, (y+y_off), 1, 10, get_map_seed())) * 4;
-      height_map[x][y] += (pnoise2d((x+x_off), (y+y_off)-1, 1, 10, get_map_seed())) * 4;
-      height_map[x][y] += (pnoise2d((x+x_off)+1, (y+y_off), 1, 10, get_map_seed())) * 4;
-      height_map[x][y] += (pnoise2d((x+x_off), (y+y_off)+1, 1, 10, get_map_seed())) * 4;
-      height_map[x][y] /= 4;
-      if (height_map[x][y] < 1){
-	height_map[x][y] = 1;
-      }
+  for (int index = 0 ; index < CHUNK_WIDTH*CHUNK_LENGTH ; index++){
+    int x = index % CHUNK_WIDTH;
+    int y = index / CHUNK_LENGTH;
+    height_map[x][y] += (pnoise2d((x+x_off)-1, (y+y_off), 1, 10, get_map_seed())) * 4;
+    height_map[x][y] += (pnoise2d((x+x_off), (y+y_off)-1, 1, 10, get_map_seed())) * 4;
+    height_map[x][y] += (pnoise2d((x+x_off)+1, (y+y_off), 1, 10, get_map_seed())) * 4;
+    height_map[x][y] += (pnoise2d((x+x_off), (y+y_off)+1, 1, 10, get_map_seed())) * 4;
+    height_map[x][y] /= 4;
+    if (height_map[x][y] < 1){
+      height_map[x][y] = 1;
     }
   }
   
