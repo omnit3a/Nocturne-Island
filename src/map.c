@@ -310,13 +310,28 @@ int get_changed_blocks_index(){
 }
 
 void set_changed_blocks(world_data_t data, int x_pos, int y_pos, int z_pos){
-  changed_blocks_size++;
-  reallocate_changed_blocks(1);
-  changed_blocks[changed_blocks_index].data = data;
-  changed_blocks[changed_blocks_index].x = x_pos;
-  changed_blocks[changed_blocks_index].y = y_pos;
-  changed_blocks[changed_blocks_index].z = z_pos;
-  changed_blocks_index++;
+  int index = changed_blocks_index;
+  int replace = 0;
+  for (int change = 0 ; change < changed_blocks_size ; change++){
+    if (changed_blocks[change].x == x_pos &&
+	changed_blocks[change].y == y_pos &&
+	changed_blocks[change].z == z_pos){
+      index = change;
+      replace = 1;
+      break;
+    }
+  }
+  
+  if (!replace){
+    changed_blocks_size++;
+    reallocate_changed_blocks(1);
+    changed_blocks_index++;
+  }
+
+  changed_blocks[index].data = data;
+  changed_blocks[index].x = x_pos;
+  changed_blocks[index].y = y_pos;
+  changed_blocks[index].z = z_pos;
 }
 
 change_data_t get_changed_blocks(int index){

@@ -74,5 +74,6 @@ change_data_t get_changed_blocks(int index);
 void allocate_changed_blocks();
 void reallocate_changed_blocks(int size_offset);
 void free_changed_blocks();
+
 #endif
 
