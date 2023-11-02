@@ -189,7 +189,7 @@ void place_trees(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH
     int y = index / CHUNK_LENGTH;
     get_height(&height, x, y);
     float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
-    if (noise > 1.5){
+    if (noise > 1.8){
       set_block(get_block_properties(TREE_BOTTOM), x, y, height+1);
       set_block(get_block_properties(TREE_LEAVES), x, y, height+2);
     }
