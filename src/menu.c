@@ -5,6 +5,7 @@
 #include <menu.h>
 #include <drawer.h>
 #include <string.h>
+#include <player.h>
 #include <ui.h>
 #include <inventory.h>
 #include <crafting.h>
@@ -23,6 +24,7 @@ void set_active_menu(int menu){
 
 void draw_game_menu(render_obj_t * object){
   block_data_t block;
+  char block_hp[20];
   init_ui();
   block = get_current_item()->item;
   draw_string(CURRENT_VERSION_MSG, object);
@@ -31,9 +33,19 @@ void draw_game_menu(render_obj_t * object){
   draw_string(CURRENT_BLOCK_MSG, object);
   if (block.id == 0){
     draw_string("Nothing", object);
-    return;
+  } else {
+    draw_string(block.name, object);
   }
-  draw_string(block.name, object);
+
+  newline_ui();
+
+  if (get_block_progress() > 0){
+    draw_string("Block HP: ", object);
+    sprintf(block_hp, "%d", get_block_progress());
+    draw_string(block_hp, object);
+    
+    newline_ui();
+  }
 }
 
 /* Switch between UI Modes */

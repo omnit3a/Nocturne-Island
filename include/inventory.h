@@ -23,3 +23,4 @@ void set_current_item(int slot);
 void sort_inventory();
 int check_inventory_item(block_data_t item, int amount);
 int is_inventory_full();
+int find_inventory_slot(block_data_t item);

@@ -18,8 +18,9 @@ typedef struct crafting_recipe_s {
   crafting_item_t ingredients[CRAFTING_ITEMS_AMOUNT];
   block_data_t output;
   int amount;
-  int id;
   int workshop_id;
+  int autoplace;
+  int id;
 } crafting_recipe_t;
 
 void translate_recipe_def(char * def);

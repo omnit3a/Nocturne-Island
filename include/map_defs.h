@@ -5,7 +5,7 @@
 #define TERRAIN_TYPE 2
 #define FURNITURE_TYPE 3
 #define UNKNOWN_TYPE 4
-#define METAL_TYPE 5
+#define PLANT_TYPE 5
 
 #define EMPTY 0
 #define STONE 1
@@ -13,10 +13,12 @@
 #define TREE_BOTTOM 3
 #define TREE_LEAVES 4
 #define DIRT 5
-#define WORKBENCH 6
-#define BRICKS 7
-#define WATER 8
-#define SAND 9
-#define NOKIUM 10
-#define BOARDS 11
-#define CLAY 12
+#define WATER 6
+#define SAND 7
+#define NOKIUM 8
+#define CLAY 9
+#define THATCH 10
+#define ROCKS 17
+#define STICK 19
+#define BRANCH 20
+#define SHARP_STICK 35

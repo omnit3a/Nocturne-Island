@@ -12,6 +12,7 @@
 
 void spawn_player();
 int get_mining_speed();
+int get_block_progress();
 void player_mine_block();
 void player_place_block();
 void handle_player_movement(SDL_Event event);

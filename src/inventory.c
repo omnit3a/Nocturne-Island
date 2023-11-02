@@ -120,3 +120,12 @@ int is_inventory_full(){
   }
   return 1;
 }
+
+int find_inventory_slot(block_data_t item){
+  for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
+    if (inventory[slot].item.id == item.id){
+      return slot;
+    }
+  }
+  return -1;
+}

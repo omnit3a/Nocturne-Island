@@ -98,6 +98,13 @@ void translate_block_def(char * def){
   }
 
   int line = values[10];
+
+  for (int pos = 0 ; pos < strlen(name) ; pos++){
+    if (name[pos] == '_'){
+      name[pos] = ' ';
+    }
+  }
+  
   strcpy(data_map[line].name, name);
   data_map[line].hp = values[0];
   data_map[line].solid = values[1];
@@ -222,6 +229,7 @@ void generate_hills(int x_off, int y_off){
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
+    height_map[x][y] += 1;
     set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
     set_block_state(rand() % 3, x, y, height_map[x][y]);
     for (int z = height_map[x][y]-1 ; z > 0 ; z--){
