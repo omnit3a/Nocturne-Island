@@ -37,6 +37,19 @@ void spawn_player(){
 }
 
 int get_mining_speed(){
+  transform_t pos = player_entity.position;
+  transform_t rot = player_entity.rotation;
+  rot.x += current_rotation.x;
+  rot.y += current_rotation.y;
+  rot.z = pos.z+current_rotation.z;
+  
+  switch (get_block(rot.x, rot.y, rot.z).block.block_type){
+    case TERRAIN_TYPE:
+      if(compare_blocks(get_current_item()->item, get_block_properties(SHARP_STICK))){
+	return 2;
+      }
+      break;
+  }
   return 1;
 }
 
@@ -63,7 +76,7 @@ void player_mine_block(){
   if (get_block(rot.x, rot.y, rot.z).block.hp > 1){
     int state = get_block(rot.x, rot.y, rot.z).current_state;
     world_data_t block = get_block(rot.x, rot.y, rot.z);
-    block.block.hp--;
+    block.block.hp -= get_mining_speed();
     set_block(block.block, rot.x, rot.y, rot.z);
     // prevent reseting of block_state to 0
     set_block_state(state, rot.x, rot.y, rot.z);
@@ -72,7 +85,10 @@ void player_mine_block(){
 		       SPAWN_Y+y_pos_offset+current_rotation.y,
 		       rot.z);
     block_progress = block.block.hp;
-    return;
+    if (block.block.hp > 0){
+      return;
+    }
+    
   }
   
   if (get_block(rot.x, rot.y, rot.z).block.solid){

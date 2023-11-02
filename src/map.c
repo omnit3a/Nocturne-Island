@@ -98,6 +98,13 @@ void translate_block_def(char * def){
   }
 
   int line = values[10];
+
+  for (int pos = 0 ; pos < strlen(name) ; pos++){
+    if (name[pos] == '_'){
+      name[pos] = ' ';
+    }
+  }
+  
   strcpy(data_map[line].name, name);
   data_map[line].hp = values[0];
   data_map[line].solid = values[1];

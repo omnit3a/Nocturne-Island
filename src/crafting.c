@@ -62,6 +62,12 @@ void translate_recipe_def(char * def){
     token = strtok(NULL, delim);
   }
 
+  for (int pos = 0 ; pos < strlen(name) ; pos++){
+    if (name[pos] == '_'){
+      name[pos] = ' ';
+    }
+  }
+  
   int line = values[3];
   strcpy(recipes[line].name, name);
   for (int item = 0 ; item < list_count ; item++){

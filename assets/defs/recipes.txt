@@ -1,3 +1,4 @@
 Clay start 5 2 end 10 1 6 1
 Stick start 20 1 17 2 end 19 2 0 2
 Thatch start 19 4 end 10 2 0 3
+Sharpened_Stick start 19 1 17 2 end 35 1 0 4

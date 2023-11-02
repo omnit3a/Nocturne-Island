@@ -17,3 +17,8 @@
 #define SAND 7
 #define NOKIUM 8
 #define CLAY 9
+#define THATCH 10
+#define ROCKS 17
+#define STICK 19
+#define BRANCH 20
+#define SHARP_STICK 35
