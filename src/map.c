@@ -1,3 +1,4 @@
+#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <map.h>
@@ -79,7 +80,7 @@ int is_block_shaded(int x_pos, int y_pos, int z_pos){
 }
 
 void translate_block_def(char * def){
-  int values[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  int values[15] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   char * token;
   char * delim = " ";
   int field = 0;
@@ -97,7 +98,7 @@ void translate_block_def(char * def){
     token = strtok(NULL, delim);
   }
 
-  int line = values[10];
+  int line = values[14];
 
   for (int pos = 0 ; pos < strlen(name) ; pos++){
     if (name[pos] == '_'){
@@ -115,7 +116,11 @@ void translate_block_def(char * def){
   data_map[line].dropped_item = values[7];
   data_map[line].count = values[8];
   data_map[line].block_type = values[9];
-  data_map[line].id = values[10];
+  data_map[line].output_id = values[10];
+  data_map[line].regen = values[11];
+  data_map[line].regen_id = values[12];
+  data_map[line].regen_ticks = values[13];
+  data_map[line].id = values[14];
 }
 
 void load_block_properties(char * path){
@@ -189,16 +194,27 @@ void fill_map(){
   }
 }
 
-void place_trees(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
+void place_bushes(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int height;
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
     get_height(&height, x, y);
     float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
-    if (noise > 1.8){
-      set_block(get_block_properties(TREE_BOTTOM), x, y, height+1);
-      set_block(get_block_properties(TREE_LEAVES), x, y, height+2);
+    if (noise >= 2){
+      set_block(get_block_properties(RED_BERRY_BUSH), x, y, height_map[x][y]+1);
+    }
+  }
+}
+
+void place_trees(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
+  for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
+    int x = index % CHUNK_WIDTH;
+    int y = index / CHUNK_LENGTH;
+    float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
+    if (noise > 1.8 && noise < 2){
+      set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
+      set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
     }
   }
 }
@@ -241,8 +257,9 @@ void generate_hills(int x_off, int y_off){
     }
     set_block(get_block_properties(NOKIUM), x, y, 0);
   }
-  
+
   place_trees(x_off, y_off, height_map);
+  place_bushes(x_off, y_off, height_map);
   
   for (int change = 0 ; change < changed_blocks_index ; change++){
     for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
@@ -252,13 +269,21 @@ void generate_hills(int x_off, int y_off){
       int change_x = get_changed_blocks(change).x;
       int change_y = get_changed_blocks(change).y;
       int change_z = get_changed_blocks(change).z;
+      int regen = get_changed_blocks(change).data.block.regen;
+      int regen_tick = get_changed_blocks(change).data.block.regen_ticks;
+      block_data_t regen_block = get_block_properties(get_changed_blocks(change).data.block.regen_id);
       
       int x_pos = x + x_off;
       int y_pos = y + y_off;
-      
-      if (x_pos == change_x && y_pos == change_y){
-	set_block(get_changed_blocks(change).data.block, x, y, change_z);
+
+      if (x_pos != change_x || y_pos != change_y){
+	continue;
       }
+      if (regen && SDL_GetTicks() - get_changed_blocks(change).tick_changed >= regen_tick){
+	set_block(regen_block, x, y, change_z);
+	continue;
+      }
+      set_block(get_changed_blocks(change).data.block, x, y, change_z);
     }
   }
 }
@@ -309,7 +334,7 @@ int get_changed_blocks_index(){
   return changed_blocks_index;
 }
 
-void set_changed_blocks(world_data_t data, int x_pos, int y_pos, int z_pos){
+void set_changed_blocks(world_data_t prev_data, world_data_t data, int x_pos, int y_pos, int z_pos){
   int index = changed_blocks_index;
   int replace = 0;
   for (int change = 0 ; change < changed_blocks_size ; change++){
@@ -328,10 +353,12 @@ void set_changed_blocks(world_data_t data, int x_pos, int y_pos, int z_pos){
     changed_blocks_index++;
   }
 
+  changed_blocks[index].prev_data = prev_data;
   changed_blocks[index].data = data;
   changed_blocks[index].x = x_pos;
   changed_blocks[index].y = y_pos;
   changed_blocks[index].z = z_pos;
+  changed_blocks[index].tick_changed = SDL_GetTicks();
 }
 
 change_data_t get_changed_blocks(int index){
