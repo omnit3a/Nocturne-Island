@@ -1,4 +1,4 @@
-Bricks start 1 2 end 7 2 1 13
-Boards start 3 2 end 11 1 2 6
-Clay start 5 2 end 12 1 3 6
-Kiln start 12 4 end 13 1 4 6
+Bricks start 1 2 end 7 2 13 1
+Boards start 3 2 end 11 1 6 2
+Clay start 5 2 end 12 1 6 3
+Kiln start 12 4 end 13 1 6 4

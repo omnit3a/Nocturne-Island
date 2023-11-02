@@ -62,7 +62,7 @@ void translate_recipe_def(char * def){
     token = strtok(NULL, delim);
   }
 
-  int line = values[2];
+  int line = values[3];
   strcpy(recipes[line].name, name);
   for (int item = 0 ; item < list_count ; item++){
     recipes[line].ingredients[item].item = ingredients[item].item;
@@ -71,7 +71,7 @@ void translate_recipe_def(char * def){
   recipes[line].output = get_block_properties(values[0]);
   recipes[line].amount = values[1];
   recipes[line].id = line;
-  recipes[line].workshop_id = values[3];
+  recipes[line].workshop_id = values[2];
 }
 
 void load_crafting_recipes(char * path){
@@ -156,6 +156,8 @@ int craft_item(crafting_recipe_t * list, int recipe){
       remove_inventory_item(list[recipe].ingredients[item].item,
 			    list[recipe].ingredients[item].amount);
     }
+
+    set_current_item(find_inventory_slot(list[recipe].output));
     
     return 1;
   } else {

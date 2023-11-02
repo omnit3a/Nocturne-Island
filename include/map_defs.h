@@ -20,3 +20,4 @@
 #define NOKIUM 10
 #define BOARDS 11
 #define CLAY 12
+#define KILN 13
