@@ -11,6 +11,8 @@
 #include <menu_defs.h>
 #include <menu.h>
 
+int block_progress = 0;
+
 tag_t player_tag = {
   0,
   0
@@ -36,6 +38,10 @@ void spawn_player(){
 
 int get_mining_speed(){
   return 1;
+}
+
+int get_block_progress(){
+  return block_progress;
 }
 
 /* Mine a block in the direction of the player */
@@ -65,6 +71,7 @@ void player_mine_block(){
 		       SPAWN_X+x_pos_offset+current_rotation.x,
 		       SPAWN_Y+y_pos_offset+current_rotation.y,
 		       rot.z);
+    block_progress = block.block.hp;
     return;
   }
   
@@ -77,6 +84,7 @@ void player_mine_block(){
 		       SPAWN_X+x_pos_offset+current_rotation.x,
 		       SPAWN_Y+y_pos_offset+current_rotation.y,
 		       rot.z);
+    block_progress = 0;
   }
 }
 

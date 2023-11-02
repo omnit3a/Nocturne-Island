@@ -122,3 +122,6 @@ Alpha Version 0.3.8:
   Optimize map generation
   Added infinite map generation
   Rewrote terrain generator
+
+Alpha Version 0.3.9:
+  Added block HP indication
