@@ -80,7 +80,7 @@ int is_block_shaded(int x_pos, int y_pos, int z_pos){
 }
 
 void translate_block_def(char * def){
-  int values[15] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  int values[15] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   char * token;
   char * delim = " ";
   int field = 0;

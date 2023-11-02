@@ -20,6 +20,7 @@ tag_t player_tag = {
 sprite_t player_sprite;
 entity_t player_entity;
 transform_t current_rotation;
+int player_hunger = 0;
 
 int x_pos_offset = SPAWN_X;
 int y_pos_offset = SPAWN_Y;
@@ -42,6 +43,33 @@ int get_mining_speed(){
 
 int get_block_progress(){
   return block_progress;
+}
+
+int get_player_hunger(){
+  return player_hunger;
+}
+
+void set_player_hunger(int value){
+  player_hunger = value;
+  if (player_hunger < 0){
+    player_hunger = 0;
+  }
+}
+
+void player_eat_food(){
+  if (get_active_menu() != GAME_UI_ID){
+    return;
+  }
+
+  if (get_current_item()->item.block_type != FOOD_TYPE){
+    return;
+  }
+
+  int result = remove_inventory_item(get_current_item()->item, 1);
+  
+  if (result){
+    player_hunger++;
+  }
 }
 
 /* Mine a block in the direction of the player */

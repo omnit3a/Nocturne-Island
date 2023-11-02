@@ -2,6 +2,7 @@
 #include <ticks.h>
 #include <physics.h>
 #include <camera.h>
+#include <player.h>
 
 #define SPEED 1 / (1000 / TICKS_PER_SECOND)
 
@@ -10,6 +11,7 @@ int starting_tick = 0;
 int day_tick = 0;
 int is_day = 1;
 int switch_day = 0;
+unsigned long hunger_tick = HUNGER_TICKS;
 
 #define SPEED 1 / (1000 / TICKS_PER_SECOND)
 

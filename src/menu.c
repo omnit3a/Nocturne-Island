@@ -24,7 +24,7 @@ void set_active_menu(int menu){
 
 void draw_game_menu(render_obj_t * object){
   block_data_t block;
-  char block_hp[20];
+  char format[20];
   init_ui();
   block = get_current_item()->item;
   draw_string(CURRENT_VERSION_MSG, object);
@@ -39,10 +39,16 @@ void draw_game_menu(render_obj_t * object){
 
   newline_ui();
 
+  draw_string("Hunger: ", object);
+  sprintf(format, "%d", get_player_hunger());
+  draw_string(format, object);
+  
+  newline_ui();
+
   if (get_block_progress() > 0){
     draw_string("Block HP: ", object);
-    sprintf(block_hp, "%d", get_block_progress());
-    draw_string(block_hp, object);
+    sprintf(format, "%d", get_block_progress());
+    draw_string(format, object);
     
     newline_ui();
   }
@@ -129,13 +135,14 @@ int handle_pause_menu(SDL_Event event){
   return HANDLE_REGULAR;
 }
 
+crafting_recipe_t recipe_list[CRAFTABLE_LIST_AMOUNT];
+
 void draw_crafting_menu(render_obj_t * object){
   init_ui();
-  crafting_recipe_t recipe_list[CRAFTABLE_LIST_AMOUNT];
   get_craftable_recipes(recipe_list);
   int line_number = 1;
   char slot_label[4] = " - ";
-  
+
   while (line_number <= CRAFTABLE_LIST_AMOUNT){
     slot_label[1] = line_number+96;
     draw_string(slot_label, object);
@@ -146,7 +153,6 @@ void draw_crafting_menu(render_obj_t * object){
 }
 
 int handle_crafting_menu(SDL_Event event){
-  crafting_recipe_t recipe_list[CRAFTABLE_LIST_AMOUNT];
   get_craftable_recipes(recipe_list);
   
   char code = event.key.keysym.sym-96;

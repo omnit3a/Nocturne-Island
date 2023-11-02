@@ -84,6 +84,11 @@ int main(int argc, char ** argv){
 	    case SDLK_n:
 	      player_place_block();
 	      break;
+
+	    /* Eat food */
+	    case SDLK_f:
+	      player_eat_food();
+	      break;
 	  }
 	  break;
         case SDL_QUIT:
