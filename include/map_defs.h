@@ -21,4 +21,5 @@
 #define ROCKS 17
 #define STICK 19
 #define BRANCH 20
+#define SHARP_ROCK 33
 #define SHARP_STICK 35

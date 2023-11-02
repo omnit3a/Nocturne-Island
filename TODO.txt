@@ -1,5 +1,6 @@
 Add Z rotation [DONE]
 Add better terrain generator [DONE]
+Change crafting requirements to include options such as the use of a sharp object
 Add lighting
 Add LIGHT_SOURCE parameter to block data
 Add items, which are different from blocks
