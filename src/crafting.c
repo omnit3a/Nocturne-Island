@@ -167,14 +167,15 @@ void get_craftable_recipes(crafting_recipe_t * recipe_list){
   int filled_list = 0;
   craftable_recipe_count = 0;
   transform_t pos = get_player_entity()->position;
-  for (int item = 0 ; item < CRAFTABLE_LIST_AMOUNT ; item++){
+  for (int item = 0 ; item <= CRAFTABLE_LIST_AMOUNT ; item++){
     recipe_list[item].id = 0;
+    strcpy(recipe_list[item].name, "");
   }
   for (int item = 0 ; filled_list < CRAFTABLE_LIST_AMOUNT &&
-	 item < CRAFTING_RECIPE_AMOUNT ; item++){
+	 item < CRAFTING_RECIPE_AMOUNT ; item++ ){
     if (is_recipe_craftable(recipes, item) && is_next_to_workshop(recipes[item].workshop_id, pos.x, pos.y, pos.z)){
-      memcpy(&recipe_list[filled_list], &recipes[item], sizeof(crafting_recipe_t));
-      recipe_list[filled_list].id = filled_list; 
+      recipe_list[filled_list] = recipes[item];
+      recipe_list[filled_list].id = filled_list;
       filled_list++;
       craftable_recipe_count++;
     }

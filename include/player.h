@@ -6,13 +6,12 @@
 #include <map.h>
 #include <entity.h>
 
-#define SPAWN_X MAP_WIDTH/2
-#define SPAWN_Y MAP_LENGTH/2
+#define SPAWN_X CHUNK_WIDTH/2
+#define SPAWN_Y CHUNK_LENGTH/2
 #define SPAWN_Z 11
 
 void spawn_player();
 int get_mining_speed();
-void player_rotate();
 void player_mine_block();
 void player_place_block();
 void handle_player_movement(SDL_Event event);

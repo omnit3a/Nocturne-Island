@@ -11,11 +11,29 @@
 #include <string.h>
 #include <perlin.h>
 
-world_data_t game_map[MAP_WIDTH][MAP_LENGTH][MAP_HEIGHT];
 block_data_t data_map[BLOCKS_AMOUNT];
+world_data_t chunk_map[CHUNK_WIDTH * CHUNK_LENGTH * CHUNK_HEIGHT];
+
+int changed_blocks_size = 1;
+int changed_blocks_index = 0;
+change_data_t * changed_blocks;
+
+int map_seed = 0;
+
+int get_map_seed(){
+  return map_seed;
+}
+
+void set_map_seed(int seed){
+  map_seed = seed;
+}
+
+int get_chunk_index(int x_pos, int y_pos, int z_pos){
+  return x_pos + y_pos * CHUNK_WIDTH + z_pos * CHUNK_WIDTH * CHUNK_LENGTH;
+}
 
 void get_height(int * result, int x_pos, int y_pos){
-  for (int z = 0 ; z < MAP_HEIGHT ; z++){
+  for (int z = 0 ; z < CHUNK_HEIGHT ; z++){
     if (!get_block(x_pos, y_pos, z).block.solid){
       if (is_block_shaded(x_pos, y_pos, z-1)){
 	continue;
@@ -29,20 +47,23 @@ void get_height(int * result, int x_pos, int y_pos){
 
 void set_block(block_data_t block, int x_pos, int y_pos, int z_pos){
   int height;
+  int chunk_index = get_chunk_index(x_pos, y_pos, z_pos);
   get_height(&height, x_pos, y_pos);
-  game_map[x_pos][y_pos][z_pos].block = block;
-  game_map[x_pos][y_pos][z_pos].current_state = 0;
-  game_map[x_pos][y_pos][z_pos].hp = block.hp;
-  game_map[x_pos][y_pos][z_pos].id = block.id;
-  game_map[x_pos][y_pos][z_pos].height_map = height;
+  chunk_map[chunk_index].block = block;
+  chunk_map[chunk_index].current_state = 0;
+  chunk_map[chunk_index].hp = block.hp;
+  chunk_map[chunk_index].id = block.id;
+  chunk_map[chunk_index].height_map = height;
 }
 
 world_data_t get_block(int x_pos, int y_pos, int z_pos){
-  return game_map[x_pos][y_pos][z_pos];
+  int chunk_index = get_chunk_index(x_pos, y_pos, z_pos);
+  return chunk_map[chunk_index];
 }
 
 void set_block_state(int state, int x_pos, int y_pos, int z_pos){
-  game_map[x_pos][y_pos][z_pos].current_state = state;
+  int chunk_index = get_chunk_index(x_pos, y_pos, z_pos);
+  chunk_map[chunk_index].current_state = state;
 }
 
 int is_block_shaded(int x_pos, int y_pos, int z_pos){
@@ -152,110 +173,86 @@ block_data_t get_block_properties(int block){
 
 /* Initialize every tile in map to empty block */
 void fill_map(){
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-      for (int z = 0 ; z < MAP_HEIGHT ; z++){
-	set_block(get_block_properties(EMPTY), x, y, z);
-      }
+  for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
+    int x = index % CHUNK_WIDTH;
+    int y = index / CHUNK_LENGTH;
+    for (int z = 0 ; z < CHUNK_HEIGHT ; z++){
+      set_block(get_block_properties(EMPTY), x, y, z);
     }
   }
 }
 
-/* Trees have a higher probability of spawning on mountains, as there is more
- * light.
- * When a lighting system is implemented, make it so that trees are more likely
- * to spawn in well lit areas.
- */
-void place_trees(char height_map[MAP_WIDTH][MAP_LENGTH], int seed){
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-      float noise = pnoise2d(x, y, 0.75, 10, seed);
-      if (noise < -1.2){
-	set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
-	set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
-      }
+void place_trees(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
+  for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
+    int height;
+    int x = index % CHUNK_WIDTH;
+    int y = index / CHUNK_LENGTH;
+    get_height(&height, x, y);
+    float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
+    if (noise > 1.8){
+      set_block(get_block_properties(TREE_BOTTOM), x, y, height+1);
+      set_block(get_block_properties(TREE_LEAVES), x, y, height+2);
     }
   }
 }
 
-void rotate_grass(){
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-      for (int z = 0 ; z < MAP_HEIGHT ; z++){
-	if (get_block(x, y, z).id == GRASS){
-	  game_map[x][y][z].current_state = rand() % 3;
-	}
-      }
-    }
-  }
-}
-
-
-void generate_hills(int seed){
+void generate_hills(int x_off, int y_off){
   fill_map();
-  srand(seed);
   /* Step 1 */
-  char temp_height_map[MAP_WIDTH][MAP_LENGTH];
-  char height_map[MAP_WIDTH][MAP_LENGTH];
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-      height_map[x][y] = ((int)pnoise2d(x, y, 0.75, 10, seed) * 6);
-      if (height_map[x][y] < 2){
-	height_map[x][y] = 2;
-      }
-    }
+  char height_map[CHUNK_WIDTH][CHUNK_LENGTH];
+  for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
+    int x = index % CHUNK_WIDTH;
+    int y = index / CHUNK_LENGTH;
+    height_map[x][y] = 0;
   }
 
-  int surroundVals[4] = {0};
-  int average = 0;
-  for (int r = 0 ; r < 5 ; r++){
-    for (int x = 0 ; x < MAP_WIDTH ; x++){
-      for (int y = 0 ; y < MAP_LENGTH ; y++){
-	if (x > 0) {
-          surroundVals[0] = height_map[x-1][y];
-	}
-	if (x < MAP_WIDTH-1){
-          surroundVals[1] = height_map[x+1][y];
-	}
-	if (y > 0){
-          surroundVals[2] = height_map[x][y-1];
-	}
-	if (y < MAP_LENGTH-1){
-          surroundVals[3] = height_map[x][y+1];
-	}
-        for (int a = 0 ; a < 4 ; a++){
-          average += surroundVals[a];
-        }
-        average = average / 4;
-        temp_height_map[x][y] = average;
-      }
-    }
-    for (int x = 0 ; x < MAP_WIDTH ; x++){
-      for (int y = 0 ; y < MAP_LENGTH ; y++){
-        if (height_map[x][y] < GROUND_HEIGHT){
-	  height_map[x][y] = temp_height_map[x][y];
-	}
-      }
+  for (int index = 0 ; index < CHUNK_WIDTH*CHUNK_LENGTH ; index++){
+    int x = index % CHUNK_WIDTH;
+    int y = index / CHUNK_LENGTH;
+    height_map[x][y] += pnoise2d((x+x_off)-1, (y+y_off), 1, 10, get_map_seed()) * 5;
+    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)-1, 1, 10, get_map_seed()) * 5;
+    height_map[x][y] += pnoise2d((x+x_off)+1, (y+y_off), 1, 10, get_map_seed()) * 5;
+    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)+1, 1, 10, get_map_seed()) * 5;
+    height_map[x][y] /= 4;
+    if (height_map[x][y] < 1){
+      height_map[x][y] = 1;
     }
   }
-
-  for (int x = 0 ; x < MAP_WIDTH ; x++){
-    for (int y = 0 ; y < MAP_LENGTH ; y++){
-
-      set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
- 
-      for (int z = height_map[x][y]-1 ; z >= 0 ; z--){
-	if (height_map[x][y] >= CLIFF_HEIGHT){
-	  set_block(get_block_properties(STONE), x, y, z);
-	  continue;
-	}
+  
+  for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
+    int x = index % CHUNK_WIDTH;
+    int y = index / CHUNK_LENGTH;
+    set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
+    set_block_state(rand() % 3, x, y, height_map[x][y]);
+    for (int z = height_map[x][y]-1 ; z > 0 ; z--){
+      if (height_map[x][y] >= CLIFF_HEIGHT){
+	set_block(get_block_properties(STONE), x, y, z);
+      } else {
 	set_block(get_block_properties(DIRT), x, y, z);
       }
     }
+    set_block(get_block_properties(NOKIUM), x, y, 0);
   }
-
-  place_trees(height_map, seed);
-  rotate_grass();
+  
+  place_trees(x_off, y_off, height_map);
+  
+  for (int change = 0 ; change < changed_blocks_index ; change++){
+    for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
+      int x = index % CHUNK_WIDTH;
+      int y = index / CHUNK_LENGTH;
+      
+      int change_x = get_changed_blocks(change).x;
+      int change_y = get_changed_blocks(change).y;
+      int change_z = get_changed_blocks(change).z;
+      
+      int x_pos = x + x_off;
+      int y_pos = y + y_off;
+      
+      if (x_pos == change_x && y_pos == change_y){
+	set_block(get_changed_blocks(change).data.block, x, y, change_z);
+      }
+    }
+  }
 }
 
 int compare_blocks(block_data_t a, block_data_t b){
@@ -294,4 +291,38 @@ int is_next_to_block(block_data_t block, int x_pos, int y_pos, int z_pos){
 
 int is_next_to_workshop(int workshop_id, int x_pos, int y_pos, int z_pos){
   return is_next_to_block(get_block_properties(workshop_id),x_pos,y_pos,z_pos);
+}
+
+int get_changed_blocks_size(){
+  return changed_blocks_size;
+}
+
+int get_changed_blocks_index(){
+  return changed_blocks_index;
+}
+
+void set_changed_blocks(world_data_t data, int x_pos, int y_pos, int z_pos){
+  changed_blocks_size++;
+  reallocate_changed_blocks(1);
+  changed_blocks[changed_blocks_index].data = data;
+  changed_blocks[changed_blocks_index].x = x_pos;
+  changed_blocks[changed_blocks_index].y = y_pos;
+  changed_blocks[changed_blocks_index].z = z_pos;
+  changed_blocks_index++;
+}
+
+change_data_t get_changed_blocks(int index){
+  return changed_blocks[index];
+}
+
+void allocate_changed_blocks(){
+  changed_blocks = malloc(changed_blocks_size * sizeof(change_data_t));
+}
+
+void reallocate_changed_blocks(int size_offset){
+  changed_blocks = realloc(changed_blocks, changed_blocks_size * sizeof(change_data_t));
+}
+
+void free_changed_blocks(){
+  free(changed_blocks);
 }

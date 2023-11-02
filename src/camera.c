@@ -10,8 +10,8 @@ render_obj_t camera_object;
 render_obj_t overlay_object;
 
 void get_camera_view(int * x, int * y ){
-  *x = 13;
-  *y = 9;  
+  *x = CAMERA_X_VIEW;
+  *y = CAMERA_Y_VIEW;  
 }
 
 void setup_camera(SDL_Renderer * renderer, SDL_Window * window){

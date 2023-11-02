@@ -116,3 +116,9 @@ Alpha Version 0.3.7:
   Added kiln
   Added support for different crafting workshops
   Trees are now placed based on perlin noise
+
+Alpha Version 0.3.8:
+  Fixed a bug with craftable recipe list
+  Optimize map generation
+  Added infinite map generation
+  Rewrote terrain generator
