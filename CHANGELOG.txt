@@ -127,3 +127,4 @@ Alpha Version 0.3.9:
   Added block HP indication
   Removed a lot of blocks
   Added Sticks, Branches, Thatch
+  Added Rocks
