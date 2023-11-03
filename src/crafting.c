@@ -171,11 +171,11 @@ int craft_item(crafting_recipe_t * list, int recipe){
   }
 }
 
-void get_craftable_recipes(crafting_recipe_t * recipe_list){
+void get_craftable_recipes(crafting_recipe_t recipe_list[CRAFTABLE_LIST_AMOUNT]){
   int filled_list = 0;
   craftable_recipe_count = 0;
   transform_t pos = get_player_entity()->position;
-  for (int item = 0 ; item <= CRAFTABLE_LIST_AMOUNT ; item++){
+  for (int item = 0 ; item < CRAFTABLE_LIST_AMOUNT ; item++){
     recipe_list[item].id = 0;
     strcpy(recipe_list[item].name, "");
   }
