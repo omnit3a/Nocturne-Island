@@ -16,6 +16,7 @@
       "hardness": -1,
       "id": 0
     },
+      
     {
       "name": "Stone",
       "hp": 4,
@@ -32,6 +33,7 @@
       "hardness": 2,
       "id": 1
     },
+      
     {
       "name": "Grass",
       "hp": 2,
@@ -48,13 +50,14 @@
       "hardness": 0,
       "id": 2
     },
+      
     {
       "name": "Trunk",
       "hp": 2,
       "solid": true,
       "transparent": true,
       "texture":  3,
-      "dropped_item": 20,
+      "dropped_item": 15,
       "count": 2,
       "block_type": 1,
       "output_id": 0,
@@ -64,13 +67,14 @@
       "hardness": 2,
       "id": 3
     },
+      
     {
       "name": "Leaves",
       "hp": 2,
       "solid": true,
       "transparent": true,
       "texture": 4,
-      "dropped_item": 20,
+      "dropped_item": 15,
       "count": 2,
       "block_type": 1,
       "output_id": 0,
@@ -80,6 +84,7 @@
       "hardness": 1,
       "id": 4
     },
+      
     {
       "name": "Dirt",
       "hp": 2,
@@ -96,6 +101,7 @@
       "hardness": 0,
       "id": 5
     },
+      
     {
       "name": "Water",
       "hp": -1,
@@ -109,9 +115,10 @@
       "regen": false,
       "regen_id": 0,
       "regen_ticks": 0,
-      "hardness": -1,
+      "hardness": 0,
       "id": 6
     },
+      
     {
       "name": "Sand",
       "hp": 2,
@@ -128,6 +135,7 @@
       "hardness": 0,
       "id": 7
     },
+      
     {
       "name": "Nokium",
       "hp": -1,
@@ -144,6 +152,7 @@
       "hardness": -1,
       "id": 8
     },
+      
     {
       "name": "Clay",
       "hp": 2,
@@ -160,6 +169,7 @@
       "hardness": 1,
       "id": 9
     },
+      
     {
       "name": "Thatch",
       "hp": 1,
@@ -176,6 +186,7 @@
       "hardness": 0,
       "id": 10
     },
+      
     {
       "name": "Fire",
       "hp": -1,
@@ -192,6 +203,7 @@
       "hardness": -1,
       "id": 11
     },
+      
     {
       "name": "Charcoal",
       "hp": 1,
@@ -208,13 +220,14 @@
       "hardness": 0,
       "id": 12
     },
+      
     {
       "name": "Rock wall",
       "hp": 4,
       "solid": true,
       "transparent": false,
       "texture": 16,
-      "dropped_item": 17,
+      "dropped_item": 14,
       "count": 2,
       "block_type": 0,
       "output_id": 0,
@@ -222,15 +235,16 @@
       "regen_id": 0,
       "regen_ticks": 0,
       "hardness": 3,
-      "id": 16
+      "id": 13
     },
+      
     {
       "name": "Rocks",
       "hp": 2,
       "solid": false,
       "transparent": true,
       "texture": 17,
-      "dropped_item": 17,
+      "dropped_item": 14,
       "count": 1,
       "block_type": 0,
       "output_id": 0,
@@ -238,7 +252,7 @@
       "regen_id": 0,
       "regen_ticks": 0,
       "hardness": 0,
-      "id": 17
+      "id": 14
     },
     {
       "name": "Stick",
@@ -246,9 +260,73 @@
       "solid": false,
       "transparent": true,
       "texture": 19,
-      "dropped_item": 19,
+      "dropped_item": 15,
       "count": 1,
       "block_type": 5,
+      "output_id": 0,
+      "regen": false,
+      "regen_id": 0,
+      "regen_ticks": 0,
+      "hardness": 0,
+      "id": 15
+    },
+    {
+      "name": "Branch",
+      "hp": 1,
+      "solid": false,
+      "transparent": true,
+      "texture": 20,
+      "dropped_item": 16,
+      "count": 1,
+      "block_type": 5,
+      "output_id": 0,
+      "regen": false,
+      "regen_id": 0,
+      "regen_ticks": 0,
+      "hardness": 0,
+      "id": 16
+    },
+    {
+      "name": "Berry bush",
+      "hp": 2,
+      "solid": true,
+      "transparent": true,
+      "texture": 21,
+      "dropped_item": 17,
+      "count": 1,
+      "block_type": 5,
+      "output_id": 18,
+      "regen": false,
+      "regen_id": 0,
+      "regen_ticks": 0,
+      "hardness": 0,
+      "id": 17
+    },
+    {
+      "name": "Bush",
+      "hp": 2,
+      "solid": true,
+      "transparent": true,
+      "texture": 22,
+      "dropped_item": 16,
+      "count": 1,
+      "block_type": 5,
+      "output_id": 0,
+      "regen": true,
+      "regen_id": 17,
+      "regen_ticks": 100000,
+      "hardness": 0,
+      "id": 18
+    },
+    {
+      "name": "Red berries",
+      "hp": 1,
+      "solid": false,
+      "transparent": true,
+      "texture": 23,
+      "dropped_item": 19,
+      "count": 1,
+      "block_type": 6,
       "output_id": 0,
       "regen": false,
       "regen_id": 0,
@@ -257,76 +335,12 @@
       "id": 19
     },
     {
-      "name": "Branch",
-      "hp": 1,
-      "solid": false,
-      "transparent": true,
-      "texture": 20,
-      "dropped_item": 20,
-      "count": 1,
-      "block_type": 5,
-      "output_id": 0,
-      "regen": false,
-      "regen_id": 0,
-      "regen_ticks": 0,
-      "hardness": 0,
-      "id": 20
-    },
-    {
-      "name": "Berry bush",
-      "hp": 2,
-      "solid": true,
-      "transparent": true,
-      "texture": 21,
-      "dropped_item": 23,
-      "count": 1,
-      "block_type": 5,
-      "output_id": 22,
-      "regen": false,
-      "regen_id": 0,
-      "regen_ticks": 0,
-      "hardness": 0,
-      "id": 21
-    },
-    {
-      "name": "Bush",
-      "hp": 2,
-      "solid": true,
-      "transparent": true,
-      "texture": 22,
-      "dropped_item": 20,
-      "count":1,
-      "block_type": 5,
-      "output_id": 0,
-      "regen": true,
-      "regen_id": 21,
-      "regen_ticks": 100000,
-      "hardness": 0,
-      "id": 22
-    },
-    {
-      "name": "Red berries",
-      "hp": 1,
-      "solid": false,
-      "transparent": true,
-      "texture": 23,
-      "dropped_item": 23,
-      "count": 1,
-      "block_type": 6,
-      "output_id": 0,
-      "regen": false,
-      "regen_id": 0,
-      "regen_ticks": 0,
-      "hardness": 0,
-      "id": 23
-    },
-    {
       "name": "Sharpened rock",
       "hp": 1,
       "solid": false,
       "transparent": true,
       "texture": 33,
-      "dropped_item": 33,
+      "dropped_item": 20,
       "count": 1,
       "block_type": 7,
       "output_id": 0,
@@ -334,7 +348,7 @@
       "regen_id": 0,
       "regen_ticks": 0,
       "hardness": 1,
-      "id": 33
+      "id": 20
     },
     {
       "name": "Sharpened stick",
@@ -342,7 +356,7 @@
       "solid": false,
       "transparent": true,
       "texture": 35,
-      "dropped_item": 35,
+      "dropped_item": 21,
       "count": 1,
       "block_type": 7,
       "output_id": 0,
@@ -350,15 +364,16 @@
       "regen_id": 0,
       "regen_ticks": 0,
       "hardness": 0,
-      "id": 35
+      "id": 21
     },
+      
     {
       "name": "Stone axe",
       "hp": 1,
       "solid": false,
       "transparent": true,
       "texture": 36,
-      "dropped_item": 26,
+      "dropped_item": 22,
       "count": 1,
       "block_type": 7,
       "output_id": 0,
@@ -366,7 +381,7 @@
       "regen_id": 0,
       "regen_ticks": 0,
       "hardness": 2,
-      "id": 36
+      "id": 22
     }
   ]
 }
