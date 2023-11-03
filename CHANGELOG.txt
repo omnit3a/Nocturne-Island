@@ -153,3 +153,7 @@ Alpha Version 0.4.1:
   Added block hardness
   Player can only mine blocks if their current item hardnes >= block hardness
   Added stone axe
+
+Alpha Version 0.4.2:
+  Rocks now randomly spawn near hills
+  Branches now randomly spawn near trees

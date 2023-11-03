@@ -195,25 +195,43 @@ void fill_map(){
   }
 }
 
-void place_bushes(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
+void place_foliage(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
     float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
-    if (noise >= 2 && get_block(x, y, height_map[x][y]).block.id == GRASS){
+
+    if (get_block(x, y, height_map[x][y]).block.id != GRASS){
+      continue;
+    }
+
+    if (noise > 1.8 && noise < 2){
+      set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
+      set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
+    }
+    if (noise >= 2){
       set_block(get_block_properties(RED_BERRY_BUSH), x, y, height_map[x][y]+1);
     }
   }
 }
 
-void place_trees(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
+void place_items(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
     float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
-    if (noise > 1.8 && noise < 2 && get_block(x, y, height_map[x][y]).block.id == GRASS){
-      set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
-      set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
+
+    if (get_block(x, y, height_map[x][y]).block.id != GRASS){
+      continue;
+    }
+
+    if (noise >= 2 &&
+	height_map[x][y] >= CLIFF_HEIGHT-1){
+      set_block(get_block_properties(ROCKS), x, y, height_map[x][y]+1);
+    }
+    if (noise > 1.6 &&
+	is_next_to_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1)){
+      set_block(get_block_properties(BRANCH), x, y, height_map[x][y]+1);
     }
   }
 }
@@ -277,9 +295,9 @@ void generate_hills(int x_off, int y_off){
     set_block(get_block_properties(NOKIUM), x, y, 0);
   }
 
-  place_trees(x_off, y_off, height_map);
-  place_bushes(x_off, y_off, height_map);
-
+  place_foliage(x_off, y_off, height_map);
+  place_items(x_off, y_off, height_map);
+  
   /* changed block placement */
   for (int change = 0 ; change < changed_blocks_index ; change++){
     for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
@@ -327,9 +345,6 @@ int is_block_mineable(block_data_t block){
 }
 
 int is_next_to_block(block_data_t block, int x_pos, int y_pos, int z_pos){
-  if (compare_blocks(get_block(x_pos, y_pos, z_pos).block, block)){
-    return 1;
-  }
   if (compare_blocks(get_block(x_pos-1, y_pos, z_pos).block, block)){
     return 1;
   }

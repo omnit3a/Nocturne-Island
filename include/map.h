@@ -68,8 +68,8 @@ void load_block_properties(char * path);
 block_data_t get_block_properties(int block);
 
 void fill_map();
-void place_bushes(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]);
-void place_trees(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]);
+void place_foliage(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]);
+void place_items(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]);
 void generate_hills(int x_off, int y_off);
 int compare_blocks(block_data_t a, block_data_t b);
 int is_block_mineable(block_data_t block);
