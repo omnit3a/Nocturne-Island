@@ -11,6 +11,7 @@
 #include <crafting.h>
 #include <messages.h>
 #include <ticks.h>
+#include <tools.h>
 
 int active_menu = 0;
 
@@ -63,6 +64,10 @@ int handle_game_menu(SDL_Event event){
 
     case SDLK_c:
       active_menu = CRAFTING_UI_ID;
+      return HANDLE_CLOSE;
+
+    case SDLK_t:
+      handle_action(get_current_item()->item.id);
       return HANDLE_CLOSE;
       
     case SDLK_ESCAPE:
@@ -163,12 +168,5 @@ int handle_crafting_menu(SDL_Event event){
       active_menu = GAME_UI_ID;
       return HANDLE_CLOSE;
   }
-  return HANDLE_REGULAR;
-}
-
-void draw_tool_menu(render_obj_t * object){
-}
-
-int handle_tool_menu(SDL_Event event){
   return HANDLE_REGULAR;
 }

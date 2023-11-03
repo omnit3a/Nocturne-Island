@@ -148,3 +148,5 @@ Alpha Version 0.4.1:
   Player can now mine any block with HP > 0
   Added fire and charcoal
   Changed inventory size from 10 to 18
+  Added item actions
+  Current item must now be selected from inside inventory menu

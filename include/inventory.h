@@ -5,6 +5,8 @@
 #define SLOT_SIZE 999
 #define INVENTORY_SIZE 18
 
+#define TOOL_AMOUNT INVENTORY_SIZE
+
 /* <size> is how many items can fit in the slot */
 typedef struct inventory_slot_s {
   block_data_t item;
@@ -24,3 +26,4 @@ void sort_inventory();
 int check_inventory_item(block_data_t item, int amount);
 int is_inventory_full();
 int find_inventory_slot(block_data_t item);
+void get_tools_list(inventory_slot_t list[TOOL_AMOUNT]);

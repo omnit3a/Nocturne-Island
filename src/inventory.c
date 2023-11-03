@@ -3,6 +3,7 @@
 #include <inventory.h>
 #include <map_defs.h>
 #include <map.h>
+#include <string.h>
 
 inventory_slot_t inventory[INVENTORY_SIZE];
 int current_slot;
@@ -124,4 +125,21 @@ int find_inventory_slot(block_data_t item){
     }
   }
   return -1;
+}
+
+void get_tools_list(inventory_slot_t list[TOOL_AMOUNT]){
+  int list_slot = 0;
+  list[list_slot].item.id = 0;
+  for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
+    if (inventory[slot].item.block_type == TOOL_TYPE){
+      list[list_slot++] = inventory[slot];
+    } else {
+      list[slot].item = get_block_properties(EMPTY);
+      strcpy(list[slot].item.name, "Nothing");
+      list[slot].item.id = 0;
+      list[slot].amount = 0;
+      list[slot].size = SLOT_SIZE;
+      list[slot].is_empty = 1;
+    }
+  }
 }

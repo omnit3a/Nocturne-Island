@@ -25,7 +25,6 @@ ui_menu_t game_menus[MENU_AMOUNT] = {
   {&handle_pause_menu, &draw_pause_menu, 0, PAUSE_UI_ID, GAME_UI_ID},
   {&handle_inventory_menu, &draw_inventory_menu, 0, INVENTORY_UI_ID, GAME_UI_ID},
   {&handle_crafting_menu, &draw_crafting_menu, 0, CRAFTING_UI_ID, GAME_UI_ID},
-  {&handle_tool_menu, &draw_tool_menu, 0, TOOL_UI_ID, GAME_UI_ID},
 };
 
 void init_ui(){
