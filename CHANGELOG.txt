@@ -141,3 +141,6 @@ Alpha Version 0.4.0:
   Added lakes and pools
   Added hunger (-1 Hunger every two minutes)
   Added water flow
+
+Alpha Version 0.4.1:
+  Added Rock walls
