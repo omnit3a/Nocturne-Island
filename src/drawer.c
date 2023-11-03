@@ -37,7 +37,7 @@ void draw_view(render_obj_t * object){
       z = 0;
       draw_indoors = 1;
     } else if (get_block(x, y, z).block.transparent){
-      drawing_height = z;
+      drawing_height = z+2;
       z = 0;
       draw_indoors = 1;
     } else {

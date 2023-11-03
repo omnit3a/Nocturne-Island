@@ -39,7 +39,7 @@ void draw_game_menu(render_obj_t * object){
 
   newline_ui();
 
-  draw_string("Hunger: ", object);
+  draw_string("Food: ", object);
   sprintf(format, "%d", get_player_hunger());
   draw_string(format, object);
   

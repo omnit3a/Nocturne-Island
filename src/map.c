@@ -35,7 +35,7 @@ int get_chunk_index(int x_pos, int y_pos, int z_pos){
 
 void get_height(int * result, int x_pos, int y_pos){
   for (int z = 0 ; z < CHUNK_HEIGHT ; z++){
-    if (!get_block(x_pos, y_pos, z).block.solid){
+    if (get_block(x_pos, y_pos, z).block.id == 0){
       if (is_block_shaded(x_pos, y_pos, z-1)){
 	continue;
       }
@@ -196,12 +196,10 @@ void fill_map(){
 
 void place_bushes(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
-    int height;
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
-    get_height(&height, x, y);
     float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
-    if (noise >= 2){
+    if (noise >= 2 && get_block(x, y, height_map[x][y]).block.id == GRASS){
       set_block(get_block_properties(RED_BERRY_BUSH), x, y, height_map[x][y]+1);
     }
   }
@@ -212,7 +210,7 @@ void place_trees(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
     float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
-    if (noise > 1.8 && noise < 2){
+    if (noise > 1.8 && noise < 2 && get_block(x, y, height_map[x][y]).block.id == GRASS){
       set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
       set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
     }
@@ -229,6 +227,7 @@ void generate_hills(int x_off, int y_off){
     height_map[x][y] = 0;
   }
 
+  /* height map generation with averaging */
   for (int index = 0 ; index < CHUNK_WIDTH*CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
@@ -241,11 +240,30 @@ void generate_hills(int x_off, int y_off){
       height_map[x][y] = 1;
     }
   }
-  
+
+  /* Water placement */
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
     height_map[x][y] += 1;
+    if (height_map[x][y] == 2){
+      float noise = pnoise2d(x+x_off, y+y_off, 1, 10, get_map_seed() * 5);
+      if (noise < -1.75){
+	height_map[x][y] = 1;
+        set_block(get_block_properties(WATER), x, y, 2);
+      }
+    }
+  }
+
+  /* Height map usage */
+  for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
+    int x = index % CHUNK_WIDTH;
+    int y = index / CHUNK_LENGTH;
+    if (height_map[x][y] == 1){
+      set_block(get_block_properties(SAND), x, y, 1);
+      set_block(get_block_properties(NOKIUM), x, y, 0);
+      continue;
+    }
     set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
     set_block_state(rand() % 3, x, y, height_map[x][y]);
     for (int z = height_map[x][y]-1 ; z > 0 ; z--){
@@ -260,7 +278,8 @@ void generate_hills(int x_off, int y_off){
 
   place_trees(x_off, y_off, height_map);
   place_bushes(x_off, y_off, height_map);
-  
+
+  /* changed block placement */
   for (int change = 0 ; change < changed_blocks_index ; change++){
     for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
       int x = index % CHUNK_WIDTH;
