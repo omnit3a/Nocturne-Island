@@ -100,12 +100,10 @@ void player_mine_block(){
   }
   
   if (get_block(rot.x, rot.y, rot.z).block.hp > 0){
-    int state = get_block(rot.x, rot.y, rot.z).current_state;
     world_data_t block = get_block(rot.x, rot.y, rot.z);
     block.block.hp -= get_mining_speed();
     world_data_t prev_data = get_block(rot.x, rot.y, rot.z);
     set_block(block.block, rot.x, rot.y, rot.z);
-    set_block_state(state, rot.x, rot.y, rot.z);
 
     set_changed_blocks(prev_data,
 		       get_block(rot.x, rot.y, rot.z),

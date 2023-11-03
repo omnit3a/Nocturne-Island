@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <camera.h>
 
-#define BLOCK_DATA_PATH "assets/defs/blocks.txt"
+#define BLOCK_DATA_PATH "assets/defs/blocks.json"
 
 #define MAP_WIDTH 100
 #define MAP_LENGTH 100
@@ -26,7 +26,7 @@ typedef struct block_data_s {
   int hp;
   bool solid;
   bool transparent;
-  int block[BLOCK_STATES];
+  int texture;
   int dropped_item;
   int count;
   int block_type;
@@ -37,6 +37,11 @@ typedef struct block_data_s {
   int hardness;
   int id;
 } block_data_t;
+
+typedef struct data_map_s {
+  int size;
+  block_data_t data[BLOCKS_AMOUNT];
+} data_map_t;
 
 typedef struct world_data_s {
   block_data_t block;
@@ -61,9 +66,7 @@ int get_chunk_index(int x_pos, int y_pos, int z_pos);
 void get_height(int * result, int x_pos, int y_pos);
 void set_block(block_data_t block, int x_pos, int y_pos, int z_pos);
 world_data_t get_block(int x_pos, int y_pos, int z_pos);
-void set_block_state(int state, int x_pos, int y_pos, int z_pos);
 int is_block_shaded(int x_pos, int y_pos, int z_pos);
-void translate_block_def(char * def);
 void load_block_properties(char * path);
 block_data_t get_block_properties(int block);
 
