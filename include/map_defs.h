@@ -7,6 +7,7 @@
 #define UNKNOWN_TYPE 4
 #define PLANT_TYPE 5
 #define FOOD_TYPE 6
+#define TOOL_TYPE 7
 
 #define EMPTY 0
 #define STONE 1

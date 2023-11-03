@@ -39,6 +39,7 @@ block_type (any int >= 0 and <= 6):
     4 = UNKNOWN_TYPE
     5 = PLANT_TYPE
     6 = FOOD_TYPE
+    7 = TOOL_TYPE
 
 output_id (any int):
   - the id of the block that is placed
