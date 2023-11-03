@@ -20,6 +20,7 @@ tag_t player_tag = {
 sprite_t player_sprite;
 entity_t player_entity;
 transform_t current_rotation;
+int player_hunger = 10;
 
 int x_pos_offset = SPAWN_X;
 int y_pos_offset = SPAWN_Y;
@@ -37,24 +38,38 @@ void spawn_player(){
 }
 
 int get_mining_speed(){
-  transform_t pos = player_entity.position;
-  transform_t rot = player_entity.rotation;
-  rot.x += current_rotation.x;
-  rot.y += current_rotation.y;
-  rot.z = pos.z+current_rotation.z;
-  
-  switch (get_block(rot.x, rot.y, rot.z).block.block_type){
-    case TERRAIN_TYPE:
-      if(compare_blocks(get_current_item()->item, get_block_properties(SHARP_STICK))){
-	return 2;
-      }
-      break;
-  }
   return 1;
 }
 
 int get_block_progress(){
   return block_progress;
+}
+
+int get_player_hunger(){
+  return player_hunger;
+}
+
+void set_player_hunger(int value){
+  player_hunger = value;
+  if (player_hunger < 0){
+    player_hunger = 0;
+  }
+}
+
+void player_eat_food(){
+  if (get_active_menu() != GAME_UI_ID){
+    return;
+  }
+
+  if (get_current_item()->item.block_type != FOOD_TYPE){
+    return;
+  }
+
+  int result = remove_inventory_item(get_current_item()->item, 1);
+  
+  if (result){
+    player_hunger++;
+  }
 }
 
 /* Mine a block in the direction of the player */
@@ -77,14 +92,17 @@ void player_mine_block(){
     int state = get_block(rot.x, rot.y, rot.z).current_state;
     world_data_t block = get_block(rot.x, rot.y, rot.z);
     block.block.hp -= get_mining_speed();
+    world_data_t prev_data = get_block(rot.x, rot.y, rot.z);
     set_block(block.block, rot.x, rot.y, rot.z);
-    // prevent reseting of block_state to 0
     set_block_state(state, rot.x, rot.y, rot.z);
-    set_changed_blocks(get_block(rot.x, rot.y, rot.z),
+
+    set_changed_blocks(prev_data,
+		       get_block(rot.x, rot.y, rot.z),
 		       SPAWN_X+x_pos_offset+current_rotation.x,
 		       SPAWN_Y+y_pos_offset+current_rotation.y,
 		       rot.z);
     block_progress = block.block.hp;
+
     if (block.block.hp > 0){
       return;
     }
@@ -95,8 +113,11 @@ void player_mine_block(){
     block_data_t block = get_block_properties(get_block(rot.x, rot.y, rot.z).block.dropped_item);
     int count = get_block(rot.x, rot.y, rot.z).block.count;
     add_inventory_item(block, count);
-    set_block(get_block_properties(EMPTY), rot.x, rot.y, rot.z);
-    set_changed_blocks(get_block(rot.x, rot.y, rot.z),
+    world_data_t prev_data = get_block(rot.x, rot.y, rot.z);
+    set_block(get_block_properties(prev_data.block.output_id), rot.x, rot.y, rot.z);
+
+    set_changed_blocks(prev_data,
+		       get_block(rot.x, rot.y, rot.z),
 		       SPAWN_X+x_pos_offset+current_rotation.x,
 		       SPAWN_Y+y_pos_offset+current_rotation.y,
 		       rot.z);
@@ -124,8 +145,10 @@ void player_place_block(){
   int result = remove_inventory_item(get_current_item()->item, 1);
   
   if (result){
+    world_data_t prev_data = get_block(rot.x, rot.y, rot.z);
     set_block(block, rot.x, rot.y, rot.z);
-    set_changed_blocks(get_block(rot.x, rot.y, rot.z),
+    set_changed_blocks(prev_data,
+		       get_block(rot.x, rot.y, rot.z),
 		       SPAWN_X+x_pos_offset+current_rotation.x,
 		       SPAWN_Y+y_pos_offset+current_rotation.y,
 		       rot.z);

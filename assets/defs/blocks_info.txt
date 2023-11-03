@@ -29,7 +29,7 @@ count (any signed int):
     given to the player upon this block being
     mined in game
 
-block_type (any int >= 0 and <= 5):
+block_type (any int >= 0 and <= 6):
   - the category that this block is grouped
     into.
     0 = STONE_TYPE
@@ -37,7 +37,23 @@ block_type (any int >= 0 and <= 5):
     2 = TERRAIN_TYPE
     3 = FURNITURE_TYPE
     4 = UNKNOWN_TYPE
-    5 = METAL_TYPE
+    5 = PLANT_TYPE
+    6 = FOOD_TYPE
+
+output_id (any int):
+  - the id of the block that is placed
+    when this block is mined
+
+regen (0 | 1):
+  - whether or not blocks regen after a set
+    amount of ticks
+
+regen_id (any int):
+  - the id of the block that is placed
+    when this block regenerates
+
+regen_ticks (any int):
+  - the amount of ticks for the block to regen
 
 id (any signed int):
   - the id used to represent this block definition

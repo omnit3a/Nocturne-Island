@@ -6,3 +6,4 @@ IJKL: Rotate horizontally
 M: Mine
 E: Inventory
 C: Crafting
+F: Eat current item

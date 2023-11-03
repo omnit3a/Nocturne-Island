@@ -11,7 +11,7 @@ crafting_recipe_t craftable_recipes[CRAFTABLE_LIST_AMOUNT];
 int craftable_recipe_count = 0;
 
 void translate_recipe_def(char * def){
-  int values[5] = {0, 0, 0, 0, 0};
+  int values[6] = {0, 0, 0, 0, 0, 0};
   crafting_item_t ingredients[8];
   char * token;
   char * delim = " ";
@@ -150,7 +150,7 @@ int is_recipe_craftable(crafting_recipe_t * list, int recipe){
   if (found_items == max_items){
     return 1;
   }
-  
+
   return 0;
 }
 

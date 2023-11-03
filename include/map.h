@@ -30,6 +30,10 @@ typedef struct block_data_s {
   int dropped_item;
   int count;
   int block_type;
+  int output_id;
+  int regen;
+  int regen_id;
+  int regen_ticks;
   int id;
 } block_data_t;
 
@@ -42,10 +46,12 @@ typedef struct world_data_s {
 } world_data_t;
 
 typedef struct change_data_s {
+  world_data_t prev_data;
   world_data_t data;
   int x;
   int y;
   int z;
+  int tick_changed;
 } change_data_t;
 
 int get_map_seed();
@@ -59,7 +65,9 @@ int is_block_shaded(int x_pos, int y_pos, int z_pos);
 void translate_block_def(char * def);
 void load_block_properties(char * path);
 block_data_t get_block_properties(int block);
+
 void fill_map();
+void place_bushes(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]);
 void place_trees(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]);
 void generate_hills(int x_off, int y_off);
 int compare_blocks(block_data_t a, block_data_t b);
@@ -69,10 +77,11 @@ int is_next_to_workshop(int workshop_id, int x_pos, int y_pos, int z_pos);
 
 int get_changed_blocks_size();
 int get_changed_blocks_index();
-void set_changed_blocks(world_data_t data, int x_pos, int y_pos, int z_pos);
+void set_changed_blocks(world_data_t prev_data, world_data_t data, int x_pos, int y_pos, int z_pos);
 change_data_t get_changed_blocks(int index);
 void allocate_changed_blocks();
 void reallocate_changed_blocks(int size_offset);
 void free_changed_blocks();
+
 #endif
 
