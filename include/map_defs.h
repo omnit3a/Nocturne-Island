@@ -19,6 +19,8 @@
 #define NOKIUM 8
 #define CLAY 9
 #define THATCH 10
+#define FIRE 11
+#define CHARCOAL 12
 #define ROCKS 17
 #define STICK 19
 #define BRANCH 20

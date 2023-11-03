@@ -53,7 +53,6 @@ int main(int argc, char ** argv){
   init_player_entity();
   init_inventory();
   add_inventory_item(get_block_properties(EMPTY), 0);
-
   
   ui_menu_t start_menu;
   get_menu_info(&start_menu, GAME_UI_ID);

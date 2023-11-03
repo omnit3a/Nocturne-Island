@@ -88,7 +88,7 @@ void player_mine_block(){
     return;
   }
 
-  if (get_block(rot.x, rot.y, rot.z).block.hp > 1){
+  if (get_block(rot.x, rot.y, rot.z).block.hp > 0){
     int state = get_block(rot.x, rot.y, rot.z).current_state;
     world_data_t block = get_block(rot.x, rot.y, rot.z);
     block.block.hp -= get_mining_speed();
@@ -109,7 +109,7 @@ void player_mine_block(){
     
   }
   
-  if (get_block(rot.x, rot.y, rot.z).block.solid){
+  if (get_block(rot.x, rot.y, rot.z).block.hp == 0){
     block_data_t block = get_block_properties(get_block(rot.x, rot.y, rot.z).block.dropped_item);
     int count = get_block(rot.x, rot.y, rot.z).block.count;
     add_inventory_item(block, count);

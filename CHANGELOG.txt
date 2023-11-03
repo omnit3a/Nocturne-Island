@@ -144,3 +144,6 @@ Alpha Version 0.4.0:
 
 Alpha Version 0.4.1:
   Added Rock walls
+  All items are now no longer solid
+  Player can now mine any block with HP > 0
+  Added fire and charcoal
