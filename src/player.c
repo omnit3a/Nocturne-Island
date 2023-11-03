@@ -20,7 +20,7 @@ tag_t player_tag = {
 sprite_t player_sprite;
 entity_t player_entity;
 transform_t current_rotation;
-int player_hunger = 0;
+int player_hunger = 10;
 
 int x_pos_offset = SPAWN_X;
 int y_pos_offset = SPAWN_Y;
@@ -95,7 +95,7 @@ void player_mine_block(){
     world_data_t prev_data = get_block(rot.x, rot.y, rot.z);
     set_block(block.block, rot.x, rot.y, rot.z);
     set_block_state(state, rot.x, rot.y, rot.z);
-    
+
     set_changed_blocks(prev_data,
 		       get_block(rot.x, rot.y, rot.z),
 		       SPAWN_X+x_pos_offset+current_rotation.x,
@@ -115,6 +115,7 @@ void player_mine_block(){
     add_inventory_item(block, count);
     world_data_t prev_data = get_block(rot.x, rot.y, rot.z);
     set_block(get_block_properties(prev_data.block.output_id), rot.x, rot.y, rot.z);
+
     set_changed_blocks(prev_data,
 		       get_block(rot.x, rot.y, rot.z),
 		       SPAWN_X+x_pos_offset+current_rotation.x,

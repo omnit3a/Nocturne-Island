@@ -139,3 +139,5 @@ Alpha Version 0.4.0:
   Grass now becomes dirt after being mined
   Added FOOD_TYPE blocks
   Added lakes and pools
+  Added hunger (-1 Hunger every two minutes)
+  Added water flow

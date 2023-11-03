@@ -10,7 +10,7 @@
 #define SPAWN_Y CHUNK_LENGTH/2
 #define SPAWN_Z 11
 
-#define HUNGER_TICKS 60000
+#define HUNGER_TICKS 120000
 
 void spawn_player();
 int get_mining_speed();

@@ -7,3 +7,5 @@ int get_current_tick();
 void tick_update();
 void day_night_update();
 int is_daytime();
+void hunger_update();
+void water_flow_update();
