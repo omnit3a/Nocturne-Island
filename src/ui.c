@@ -29,8 +29,8 @@ ui_menu_t game_menus[MENU_AMOUNT] = {
 
 void init_ui(){
   get_camera_view(&cols, &rows);
-  cols = cols * 4;
-  rows = rows * 2;
+  cols *= 4;
+  rows *= 2;
   zero_ui();
   ui_x_scale = (DEFAULT_SCREEN_WIDTH / cols);
   ui_y_scale = (DEFAULT_SCREEN_HEIGHT / rows);

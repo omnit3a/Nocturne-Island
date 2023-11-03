@@ -39,6 +39,7 @@ block_type (any int >= 0 and <= 6):
     4 = UNKNOWN_TYPE
     5 = PLANT_TYPE
     6 = FOOD_TYPE
+    7 = TOOL_TYPE
 
 output_id (any int):
   - the id of the block that is placed
@@ -54,6 +55,11 @@ regen_id (any int):
 
 regen_ticks (any int):
   - the amount of ticks for the block to regen
+
+hardness (any int):
+  - in order to mine this block, another tool or
+    block of an equal or higher hardness must be
+    used
 
 id (any signed int):
   - the id used to represent this block definition

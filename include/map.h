@@ -34,6 +34,7 @@ typedef struct block_data_s {
   int regen;
   int regen_id;
   int regen_ticks;
+  int hardness;
   int id;
 } block_data_t;
 

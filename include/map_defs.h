@@ -7,6 +7,7 @@
 #define UNKNOWN_TYPE 4
 #define PLANT_TYPE 5
 #define FOOD_TYPE 6
+#define TOOL_TYPE 7
 
 #define EMPTY 0
 #define STONE 1
@@ -19,6 +20,8 @@
 #define NOKIUM 8
 #define CLAY 9
 #define THATCH 10
+#define FIRE 11
+#define CHARCOAL 12
 #define ROCKS 17
 #define STICK 19
 #define BRANCH 20
@@ -27,3 +30,4 @@
 #define RED_BERRY 23
 #define SHARP_ROCK 33
 #define SHARP_STICK 35
+#define STONE_AXE 36

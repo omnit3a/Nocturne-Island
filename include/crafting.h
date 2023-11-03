@@ -27,6 +27,6 @@ void translate_recipe_def(char * def);
 void load_crafting_recipes(char * path);
 int is_recipe_craftable(crafting_recipe_t * list, int recipe);
 int craft_item(crafting_recipe_t * list, int recipe);
-void get_craftable_recipes(crafting_recipe_t * recipe_list);
+void get_craftable_recipes(crafting_recipe_t recipe_list[CRAFTABLE_LIST_AMOUNT]);
 crafting_recipe_t * get_recipe_list();
 int get_craftable_recipe_count();

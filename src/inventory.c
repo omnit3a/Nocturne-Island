@@ -3,20 +3,18 @@
 #include <inventory.h>
 #include <map_defs.h>
 #include <map.h>
+#include <string.h>
 
 inventory_slot_t inventory[INVENTORY_SIZE];
 int current_slot;
 
 void init_inventory(){
-  current_slot = 1;
-  inventory_slot_t empty = {
-    get_block_properties(EMPTY),
-    0,
-    SLOT_SIZE,
-    1
-  };
+  current_slot = 0;
   for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
-    inventory[slot] = empty;
+    inventory[slot].item = get_block_properties(EMPTY);
+    inventory[slot].amount = 0;
+    inventory[slot].size = SLOT_SIZE;
+    inventory[slot].is_empty = 1;
   }
 }
 
@@ -25,6 +23,7 @@ int is_inventory_slot_empty(int slot){
 }
 
 int add_inventory_item(block_data_t item, int amount){
+  sort_inventory();
   for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
     if (is_inventory_slot_empty(slot) || compare_blocks(inventory[slot].item, item)){
       if (inventory[slot].amount + amount > inventory[slot].size){
@@ -41,6 +40,7 @@ int add_inventory_item(block_data_t item, int amount){
 }
 
 int remove_inventory_item(block_data_t item, int amount){
+  sort_inventory();
   for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
     if (!is_inventory_slot_empty(slot) && compare_blocks(inventory[slot].item, item)){
       if (inventory[slot].amount - amount > 0){
@@ -74,31 +74,29 @@ void set_current_item(int slot){
 
 void sort_inventory(){
   int item_count[BLOCKS_AMOUNT];
-  int prev_slot = current_slot;
+  block_data_t prev_block = get_current_item()->item;
   for (int id = 0 ; id < BLOCKS_AMOUNT ; id++){
     item_count[id] = 0;
-    for (int slot = 0 ; slot < INVENTORY_SIZE-1 ; slot++){
+    if (id == 0){
+      continue;
+    }
+    for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
       if (get_inventory_item(slot)->item.id == id){
 	item_count[id] += get_inventory_item(slot)->amount;
       }
     }
   }
   init_inventory();
-  int items_added = 1;
-  for (int id = 0 ; id < BLOCKS_AMOUNT && items_added < INVENTORY_SIZE+1; id++){
+  int items_added = 0;
+  for (int id = 0 ; id < BLOCKS_AMOUNT && items_added < INVENTORY_SIZE; id++){
     if (item_count[id] > 0){
-      if (items_added == INVENTORY_SIZE){
-	items_added = 0;
-      }
       inventory[items_added].item = get_block_properties(id);
       inventory[items_added].amount = item_count[id];
       inventory[items_added].is_empty = 0;
-      if (items_added == 0){
-	break;
-      }
       items_added++;
     }
   }
+  int prev_slot = find_inventory_slot(prev_block);
   set_current_item(prev_slot);
 }
 
@@ -128,4 +126,21 @@ int find_inventory_slot(block_data_t item){
     }
   }
   return -1;
+}
+
+void get_tools_list(inventory_slot_t list[TOOL_AMOUNT]){
+  int list_slot = 0;
+  list[list_slot].item.id = 0;
+  for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
+    if (inventory[slot].item.block_type == TOOL_TYPE){
+      list[list_slot++] = inventory[slot];
+    } else {
+      list[slot].item = get_block_properties(EMPTY);
+      strcpy(list[slot].item.name, "Nothing");
+      list[slot].item.id = 0;
+      list[slot].amount = 0;
+      list[slot].size = SLOT_SIZE;
+      list[slot].is_empty = 1;
+    }
+  }
 }
