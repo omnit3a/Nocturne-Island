@@ -74,7 +74,7 @@ void set_current_item(int slot){
 
 void sort_inventory(){
   int item_count[BLOCKS_AMOUNT];
-  int prev_slot = current_slot;
+  block_data_t prev_block = get_current_item()->item;
   for (int id = 0 ; id < BLOCKS_AMOUNT ; id++){
     item_count[id] = 0;
     if (id == 0){
@@ -96,6 +96,7 @@ void sort_inventory(){
       items_added++;
     }
   }
+  int prev_slot = find_inventory_slot(prev_block);
   set_current_item(prev_slot);
 }
 

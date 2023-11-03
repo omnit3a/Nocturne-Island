@@ -74,6 +74,7 @@ void player_eat_food(){
 
 /* Mine a block in the direction of the player */
 void player_mine_block(){
+  int strength = 0;
   transform_t pos = player_entity.position;
   transform_t rot = player_entity.rotation;
   rot.x += current_rotation.x;
@@ -88,6 +89,16 @@ void player_mine_block(){
     return;
   }
 
+  if (get_current_item()->item.hardness <= 0){
+    strength = 0;
+  } else {
+    strength = get_current_item()->item.hardness;
+  }
+
+  if (get_block(rot.x, rot.y, rot.z).block.hardness > strength && get_block(rot.x, rot.y, rot.z).block.solid){
+    return;
+  }
+  
   if (get_block(rot.x, rot.y, rot.z).block.hp > 0){
     int state = get_block(rot.x, rot.y, rot.z).current_state;
     world_data_t block = get_block(rot.x, rot.y, rot.z);

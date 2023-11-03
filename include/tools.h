@@ -10,3 +10,4 @@ void handle_action(int id);
 
 int sharp_stick_action();
 int sharp_rock_action();
+int stone_axe_action();

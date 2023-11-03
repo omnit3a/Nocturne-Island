@@ -150,3 +150,6 @@ Alpha Version 0.4.1:
   Changed inventory size from 10 to 18
   Added item actions
   Current item must now be selected from inside inventory menu
+  Added block hardness
+  Player can only mine blocks if their current item hardnes >= block hardness
+  Added stone axe

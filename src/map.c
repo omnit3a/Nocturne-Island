@@ -80,7 +80,7 @@ int is_block_shaded(int x_pos, int y_pos, int z_pos){
 }
 
 void translate_block_def(char * def){
-  int values[15] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  int values[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   char * token;
   char * delim = " ";
   int field = 0;
@@ -98,7 +98,7 @@ void translate_block_def(char * def){
     token = strtok(NULL, delim);
   }
 
-  int line = values[14];
+  int line = values[15];
 
   for (int pos = 0 ; pos < strlen(name) ; pos++){
     if (name[pos] == '_'){
@@ -120,7 +120,8 @@ void translate_block_def(char * def){
   data_map[line].regen = values[11];
   data_map[line].regen_id = values[12];
   data_map[line].regen_ticks = values[13];
-  data_map[line].id = values[14];
+  data_map[line].hardness = values[14];
+  data_map[line].id = values[15];
 }
 
 void load_block_properties(char * path){

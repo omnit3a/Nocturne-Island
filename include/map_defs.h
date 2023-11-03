@@ -30,3 +30,4 @@
 #define RED_BERRY 23
 #define SHARP_ROCK 33
 #define SHARP_STICK 35
+#define STONE_AXE 36
