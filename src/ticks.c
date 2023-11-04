@@ -26,6 +26,7 @@ void tick_update(){
   if ((current_tick & (20 - 1)) == 0){
     handle_physics();
     water_flow_update();
+    fire_update();
   } else {
     reset_physics();
   }
@@ -58,19 +59,46 @@ void hunger_update(){
 }
 
 void water_flow_update(){
-  for (int z = 0 ; z < CHUNK_HEIGHT ; z++){
-    for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
-      int x = index % CHUNK_WIDTH;
-      int y = index / CHUNK_LENGTH;
-      if (x == 0 || x == CHUNK_WIDTH-1 || y == 0 || y == CHUNK_LENGTH-1){
+
+}
+
+void fire_update(){
+  int start_index = (1 * CHUNK_WIDTH) + 1;
+  int end_index = ((CHUNK_LENGTH-1) * CHUNK_WIDTH) + (CHUNK_WIDTH - 1);
+  int average = 0;
+  for (int reps = 0 ; reps < 2 ; reps++){
+  for (int index = start_index ; index < end_index ; index++){
+    int x = index % CHUNK_WIDTH;
+    int y = index / CHUNK_LENGTH;
+    for (int z = 1 ; z < CHUNK_HEIGHT-1 ; z++){
+      average = 0;
+      average += get_block(x, y, z-1).temperature;
+      average += get_block(x, y, z+1).temperature;
+      average += get_block(x, y-1, z).temperature;
+      average += get_block(x, y+1, z).temperature;
+      average += get_block(x-1, y, z).temperature;
+      average += get_block(x+1, y, z).temperature;
+      set_temperature(average / 6, x, y, z);
+      printf("%d\n", average / 6);
+
+      if (get_block(x, y, z).block.ignition == -1){
 	continue;
       }
-      if (get_block(x, y, z).block.solid){
+
+      if (get_block(x, y, z).block.id == FIRE){
 	continue;
       }
-      if (is_next_to_block(get_block_properties(WATER), x, y, z)){
-	set_block(get_block_properties(WATER), x, y, z);
+      
+      if (get_block(x, y, z).temperature > get_block(x, y, z).block.ignition){
+	world_data_t prev_data = get_block(x, y, z);
+	set_block(get_block_properties(FIRE), x, y, z);
+	set_changed_blocks(prev_data,
+			   get_block(x, y, z),
+			   x,
+			   y,
+			   z);
       }
     }
+  }
   }
 }

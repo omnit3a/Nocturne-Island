@@ -82,6 +82,7 @@ void fill_map();
 void place_foliage(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]);
 void place_items(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]);
 void generate_hills(int x_off, int y_off);
+
 int compare_blocks(block_data_t a, block_data_t b);
 int is_block_mineable(block_data_t block);
 int is_next_to_block(block_data_t block, int x_pos, int y_pos, int z_pos);
