@@ -59,9 +59,6 @@ void set_block(block_data_t block, int x_pos, int y_pos, int z_pos){
   chunk_map[chunk_index].id = block.id;
   chunk_map[chunk_index].height_map = height;
   chunk_map[chunk_index].temperature = air_temperature;
-  if (block.id == FIRE){
-    chunk_map[chunk_index].temperature = get_block_properties(FIRE).ignition;
-  }
 }
 
 world_data_t get_block(int x_pos, int y_pos, int z_pos){
@@ -319,7 +316,13 @@ void generate_hills(int x_off, int y_off){
       }
 
       if (regen && SDL_GetTicks() - get_changed_blocks(change).tick_changed >= regen_tick){
+	world_data_t prev_data = get_changed_blocks(change).data;
 	set_block(regen_block, x, y, change_z);
+	set_changed_blocks(prev_data,
+			   get_block(x, y, change_z),
+			   x,
+			   y,
+			   change_z);
 	continue;
       }
 	
