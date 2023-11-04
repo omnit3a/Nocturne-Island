@@ -294,7 +294,7 @@
       "solid": true,
       "transparent": true,
       "texture": 21,
-      "dropped_item": 17,
+      "dropped_item": 19,
       "count": 1,
       "block_type": 5,
       "output_id": 18,

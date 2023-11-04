@@ -184,8 +184,8 @@ void place_items(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH
       continue;
     }
 
-    if (noise >= 2 &&
-	height_map[x][y] >= CLIFF_HEIGHT-1){
+    if (noise >= 1.6 &&
+	height_map[x][y] >= CLIFF_HEIGHT-2){
       set_block(get_block_properties(ROCKS), x, y, height_map[x][y]+1);
     }
     if (noise > 1.6 &&
