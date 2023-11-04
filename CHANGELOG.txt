@@ -158,3 +158,4 @@ Alpha Version 0.4.2:
   Rocks now randomly spawn near hills
   Branches now randomly spawn near trees
   Block definitions are now loaded from blocks.json
+  Addded TTF Font support

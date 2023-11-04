@@ -25,30 +25,38 @@ void set_active_menu(int menu){
 
 void draw_game_menu(render_obj_t * object){
   block_data_t block;
-  char format[20];
+  char format[40] = "";
+  char text[20];
   init_ui();
   block = get_current_item()->item;
-  draw_string(CURRENT_VERSION_MSG, object);
+  strcpy(format, CURRENT_VERSION_MSG);
+  draw_string(format, object);
   newline_ui();
 
-  draw_string(CURRENT_BLOCK_MSG, object);
+  strcpy(format, "");
+  strcat(format, CURRENT_BLOCK_MSG);
   if (block.id == 0){
-    draw_string("Nothing", object);
+    strcat(format, "Nothing");
   } else {
-    draw_string(block.name, object);
+    strcat(format, block.name);
   }
+  draw_string(format, object);
 
   newline_ui();
 
-  draw_string("Food: ", object);
-  sprintf(format, "%d", get_player_hunger());
+  strcpy(format, "");
+  strcat(format, "Food: ");
+  sprintf(text, "%d", get_player_hunger());
+  strcat(format, text);
   draw_string(format, object);
   
   newline_ui();
 
   if (get_block_progress() > 0){
-    draw_string("Block HP: ", object);
-    sprintf(format, "%d", get_block_progress());
+    strcpy(format, "");
+    strcat(format, "Block HP: ");
+    sprintf(text, "%d", get_block_progress());
+    strcat(format, text);
     draw_string(format, object);
     
     newline_ui();
@@ -81,19 +89,22 @@ void draw_inventory_menu(render_obj_t * object){
   init_ui();
   block_data_t block;
   char slot_label[4] = " - ";
+  char format[40];
   char amount[20];
   for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
     block = get_inventory_item(slot)->item;
     slot_label[1] = slot + 97;
-    draw_string(slot_label, object);
+    strcpy(format, slot_label);
     if (block.id == 0){
-      draw_string("Nothing", object);
+      strcat(format, "Nothing");
+      draw_string(format, object);
       newline_ui();
       continue;
     }
-    draw_string(block.name, object);
+    strcat(format, block.name);
     sprintf(amount, ": %d", get_inventory_item(slot)->amount);
-    draw_string(amount, object);
+    strcat(format, amount);
+    draw_string(format, object);
     
     newline_ui();
   }
@@ -142,11 +153,13 @@ void draw_crafting_menu(render_obj_t * object){
   get_craftable_recipes(recipe_list);
   int line_number = 1;
   char slot_label[4] = " - ";
-
+  char format[40];
+  
   while (line_number <= CRAFTABLE_LIST_AMOUNT){
     slot_label[1] = line_number+96;
-    draw_string(slot_label, object);
-    draw_string(recipe_list[line_number].name, object);
+    strcpy(format, slot_label);
+    strcat(format, recipe_list[line_number].name);
+    draw_string(format, object);
     newline_ui();
     line_number++;
   }

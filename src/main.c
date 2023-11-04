@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <drawer.h>
@@ -39,6 +40,8 @@ int main(int argc, char ** argv){
     return -1;
   }
 
+  TTF_Init();
+  
   SDL_RenderSetLogicalSize(renderer, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
   SDL_UpdateWindowSurface(window);
 
@@ -97,6 +100,7 @@ int main(int argc, char ** argv){
   }
 
   free_changed_blocks();
+  TTF_Quit();
   SDL_Quit();
   
   return 0;
