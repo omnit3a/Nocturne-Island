@@ -161,3 +161,7 @@ Alpha Version 0.4.2:
   Addded TTF Font support
   World generation tweaks, hills arent as high
   Fixed bug where picking berries would give player a berry bush
+
+Alpha Version 0.4.3:
+  Added temperature
+  Improved terrain generator

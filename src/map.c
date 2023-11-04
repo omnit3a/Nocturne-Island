@@ -187,7 +187,7 @@ void place_foliage(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENG
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
-    float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
+    float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, 1, 1,get_map_seed()) + 1;
 
     if (get_block(x, y, height_map[x][y]).block.id != GRASS){
       continue;
@@ -207,14 +207,14 @@ void place_items(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
-    float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
+    float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, 1, 1, get_map_seed()) + 1;
 
     if (get_block(x, y, height_map[x][y]).block.id != GRASS ||
 	get_block(x, y, height_map[x][y]+1).block.id != EMPTY){
       continue;
     }
 
-    if (noise >= 1.6 &&
+    if (noise >= 1.7 &&
 	height_map[x][y] >= CLIFF_HEIGHT-2){
       set_block(get_block_properties(ROCKS), x, y, height_map[x][y]+1);
     }
@@ -229,20 +229,22 @@ void generate_hills(int x_off, int y_off){
   fill_map();
   /* Step 1 */
   char height_map[CHUNK_WIDTH][CHUNK_LENGTH];
-  for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
+  int start_index = 0;
+  int end_index = CHUNK_WIDTH * CHUNK_LENGTH;
+  for (int index = start_index ; index < end_index ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
     height_map[x][y] = 0;
   }
 
   /* height map generation with averaging */
-  for (int index = 0 ; index < CHUNK_WIDTH*CHUNK_LENGTH ; index++){
+  for (int index = start_index ; index < end_index ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
-    height_map[x][y] += pnoise2d((x+x_off)-1, (y+y_off), 1, 10, get_map_seed()) * 4;
-    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)-1, 1, 10, get_map_seed()) * 4;
-    height_map[x][y] += pnoise2d((x+x_off)+1, (y+y_off), 1, 10, get_map_seed()) * 4;
-    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)+1, 1, 10, get_map_seed()) * 4;
+    height_map[x][y] += pnoise2d((x+x_off)-1, (y+y_off), 1, 10, 0.5, 3.5, get_map_seed());
+    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)-1, 1, 10, 0.5, 3.5, get_map_seed());
+    height_map[x][y] += pnoise2d((x+x_off)+1, (y+y_off), 1, 10, 0.5, 3.5, get_map_seed());
+    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)+1, 1, 10, 0.5, 3.5, get_map_seed());
     height_map[x][y] /= 4;
     if (height_map[x][y] < 1){
       height_map[x][y] = 1;
@@ -250,12 +252,12 @@ void generate_hills(int x_off, int y_off){
   }
 
   /* Water placement */
-  for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
+  for (int index = start_index ; index < end_index ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
     height_map[x][y] += 1;
     if (height_map[x][y] == 2){
-      float noise = pnoise2d(x+x_off, y+y_off, 1, 10, get_map_seed() * 5);
+      float noise = pnoise2d(x+x_off, y+y_off, 1, 10, 0.5, 2, get_map_seed() * 5);
       if (noise < -1.75){
 	height_map[x][y] = 1;
         set_block(get_block_properties(WATER), x, y, 2);
@@ -264,7 +266,7 @@ void generate_hills(int x_off, int y_off){
   }
 
   /* Height map usage */
-  for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
+  for (int index = start_index ; index < end_index ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
     if (height_map[x][y] == 1){
@@ -288,9 +290,9 @@ void generate_hills(int x_off, int y_off){
   
   /* changed block placement */
   for (int change = 0 ; change < changed_blocks_index ; change++){
-    for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
-      int x = index % CHUNK_WIDTH;
-      int y = index / CHUNK_LENGTH;
+    for (int index = start_index ; index < end_index ; index++){
+      int x = (index % CHUNK_WIDTH) - 1;
+      int y = (index / CHUNK_LENGTH) - 1;
       
       int change_x = get_changed_blocks(change).x;
       int change_y = get_changed_blocks(change).y;
