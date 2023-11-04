@@ -63,10 +63,9 @@ void water_flow_update(){
 }
 
 void fire_update(){
-  int start_index = (1 * CHUNK_WIDTH) + 1;
+  /*  int start_index = (1 * CHUNK_WIDTH) + 1;
   int end_index = ((CHUNK_LENGTH-1) * CHUNK_WIDTH) + (CHUNK_WIDTH - 1);
   int average = 0;
-  for (int reps = 0 ; reps < 2 ; reps++){
   for (int index = start_index ; index < end_index ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
@@ -79,7 +78,6 @@ void fire_update(){
       average += get_block(x-1, y, z).temperature;
       average += get_block(x+1, y, z).temperature;
       set_temperature(average / 6, x, y, z);
-      printf("%d\n", average / 6);
 
       if (get_block(x, y, z).block.ignition == -1){
 	continue;
@@ -100,5 +98,5 @@ void fire_update(){
       }
     }
   }
-  }
+  */
 }
