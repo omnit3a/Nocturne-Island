@@ -16,7 +16,7 @@
       "hardness": -1,
       "id": 0
     },
-      
+
     {
       "name": "Stone",
       "hp": 4,
@@ -270,6 +270,7 @@
       "hardness": 0,
       "id": 15
     },
+      
     {
       "name": "Branch",
       "hp": 1,
@@ -286,6 +287,7 @@
       "hardness": 0,
       "id": 16
     },
+      
     {
       "name": "Berry bush",
       "hp": 2,
@@ -302,6 +304,7 @@
       "hardness": 0,
       "id": 17
     },
+      
     {
       "name": "Bush",
       "hp": 2,
@@ -318,6 +321,7 @@
       "hardness": 0,
       "id": 18
     },
+      
     {
       "name": "Red berries",
       "hp": 1,
@@ -334,6 +338,7 @@
       "hardness": 0,
       "id": 19
     },
+      
     {
       "name": "Sharpened rock",
       "hp": 1,
@@ -350,6 +355,7 @@
       "hardness": 1,
       "id": 20
     },
+      
     {
       "name": "Sharpened stick",
       "hp": 1,
