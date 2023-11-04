@@ -131,8 +131,12 @@ void load_block_properties(char * path){
 
   memset(&data_map, '\0', sizeof(data_map));
   int result = json_read_object(block_def_copy, json_subobject_list, NULL);
-  
-  printf("Successfully loaded block defs\n");
+
+  if (result){
+    printf("Successfully loaded block defs\n");
+  } else {
+    fprintf(stderr, "Failed to load block defs\n");
+  }
   
   free(block_def_copy);
   fclose(def_file);
