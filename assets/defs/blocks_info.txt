@@ -64,5 +64,9 @@ ignition (any int):
   - the temperature (in kelvin) at which this block
     ignites. -1 means it does not ignite
 
+extinguish_id (any int >= 0 && <= 255):
+  - the id of the block that appears after this block
+    is extinguished
+
 id (any signed int):
   - the id used to represent this block definition
