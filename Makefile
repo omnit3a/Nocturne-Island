@@ -1,13 +1,11 @@
 CC=gcc
-CFLAGS=-Wall -I$(HDRDIR) -lm -lSDL2 -lSDL2_ttf
+CFLAGS=-Wall -I$(INCLUDE) -lm -lSDL2 -lSDL2_ttf
 
-HDRDIR=include/
+INCLUDE=include/
 
-SRCDIR=src
-SRCFILE=*.c
+SRC := $(shell find . -name *.c)
 
-OUTDIR=.
-OUTFILE=nocturne-island
+OUT=nocturne-island
 
 PACKAGEDIR=bin/
 PACKAGENAME=nocturne.zip
@@ -15,7 +13,7 @@ ASSETDIR=assets/
 
 all:
 	clear
-	$(CC) -o $(OUTDIR)/$(OUTFILE) $(SRCDIR)/$(SRCFILE) $(CFLAGS)
+	$(CC) -o $(OUT) $(SRC) $(CFLAGS)
 
 package: all
 	cp $(OUTFILE) $(PACKAGEDIR)
