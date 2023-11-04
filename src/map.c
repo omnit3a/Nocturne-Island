@@ -11,8 +11,9 @@
 #include <map_defs.h>
 #include <string.h>
 #include <perlin.h>
+#include <mjson.h>
 
-block_data_t data_map[BLOCKS_AMOUNT];
+data_map_t data_map;
 world_data_t chunk_map[CHUNK_WIDTH * CHUNK_LENGTH * CHUNK_HEIGHT];
 
 int changed_blocks_size = 1;
@@ -62,11 +63,6 @@ world_data_t get_block(int x_pos, int y_pos, int z_pos){
   return chunk_map[chunk_index];
 }
 
-void set_block_state(int state, int x_pos, int y_pos, int z_pos){
-  int chunk_index = get_chunk_index(x_pos, y_pos, z_pos);
-  chunk_map[chunk_index].current_state = state;
-}
-
 int is_block_shaded(int x_pos, int y_pos, int z_pos){
   if (get_block(x_pos, y_pos, z_pos+1).block.solid){
     return 0;
@@ -79,55 +75,9 @@ int is_block_shaded(int x_pos, int y_pos, int z_pos){
   return 0;
 }
 
-void translate_block_def(char * def){
-  int values[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  char * token;
-  char * delim = " ";
-  int field = 0;
-  char name[BLOCK_NAME_LENGTH];
-  
-  token = strtok(def, delim);
-  
-  while (token != NULL){
-    if (field == 0){
-      strcpy(name, token);
-    } else {
-      values[field-1] = atoi(token);
-    }
-    field++;
-    token = strtok(NULL, delim);
-  }
-
-  int line = values[15];
-
-  for (int pos = 0 ; pos < strlen(name) ; pos++){
-    if (name[pos] == '_'){
-      name[pos] = ' ';
-    }
-  }
-  
-  strcpy(data_map[line].name, name);
-  data_map[line].hp = values[0];
-  data_map[line].solid = values[1];
-  data_map[line].transparent = values[2];
-  for (int state = 0 ; state < BLOCK_STATES ; state++){
-    data_map[line].block[state] = values[3+state];
-  }
-  data_map[line].dropped_item = values[7];
-  data_map[line].count = values[8];
-  data_map[line].block_type = values[9];
-  data_map[line].output_id = values[10];
-  data_map[line].regen = values[11];
-  data_map[line].regen_id = values[12];
-  data_map[line].regen_ticks = values[13];
-  data_map[line].hardness = values[14];
-  data_map[line].id = values[15];
-}
-
 void load_block_properties(char * path){
   int block_def_size = 1024;
   char * block_def_copy = malloc(block_def_size);
-  char ** block_def_lines = malloc(256 * BLOCKS_AMOUNT);
   FILE * def_file;
   int current_char = 0;
   
@@ -153,35 +103,43 @@ void load_block_properties(char * path){
     }
   } while (true);
 
-  char * def_line;
-  char delim[2] = "\n";
-  int current_line = 0;
+  const struct json_attr_t json_subobjects[] = {
+    {"name", t_string, STRUCTOBJECT(block_data_t, name), .len = BLOCK_NAME_LENGTH},
+    {"hp", t_integer, STRUCTOBJECT(block_data_t, hp)},
+    {"solid", t_boolean, STRUCTOBJECT(block_data_t, solid)},
+    {"transparent", t_boolean, STRUCTOBJECT(block_data_t, transparent)},
+    {"texture", t_integer, STRUCTOBJECT(block_data_t, texture)},
+    {"dropped_item", t_integer, STRUCTOBJECT(block_data_t, dropped_item)},
+    {"count", t_integer, STRUCTOBJECT(block_data_t, count)},
+    {"block_type", t_integer, STRUCTOBJECT(block_data_t, block_type)},
+    {"output_id", t_integer, STRUCTOBJECT(block_data_t, output_id)},
+    {"regen", t_boolean, STRUCTOBJECT(block_data_t, regen)},
+    {"regen_id", t_integer, STRUCTOBJECT(block_data_t, regen_id)},
+    {"regen_ticks", t_integer, STRUCTOBJECT(block_data_t, regen_ticks)},
+    {"hardness", t_integer, STRUCTOBJECT(block_data_t, hardness)},
+    {"id", t_integer, STRUCTOBJECT(block_data_t, id)},
+    {NULL},
+  };
 
-  // tokenize the data
-  def_line = strtok(block_def_copy, delim);
+  const struct json_attr_t json_subobject_list[] = {
+    {"class", t_check,.dflt.check = "BLOCKS"},
+    {"blocks", t_array, STRUCTARRAY(data_map.data,
+				  json_subobjects,
+				  &data_map.size)},
+    {NULL},
+  };
 
-  while (def_line != NULL){
-    block_def_lines[current_line++] = def_line;
-    def_line = strtok(NULL, delim);
-  }
-
-  block_def_lines[current_line] = NULL;
-
-  current_line = 0;
-  while (block_def_lines[current_line] != NULL){
-    translate_block_def(block_def_lines[current_line]);
-    current_line++;
-  }
+  memset(&data_map, '\0', sizeof(data_map));
+  json_read_object(block_def_copy, json_subobject_list, NULL);
 
   printf("Successfully loaded block defs\n");
   
-  free(block_def_lines);
   free(block_def_copy);
   fclose(def_file);
 }
 
 block_data_t get_block_properties(int block){
-  return data_map[block];
+  return data_map.data[block];
 }
 
 /* Initialize every tile in map to empty block */
@@ -195,25 +153,44 @@ void fill_map(){
   }
 }
 
-void place_bushes(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
+void place_foliage(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
     float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
-    if (noise >= 2 && get_block(x, y, height_map[x][y]).block.id == GRASS){
+
+    if (get_block(x, y, height_map[x][y]).block.id != GRASS){
+      continue;
+    }
+
+    if (noise > 1.8 && noise < 2){
+      set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
+      set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
+    }
+    if (noise >= 2){
       set_block(get_block_properties(RED_BERRY_BUSH), x, y, height_map[x][y]+1);
     }
   }
 }
 
-void place_trees(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
+void place_items(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]){
   for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
     float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
-    if (noise > 1.8 && noise < 2 && get_block(x, y, height_map[x][y]).block.id == GRASS){
-      set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
-      set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
+
+    if (get_block(x, y, height_map[x][y]).block.id != GRASS ||
+	get_block(x, y, height_map[x][y]+1).block.id != EMPTY){
+      continue;
+    }
+
+    if (noise >= 1.6 &&
+	height_map[x][y] >= CLIFF_HEIGHT-2){
+      set_block(get_block_properties(ROCKS), x, y, height_map[x][y]+1);
+    }
+    if (noise > 1.6 &&
+	is_next_to_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1)){
+      set_block(get_block_properties(BRANCH), x, y, height_map[x][y]+1);
     }
   }
 }
@@ -232,10 +209,10 @@ void generate_hills(int x_off, int y_off){
   for (int index = 0 ; index < CHUNK_WIDTH*CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
-    height_map[x][y] += pnoise2d((x+x_off)-1, (y+y_off), 1, 10, get_map_seed()) * 5;
-    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)-1, 1, 10, get_map_seed()) * 5;
-    height_map[x][y] += pnoise2d((x+x_off)+1, (y+y_off), 1, 10, get_map_seed()) * 5;
-    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)+1, 1, 10, get_map_seed()) * 5;
+    height_map[x][y] += pnoise2d((x+x_off)-1, (y+y_off), 1, 10, get_map_seed()) * 4;
+    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)-1, 1, 10, get_map_seed()) * 4;
+    height_map[x][y] += pnoise2d((x+x_off)+1, (y+y_off), 1, 10, get_map_seed()) * 4;
+    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)+1, 1, 10, get_map_seed()) * 4;
     height_map[x][y] /= 4;
     if (height_map[x][y] < 1){
       height_map[x][y] = 1;
@@ -266,7 +243,6 @@ void generate_hills(int x_off, int y_off){
       continue;
     }
     set_block(get_block_properties(GRASS), x, y, height_map[x][y]);
-    set_block_state(rand() % 3, x, y, height_map[x][y]);
     for (int z = height_map[x][y]-1 ; z > 0 ; z--){
       if (height_map[x][y] >= CLIFF_HEIGHT){
 	set_block(get_block_properties(STONE), x, y, z);
@@ -277,9 +253,9 @@ void generate_hills(int x_off, int y_off){
     set_block(get_block_properties(NOKIUM), x, y, 0);
   }
 
-  place_trees(x_off, y_off, height_map);
-  place_bushes(x_off, y_off, height_map);
-
+  place_foliage(x_off, y_off, height_map);
+  place_items(x_off, y_off, height_map);
+  
   /* changed block placement */
   for (int change = 0 ; change < changed_blocks_index ; change++){
     for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
@@ -313,13 +289,11 @@ int compare_blocks(block_data_t a, block_data_t b){
   equality += a.hp == b.hp;
   equality += a.solid == b.solid;
   equality += a.transparent == b.transparent;
-  for (int state = 0 ; state < BLOCK_STATES ; state++){
-    equality += a.block[state] == b.block[state];
-  } 
+  equality += a.texture == b.texture;
   equality += a.dropped_item == b.dropped_item;
   equality += a.count == b.count;
   equality += a.block_type == b.block_type;
-  return equality == 10;
+  return equality == 7;
 }
 
 int is_block_mineable(block_data_t block){
@@ -327,9 +301,6 @@ int is_block_mineable(block_data_t block){
 }
 
 int is_next_to_block(block_data_t block, int x_pos, int y_pos, int z_pos){
-  if (compare_blocks(get_block(x_pos, y_pos, z_pos).block, block)){
-    return 1;
-  }
   if (compare_blocks(get_block(x_pos-1, y_pos, z_pos).block, block)){
     return 1;
   }

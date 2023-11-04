@@ -45,8 +45,7 @@ void draw_view(render_obj_t * object){
     }
     
     do {
-      int state = get_block(x, y, z).current_state;
-      int block = get_block(x, y, z).block.block[state];
+      int block = get_block(x, y, z).block.texture;
       
       if (get_block(x, y, z).id > 0){
 	object->clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
