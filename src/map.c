@@ -179,7 +179,8 @@ void place_items(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH
     int y = index / CHUNK_LENGTH;
     float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, get_map_seed()) + 1;
 
-    if (get_block(x, y, height_map[x][y]).block.id != GRASS){
+    if (get_block(x, y, height_map[x][y]).block.id != GRASS ||
+	get_block(x, y, height_map[x][y]+1).block.id != EMPTY){
       continue;
     }
 
@@ -208,10 +209,10 @@ void generate_hills(int x_off, int y_off){
   for (int index = 0 ; index < CHUNK_WIDTH*CHUNK_LENGTH ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
-    height_map[x][y] += pnoise2d((x+x_off)-1, (y+y_off), 1, 10, get_map_seed()) * 5;
-    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)-1, 1, 10, get_map_seed()) * 5;
-    height_map[x][y] += pnoise2d((x+x_off)+1, (y+y_off), 1, 10, get_map_seed()) * 5;
-    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)+1, 1, 10, get_map_seed()) * 5;
+    height_map[x][y] += pnoise2d((x+x_off)-1, (y+y_off), 1, 10, get_map_seed()) * 4;
+    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)-1, 1, 10, get_map_seed()) * 4;
+    height_map[x][y] += pnoise2d((x+x_off)+1, (y+y_off), 1, 10, get_map_seed()) * 4;
+    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)+1, 1, 10, get_map_seed()) * 4;
     height_map[x][y] /= 4;
     if (height_map[x][y] < 1){
       height_map[x][y] = 1;

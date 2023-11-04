@@ -159,3 +159,4 @@ Alpha Version 0.4.2:
   Branches now randomly spawn near trees
   Block definitions are now loaded from blocks.json
   Addded TTF Font support
+  World generation tweaks, hills arent as high
