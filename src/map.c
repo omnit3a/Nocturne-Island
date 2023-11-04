@@ -12,9 +12,11 @@
 #include <string.h>
 #include <perlin.h>
 #include <mjson.h>
+#include <ticks.h>
 
 data_map_t data_map;
 world_data_t chunk_map[CHUNK_WIDTH * CHUNK_LENGTH * CHUNK_HEIGHT];
+int air_temperature;
 
 int changed_blocks_size = 1;
 int changed_blocks_index = 0;
@@ -56,6 +58,10 @@ void set_block(block_data_t block, int x_pos, int y_pos, int z_pos){
   chunk_map[chunk_index].hp = block.hp;
   chunk_map[chunk_index].id = block.id;
   chunk_map[chunk_index].height_map = height;
+  chunk_map[chunk_index].temperature = air_temperature;
+  if (block.id == FIRE){
+    chunk_map[chunk_index].temperature = get_block_properties(FIRE).ignition;
+  }
 }
 
 world_data_t get_block(int x_pos, int y_pos, int z_pos){
@@ -114,9 +120,10 @@ void load_block_properties(char * path){
     {"block_type", t_integer, STRUCTOBJECT(block_data_t, block_type)},
     {"output_id", t_integer, STRUCTOBJECT(block_data_t, output_id)},
     {"regen", t_boolean, STRUCTOBJECT(block_data_t, regen)},
-    {"regen_id", t_integer, STRUCTOBJECT(block_data_t, regen_id)},
     {"regen_ticks", t_integer, STRUCTOBJECT(block_data_t, regen_ticks)},
     {"hardness", t_integer, STRUCTOBJECT(block_data_t, hardness)},
+    {"ignition", t_integer, STRUCTOBJECT(block_data_t, ignition)},
+    {"extinguish_id", t_integer, STRUCTOBJECT(block_data_t, extinguish_id)},
     {"id", t_integer, STRUCTOBJECT(block_data_t, id)},
     {NULL},
   };
@@ -140,6 +147,32 @@ void load_block_properties(char * path){
 
 block_data_t get_block_properties(int block){
   return data_map.data[block];
+}
+
+int get_air_temperature(){
+  return air_temperature;
+}
+
+void set_air_temperature(int value){
+  air_temperature = value;
+}
+
+void set_temperature(int temperature, int x, int y, int z){
+  int chunk_index = get_chunk_index(x, y, z);
+  chunk_map[chunk_index].temperature = temperature;
+}
+
+void init_map(int seed){
+  set_map_seed(seed);
+  srand(seed);
+  set_air_temperature(BASE_TEMPERATURE + rand() % 20);
+  for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
+    int x = index % CHUNK_WIDTH;
+    int y = index / CHUNK_LENGTH;
+    for (int z = 0 ; z < CHUNK_HEIGHT ; z++){
+      set_temperature(get_air_temperature(), x, y, z);
+    }
+  }
 }
 
 /* Initialize every tile in map to empty block */
@@ -267,7 +300,16 @@ void generate_hills(int x_off, int y_off){
       int change_z = get_changed_blocks(change).z;
       int regen = get_changed_blocks(change).data.block.regen;
       int regen_tick = get_changed_blocks(change).data.block.regen_ticks;
-      block_data_t regen_block = get_block_properties(get_changed_blocks(change).data.block.regen_id);
+      block_data_t regen_block = get_changed_blocks(change).prev_data.block;
+      
+      switch(get_changed_blocks(change).data.block.id){
+        case FIRE:
+	  regen_block = get_block_properties(get_changed_blocks(change).prev_data.block.extinguish_id);
+	  break;
+        case STEAM:
+	  regen_block = get_block_properties(WATER);
+	  break;
+      }
       
       int x_pos = x + x_off;
       int y_pos = y + y_off;
@@ -275,10 +317,12 @@ void generate_hills(int x_off, int y_off){
       if (x_pos != change_x || y_pos != change_y){
 	continue;
       }
+
       if (regen && SDL_GetTicks() - get_changed_blocks(change).tick_changed >= regen_tick){
 	set_block(regen_block, x, y, change_z);
 	continue;
       }
+	
       set_block(get_changed_blocks(change).data.block, x, y, change_z);
     }
   }

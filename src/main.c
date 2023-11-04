@@ -48,13 +48,14 @@ int main(int argc, char ** argv){
   load_block_properties(BLOCK_DATA_PATH);
   load_crafting_recipes(CRAFTING_DATA_PATH);
 
-  set_map_seed(time(0));
+  init_map(time(0));
   allocate_changed_blocks();
   generate_hills(SPAWN_X, SPAWN_Y);  // generate a hilly world
 
   setup_camera(renderer, window);
   init_player_entity();
   init_inventory();
+  add_inventory_item(get_block_properties(FIRE), 99);
   
   ui_menu_t start_menu;
   get_menu_info(&start_menu, GAME_UI_ID);
