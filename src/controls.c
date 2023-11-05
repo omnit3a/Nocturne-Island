@@ -72,3 +72,13 @@ SDL_Keycode translate_keypress(SDL_Event event, int menu_id){
   return SDLK_0;
 }
 
+char * get_keycode_name(SDL_Keycode keycode, int menu_id){
+  for (int id = 0 ; id < control_defs.size ; id++){
+    SDL_Keycode search_code = SDL_GetKeyFromName(control_defs.inputs[id].keycode_result);
+    if (search_code == keycode &&
+	(menu_id == control_defs.inputs[id].menu_id || control_defs.inputs[id].any_menu)){
+      return control_defs.inputs[id].keycode_name;
+    }
+  }
+  return "";
+}

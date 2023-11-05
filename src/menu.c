@@ -113,7 +113,7 @@ int handle_game_menu(SDL_Event event){
 void draw_inventory_menu(render_obj_t * object){
   init_ui();
   block_data_t block;
-  char slot_label[4] = " - ";
+  char slot_label[] = " - ";
   char format[40];
   char amount[20];
   SDL_Color select_color;
@@ -143,13 +143,13 @@ void draw_inventory_menu(render_obj_t * object){
 }
 
 int handle_inventory_menu(SDL_Event event){
-  int keycode = translate_keypress(event, active_menu)-97;
+  int keycode = event.key.keysym.sym-97;
   if (keycode >= 0 && keycode < INVENTORY_SIZE){
     set_current_item(keycode);
     return HANDLE_REGULAR;
   }
 
-  keycode = translate_keypress(event, active_menu);
+  keycode = event.key.keysym.sym;
   
   switch(keycode){
     case SDLK_ESCAPE:
@@ -160,12 +160,18 @@ int handle_inventory_menu(SDL_Event event){
 }
 
 void draw_pause_menu(render_obj_t * object){
+  char format[40];
+  strcpy(format, "");
   init_ui();
   draw_string(MENU_NAME_MSG, text_white, object);
   newline_ui();
-  draw_string(MENU_EXIT_MSG, text_white, object);
+  
+  sprintf(format, MENU_EXIT_MSG, get_keycode_name(SDLK_ESCAPE, PAUSE_UI_ID));
+  draw_string(format, text_white, object);
   newline_ui();
-  draw_string(MENU_CLOSE_MSG, text_white, object);
+
+  sprintf(format, MENU_CLOSE_MSG, get_keycode_name(SDLK_q, PAUSE_UI_ID));
+  draw_string(format, text_white, object);
   newline_ui();
 }
 
@@ -203,7 +209,7 @@ void draw_crafting_menu(render_obj_t * object){
 int handle_crafting_menu(SDL_Event event){
   get_craftable_recipes(recipe_list);
   
-  int keycode = translate_keypress(event, active_menu)-96;
+  int keycode = event.key.keysym.sym-96;
   if (keycode >= 0 && keycode < CRAFTABLE_LIST_AMOUNT){
     if (craft_item(recipe_list, keycode)){
       return HANDLE_CLOSE;
@@ -212,7 +218,7 @@ int handle_crafting_menu(SDL_Event event){
     }
   }
 
-  keycode = translate_keypress(event, active_menu);
+  keycode = event.key.keysym.sym;
   switch(keycode){
     case SDLK_ESCAPE:
       active_menu = GAME_UI_ID;
@@ -235,10 +241,12 @@ void draw_death_menu(render_obj_t * object){
   draw_string(format, text_white, object);
   newline_ui();
 
-  draw_string(NEW_GAME_MSG, text_white, object);
+  sprintf(format, NEW_GAME_MSG, get_keycode_name(SDLK_r, DEATH_UI_ID));
+  draw_string(format, text_white, object);
   newline_ui();
 
-  draw_string(END_GAME_MSG, text_white, object);
+  sprintf(format, END_GAME_MSG, get_keycode_name(SDLK_q, DEATH_UI_ID));
+  draw_string(format, text_white, object);
   newline_ui();
 }
 

@@ -184,3 +184,4 @@ Alpha Version 0.4.4:
   Map generation optimizations
   Changed chunk size back to 16x16
   Change font used by game
+  Pause and Death menu now display correct keybindings

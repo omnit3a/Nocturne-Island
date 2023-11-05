@@ -22,3 +22,4 @@ typedef struct input_list_s {
 
 void load_control_scheme(char * path);
 SDL_Keycode translate_keypress(SDL_Event event, int menu_id);
+char * get_keycode_name(SDL_Keycode keycode, int menu_id);
