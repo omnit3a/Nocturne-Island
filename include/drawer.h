@@ -9,6 +9,7 @@
 #define ATLAS_PATH "assets/3d-atlas.bmp"
 #define LEVEE_BODY_PATH "assets/levee.bmp"
 #define LEVEE_HEAD_PATH "assets/levee-head.bmp"
+#define LEVEE_SWIMMING_PATH "assets/levee-swim.bmp"
 #define LEVEE_WIDTH 32
 #define LEVEE_HEIGHT 40
 #define LEVEE_ATLAS_WIDTH LEVEE_WIDTH * 4

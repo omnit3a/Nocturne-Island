@@ -43,7 +43,7 @@ void draw_view(render_obj_t * object){
     } else {
       draw_indoors = 0;
     }
-    
+
     do {
       int block = get_block(x, y, z).block.texture;
       
@@ -61,7 +61,7 @@ void draw_view(render_obj_t * object){
       }
       
       if (is_block_shaded(x, y, z)){
-	SDL_SetTextureColorMod(object->texture, 64, 64, 64);
+	SDL_SetTextureColorMod(object->texture, 16+(z * 15), 16+(z * 15), 16+(z * 15));
       } else {
 	SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
       }
@@ -86,7 +86,11 @@ void draw_player(render_obj_t * object){
   for (int stage = 0 ; stage < 2 ; stage++){
     object->surface = SDL_LoadBMP(LEVEE_HEAD_PATH);
     if (stage == 0){
-      object->surface = SDL_LoadBMP(LEVEE_BODY_PATH);
+      if (get_block(pos.x, pos.y, pos.z).block.id == WATER){
+	object->surface = SDL_LoadBMP(LEVEE_SWIMMING_PATH);	  
+      } else {
+	object->surface = SDL_LoadBMP(LEVEE_BODY_PATH);
+      }
     }
     
     object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
@@ -124,7 +128,7 @@ void draw_player(render_obj_t * object){
     }
     
     if (is_block_shaded(pos.x, pos.y, pos.z-1)){
-      SDL_SetTextureColorMod(object->texture, 16, 16, 16);
+      SDL_SetTextureColorMod(object->texture, 16+(pos.z * 15), 16+(pos.z * 15), 16+(pos.z * 15));
     } else {
       SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);                   
     }

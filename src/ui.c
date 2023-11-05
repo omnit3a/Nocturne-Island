@@ -28,6 +28,7 @@ ui_menu_t game_menus[MENU_AMOUNT] = {
   {&handle_pause_menu, &draw_pause_menu, 0, PAUSE_UI_ID, GAME_UI_ID},
   {&handle_inventory_menu, &draw_inventory_menu, 0, INVENTORY_UI_ID, GAME_UI_ID},
   {&handle_crafting_menu, &draw_crafting_menu, 0, CRAFTING_UI_ID, GAME_UI_ID},
+  {&handle_death_menu, &draw_death_menu, 0, DEATH_UI_ID, GAME_UI_ID},
 };
 
 void init_ui(){
@@ -89,12 +90,15 @@ void draw_menu(render_obj_t * object){
   current_menu.draw(object);
 }
 
-void handle_menu(int * exit, SDL_Event event){
+void handle_menu(int * exit, int * death, SDL_Event event){
   ui_menu_t current_menu;
   get_menu_info(&current_menu, get_active_menu());
   int result = current_menu.update(event);
 
   switch(result){
+    case HANDLE_DEATH:
+      *death = 1;
+      break;
     case HANDLE_EXIT:
       *exit = 0;
       break;

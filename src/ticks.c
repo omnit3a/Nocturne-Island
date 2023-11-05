@@ -11,6 +11,7 @@ int current_tick = 0;
 int starting_tick = 0;
 int day_tick = 0;
 int is_day = 1;
+int days_survived = 0;
 int switch_day = 0;
 unsigned long hunger_tick = 0;
 
@@ -26,6 +27,7 @@ void tick_update(){
   if ((current_tick & (20 - 1)) == 0){
     handle_physics();
     water_flow_update();
+    fire_update();
   } else {
     reset_physics();
   }
@@ -42,6 +44,9 @@ void day_night_update(){
   if (SDL_GetTicks() - day_tick > SDL_TICKS_PER_DAY){
     is_day = !is_day;
     day_tick = SDL_GetTicks();
+    if (is_day){
+      days_survived++;
+    }
   }
 }
 
@@ -53,24 +58,21 @@ void hunger_update(){
   if (SDL_GetTicks() - hunger_tick >= HUNGER_TICKS){
     hunger_tick += HUNGER_TICKS;
     int hunger = get_player_hunger();
+    if (hunger == 0){
+      set_player_health(get_player_health() - 1);
+    }
     set_player_hunger(hunger - 1);
   }
 }
 
 void water_flow_update(){
-  for (int z = 0 ; z < CHUNK_HEIGHT ; z++){
-    for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH ; index++){
-      int x = index % CHUNK_WIDTH;
-      int y = index / CHUNK_LENGTH;
-      if (x == 0 || x == CHUNK_WIDTH-1 || y == 0 || y == CHUNK_LENGTH-1){
-	continue;
-      }
-      if (get_block(x, y, z).block.solid){
-	continue;
-      }
-      if (is_next_to_block(get_block_properties(WATER), x, y, z)){
-	set_block(get_block_properties(WATER), x, y, z);
-      }
-    }
-  }
+  /* TODO */
+}
+
+void fire_update(){
+  /* TODO */
+}
+
+int get_days_survived(){
+  return days_survived;
 }

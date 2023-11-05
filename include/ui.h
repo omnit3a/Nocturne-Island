@@ -27,7 +27,7 @@ void draw_string(char * string, render_obj_t * object);
 void handle_block_select(SDL_Event event);
 
 void draw_menu(render_obj_t * object);
-void handle_menu(int * exit, SDL_Event event);
+void handle_menu(int * exit, int * death, SDL_Event event);
 void get_menu_info(ui_menu_t * info, int id);
 void open_menu(ui_menu_t * menu);
 void close_menu(ui_menu_t * menu);

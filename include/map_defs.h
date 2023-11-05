@@ -32,3 +32,5 @@
 #define SHARP_ROCK 20
 #define SHARP_STICK 21
 #define STONE_AXE 22
+#define MOLTEN_ROCK 23
+#define STEAM 24

@@ -36,7 +36,7 @@ void draw_game_menu(render_obj_t * object){
   strcpy(format, "");
   strcat(format, CURRENT_BLOCK_MSG);
   if (block.id == 0){
-    strcat(format, "Nothing");
+    strcat(format, EMPTY_MSG);
   } else {
     strcat(format, block.name);
   }
@@ -45,7 +45,15 @@ void draw_game_menu(render_obj_t * object){
   newline_ui();
 
   strcpy(format, "");
-  strcat(format, "Food: ");
+  strcat(format, HP_MSG);
+  sprintf(text, "%d", get_player_health());
+  strcat(format, text);
+  draw_string(format, object);
+
+  newline_ui();
+  
+  strcpy(format, "");
+  strcat(format, HUNGER_MSG);
   sprintf(text, "%d", get_player_hunger());
   strcat(format, text);
   draw_string(format, object);
@@ -54,7 +62,7 @@ void draw_game_menu(render_obj_t * object){
 
   if (get_block_progress() > 0){
     strcpy(format, "");
-    strcat(format, "Block HP: ");
+    strcat(format, BLOCK_HP_MSG);
     sprintf(text, "%d", get_block_progress());
     strcat(format, text);
     draw_string(format, object);
@@ -82,6 +90,12 @@ int handle_game_menu(SDL_Event event){
       active_menu = PAUSE_UI_ID;
       return HANDLE_CLOSE;
   }
+
+  if (get_player_health() <= 0){
+    active_menu = DEATH_UI_ID;
+    return HANDLE_CLOSE;
+  }
+  
   return HANDLE_REGULAR;
 }
 
@@ -96,7 +110,7 @@ void draw_inventory_menu(render_obj_t * object){
     slot_label[1] = slot + 97;
     strcpy(format, slot_label);
     if (block.id == 0){
-      strcat(format, "Nothing");
+      strcat(format, EMPTY_MSG);
       draw_string(format, object);
       newline_ui();
       continue;
@@ -127,11 +141,11 @@ int handle_inventory_menu(SDL_Event event){
 
 void draw_pause_menu(render_obj_t * object){
   init_ui();
-  draw_string("Nocturne Island", object);
+  draw_string(MENU_NAME_MSG, object);
   newline_ui();
-  draw_string("Press ESC to continue", object);
+  draw_string(MENU_EXIT_MSG, object);
   newline_ui();
-  draw_string("Press Q to exit", object);
+  draw_string(MENU_CLOSE_MSG, object);
   newline_ui();
 }
 
@@ -180,6 +194,38 @@ int handle_crafting_menu(SDL_Event event){
     case SDLK_ESCAPE:
       active_menu = GAME_UI_ID;
       return HANDLE_CLOSE;
+  }
+  return HANDLE_REGULAR;
+}
+
+void draw_death_menu(render_obj_t * object){
+  init_ui();
+  char format[40];
+  char amount[20];
+
+  draw_string(PLAYER_DEAD_MSG, object);
+  newline_ui();
+
+  strcpy(format, DAYS_SURVIVED_MSG);
+  sprintf(amount, "%d", get_days_survived());
+  strcat(format, amount);
+  draw_string(format, object);
+  newline_ui();
+
+  draw_string(NEW_GAME_MSG, object);
+  newline_ui();
+
+  draw_string(END_GAME_MSG, object);
+  newline_ui();
+}
+
+int handle_death_menu(SDL_Event event){
+
+  switch(event.key.keysym.sym){
+    case SDLK_r:
+      return HANDLE_DEATH;
+    case SDLK_q:
+      return HANDLE_EXIT;
   }
   return HANDLE_REGULAR;
 }

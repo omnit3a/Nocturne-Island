@@ -19,8 +19,8 @@ double smooth3d(double x, double y, double z, int octave, int seed);
 
 double pnoise1d(double x, double persistence, int octaves, int seed);
 
-double pnoise2d(double x, double y, double persistence, int octaves, int seed);
+double pnoise2d(double x, double y, double persistence, int octaves, double frequency, double amplitude,int seed);
 
-double pnoise3d(double x, double y, double z, double persistence, int octaves, int seed);
+double pnoise3d(double x, double y, double z, double persistence, int octaves, double frequency, double amplitude,int seed);
 
 #endif

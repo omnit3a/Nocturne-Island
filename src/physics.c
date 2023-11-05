@@ -12,6 +12,8 @@ int player_is_jumping = 0;
 int ticked = 0;
 int jump_timeout = 0;
 
+int distance_fallen = 0;
+
 /* Make the player jump */
 void player_jump(){
   transform_t pos = get_player_entity()->position;
@@ -29,6 +31,12 @@ void handle_gravity(){
   if(!get_block(pos.x, pos.y, pos.z-1).block.solid){
     pos.z--;
     entity_move(get_player_entity(), &pos);
+    distance_fallen++;
+  } else {
+    if (distance_fallen > 3){
+      set_player_health(get_player_health() - distance_fallen / 2);
+    }
+    distance_fallen = 0;
   }
 }
 

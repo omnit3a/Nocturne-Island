@@ -161,3 +161,17 @@ Alpha Version 0.4.2:
   Addded TTF Font support
   World generation tweaks, hills arent as high
   Fixed bug where picking berries would give player a berry bush
+
+Alpha Version 0.4.3:
+  Added temperature
+  Improved terrain generator
+  Added swimming sprite
+  Added caves
+  Added player health (Currently death is not implemented)
+  Added fall damage
+  Added starvation
+  Changed leaves texture
+  Changed tree height
+  Changed chunk size to 14x14 from 16x16
+  Added player death
+  Changed distance for player to fall to start taking fall damage to 3

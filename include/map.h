@@ -9,17 +9,18 @@
 #define MAP_WIDTH 100
 #define MAP_LENGTH 100
 #define MAP_HEIGHT 50
-#define CHUNK_WIDTH 16
-#define CHUNK_LENGTH 16
+#define CHUNK_WIDTH 14
+#define CHUNK_LENGTH 14
 #define CHUNK_HEIGHT MAP_HEIGHT
 
-#define GROUND_LEVEL 2 /* Base ground thickness */
 #define CLIFF_HEIGHT 6
-#define GROUND_HEIGHT 5
+#define TREE_HEIGHT 3
 
 #define BLOCK_NAME_LENGTH 24
 #define BLOCKS_AMOUNT 256
 #define BLOCK_STATES 4
+
+#define BASE_TEMPERATURE 237
 
 typedef struct block_data_s {
   char name[BLOCK_NAME_LENGTH];
@@ -32,9 +33,10 @@ typedef struct block_data_s {
   int block_type;
   int output_id;
   int regen;
-  int regen_id;
   int regen_ticks;
   int hardness;
+  int ignition;
+  int extinguish_id;
   int id;
 } block_data_t;
 
@@ -49,6 +51,7 @@ typedef struct world_data_s {
   int hp;
   int id;
   int height_map;
+  int temperature;
 } world_data_t;
 
 typedef struct change_data_s {
@@ -69,11 +72,16 @@ world_data_t get_block(int x_pos, int y_pos, int z_pos);
 int is_block_shaded(int x_pos, int y_pos, int z_pos);
 void load_block_properties(char * path);
 block_data_t get_block_properties(int block);
+int get_air_temperature();
+void set_air_temperature(int value);
+void set_temperature(int temperature, int x, int y, int z);
 
+void init_map(int seed);
 void fill_map();
 void place_foliage(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]);
 void place_items(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH]);
 void generate_hills(int x_off, int y_off);
+
 int compare_blocks(block_data_t a, block_data_t b);
 int is_block_mineable(block_data_t block);
 int is_next_to_block(block_data_t block, int x_pos, int y_pos, int z_pos);
