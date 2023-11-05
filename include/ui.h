@@ -5,7 +5,7 @@
 #include <drawer.h>
 
 /* Font related definitions */
-#define FONT_PATH "assets/ui/unifont.ttf" 
+#define FONT_PATH "assets/ui/font.ttf" 
 #define FONT_WIDTH 8
 #define FONT_HEIGHT 16
 #define FONT_ATLAS_SIZE 16

@@ -182,3 +182,5 @@ Alpha Version 0.4.4:
   Fixed bug with item selection in inventory
   Added support for key rebinding (assets/defs/controls.json)
   Map generation optimizations
+  Changed chunk size back to 16x16
+  Change font used by game
