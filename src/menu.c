@@ -36,7 +36,7 @@ void draw_game_menu(render_obj_t * object){
   strcpy(format, "");
   strcat(format, CURRENT_BLOCK_MSG);
   if (block.id == 0){
-    strcat(format, "Nothing");
+    strcat(format, EMPTY_MSG);
   } else {
     strcat(format, block.name);
   }
@@ -45,7 +45,7 @@ void draw_game_menu(render_obj_t * object){
   newline_ui();
 
   strcpy(format, "");
-  strcat(format, "HP: ");
+  strcat(format, HP_MSG);
   sprintf(text, "%d", get_player_health());
   strcat(format, text);
   draw_string(format, object);
@@ -53,7 +53,7 @@ void draw_game_menu(render_obj_t * object){
   newline_ui();
   
   strcpy(format, "");
-  strcat(format, "Food: ");
+  strcat(format, HUNGER_MSG);
   sprintf(text, "%d", get_player_hunger());
   strcat(format, text);
   draw_string(format, object);
@@ -62,7 +62,7 @@ void draw_game_menu(render_obj_t * object){
 
   if (get_block_progress() > 0){
     strcpy(format, "");
-    strcat(format, "Block HP: ");
+    strcat(format, BLOCK_HP_MSG);
     sprintf(text, "%d", get_block_progress());
     strcat(format, text);
     draw_string(format, object);
@@ -104,7 +104,7 @@ void draw_inventory_menu(render_obj_t * object){
     slot_label[1] = slot + 97;
     strcpy(format, slot_label);
     if (block.id == 0){
-      strcat(format, "Nothing");
+      strcat(format, EMPTY_MSG);
       draw_string(format, object);
       newline_ui();
       continue;
@@ -135,11 +135,11 @@ int handle_inventory_menu(SDL_Event event){
 
 void draw_pause_menu(render_obj_t * object){
   init_ui();
-  draw_string("Nocturne Island", object);
+  draw_string(MENU_NAME_MSG, object);
   newline_ui();
-  draw_string("Press ESC to continue", object);
+  draw_string(MENU_EXIT_MSG, object);
   newline_ui();
-  draw_string("Press Q to exit", object);
+  draw_string(MENU_CLOSE_MSG, object);
   newline_ui();
 }
 
