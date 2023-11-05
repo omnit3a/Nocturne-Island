@@ -22,7 +22,7 @@ void init_ui();
 
 void zero_ui();
 void newline_ui();
-void draw_string(char * string, render_obj_t * object);
+void draw_string(char * string, SDL_Color color, render_obj_t * object);
 
 void handle_block_select(SDL_Event event);
 

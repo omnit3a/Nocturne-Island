@@ -51,13 +51,12 @@ void newline_ui(){
   y_cursor = y_cursor % rows;
 }
 
-void draw_string(char * string, render_obj_t * object){
+void draw_string(char * string, SDL_Color color, render_obj_t * object){
   font = TTF_OpenFont(FONT_PATH, 16);
-  SDL_Color font_color = {255, 255, 255};
   int width = 0;
   int height = 0;
 
-  object->surface = TTF_RenderText_Solid(font, string, font_color);
+  object->surface = TTF_RenderText_Solid(font, string, color);
   object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
 
   SDL_QueryTexture(object->texture, NULL, NULL, &width, &height);

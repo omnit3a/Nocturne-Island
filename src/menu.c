@@ -15,6 +15,13 @@
 
 int active_menu = 0;
 
+SDL_Color text_white = {255, 255, 255};
+SDL_Color text_gray = {128, 128, 128};
+SDL_Color text_black = {0, 0, 0};
+SDL_Color text_red = {255, 0, 0};
+SDL_Color text_green = {0, 255, 0};
+SDL_Color text_blue = {0, 0, 255};
+
 int get_active_menu(){
   return active_menu;
 }
@@ -30,7 +37,7 @@ void draw_game_menu(render_obj_t * object){
   init_ui();
   block = get_current_item()->item;
   strcpy(format, CURRENT_VERSION_MSG);
-  draw_string(format, object);
+  draw_string(format, text_white, object);
   newline_ui();
 
   strcpy(format, "");
@@ -40,7 +47,7 @@ void draw_game_menu(render_obj_t * object){
   } else {
     strcat(format, block.name);
   }
-  draw_string(format, object);
+  draw_string(format, text_white, object);
 
   newline_ui();
 
@@ -48,7 +55,7 @@ void draw_game_menu(render_obj_t * object){
   strcat(format, HP_MSG);
   sprintf(text, "%d", get_player_health());
   strcat(format, text);
-  draw_string(format, object);
+  draw_string(format, text_white, object);
 
   newline_ui();
   
@@ -56,7 +63,7 @@ void draw_game_menu(render_obj_t * object){
   strcat(format, HUNGER_MSG);
   sprintf(text, "%d", get_player_hunger());
   strcat(format, text);
-  draw_string(format, object);
+  draw_string(format, text_white, object);
   
   newline_ui();
 
@@ -65,7 +72,7 @@ void draw_game_menu(render_obj_t * object){
     strcat(format, BLOCK_HP_MSG);
     sprintf(text, "%d", get_block_progress());
     strcat(format, text);
-    draw_string(format, object);
+    draw_string(format, text_white, object);
     
     newline_ui();
   }
@@ -73,6 +80,12 @@ void draw_game_menu(render_obj_t * object){
 
 /* Switch between UI Modes */
 int handle_game_menu(SDL_Event event){
+
+  if (get_player_health() <= 0){
+    active_menu = DEATH_UI_ID;
+    return HANDLE_CLOSE;
+  }
+
   switch (event.key.keysym.sym){
     case SDLK_e:
       active_menu = INVENTORY_UI_ID;
@@ -90,11 +103,6 @@ int handle_game_menu(SDL_Event event){
       active_menu = PAUSE_UI_ID;
       return HANDLE_CLOSE;
   }
-
-  if (get_player_health() <= 0){
-    active_menu = DEATH_UI_ID;
-    return HANDLE_CLOSE;
-  }
   
   return HANDLE_REGULAR;
 }
@@ -105,20 +113,27 @@ void draw_inventory_menu(render_obj_t * object){
   char slot_label[4] = " - ";
   char format[40];
   char amount[20];
+  SDL_Color select_color;
   for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
+    select_color = text_white;
+    if (slot == get_current_slot()){
+      select_color = text_green;
+    }
+
     block = get_inventory_item(slot)->item;
     slot_label[1] = slot + 97;
     strcpy(format, slot_label);
     if (block.id == 0){
       strcat(format, EMPTY_MSG);
-      draw_string(format, object);
+      draw_string(format, select_color, object);
       newline_ui();
       continue;
     }
+    
     strcat(format, block.name);
     sprintf(amount, ": %d", get_inventory_item(slot)->amount);
     strcat(format, amount);
-    draw_string(format, object);
+    draw_string(format, select_color, object);
     
     newline_ui();
   }
@@ -126,7 +141,7 @@ void draw_inventory_menu(render_obj_t * object){
 
 int handle_inventory_menu(SDL_Event event){
   char code = event.key.keysym.sym-97;
-  if (code >= 0 && code <= INVENTORY_SIZE){
+  if (code >= 0 && code < INVENTORY_SIZE){
     set_current_item(code);
     return HANDLE_REGULAR;
   }
@@ -141,11 +156,11 @@ int handle_inventory_menu(SDL_Event event){
 
 void draw_pause_menu(render_obj_t * object){
   init_ui();
-  draw_string(MENU_NAME_MSG, object);
+  draw_string(MENU_NAME_MSG, text_white, object);
   newline_ui();
-  draw_string(MENU_EXIT_MSG, object);
+  draw_string(MENU_EXIT_MSG, text_white, object);
   newline_ui();
-  draw_string(MENU_CLOSE_MSG, object);
+  draw_string(MENU_CLOSE_MSG, text_white, object);
   newline_ui();
 }
 
@@ -173,7 +188,7 @@ void draw_crafting_menu(render_obj_t * object){
     slot_label[1] = line_number+96;
     strcpy(format, slot_label);
     strcat(format, recipe_list[line_number].name);
-    draw_string(format, object);
+    draw_string(format, text_white, object);
     newline_ui();
     line_number++;
   }
@@ -203,19 +218,19 @@ void draw_death_menu(render_obj_t * object){
   char format[40];
   char amount[20];
 
-  draw_string(PLAYER_DEAD_MSG, object);
+  draw_string(PLAYER_DEAD_MSG, text_red, object);
   newline_ui();
 
   strcpy(format, DAYS_SURVIVED_MSG);
   sprintf(amount, "%d", get_days_survived());
   strcat(format, amount);
-  draw_string(format, object);
+  draw_string(format, text_white, object);
   newline_ui();
 
-  draw_string(NEW_GAME_MSG, object);
+  draw_string(NEW_GAME_MSG, text_white, object);
   newline_ui();
 
-  draw_string(END_GAME_MSG, object);
+  draw_string(END_GAME_MSG, text_white, object);
   newline_ui();
 }
 
