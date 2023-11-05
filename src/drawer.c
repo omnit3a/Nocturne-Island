@@ -61,7 +61,7 @@ void draw_view(render_obj_t * object){
       }
       
       if (is_block_shaded(x, y, z)){
-	SDL_SetTextureColorMod(object->texture, 64, 64, 64);
+	SDL_SetTextureColorMod(object->texture, 16+(z * 15), 16+(z * 15), 16+(z * 15));
       } else {
 	SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
       }
@@ -128,7 +128,7 @@ void draw_player(render_obj_t * object){
     }
     
     if (is_block_shaded(pos.x, pos.y, pos.z-1)){
-      SDL_SetTextureColorMod(object->texture, 16, 16, 16);
+      SDL_SetTextureColorMod(object->texture, 16+(pos.z * 15), 16+(pos.z * 15), 16+(pos.z * 15));
     } else {
       SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);                   
     }

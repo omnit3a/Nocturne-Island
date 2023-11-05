@@ -23,7 +23,6 @@ int is_inventory_slot_empty(int slot){
 }
 
 int add_inventory_item(block_data_t item, int amount){
-  sort_inventory();
   for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
     if (is_inventory_slot_empty(slot) || compare_blocks(inventory[slot].item, item)){
       if (inventory[slot].amount + amount > inventory[slot].size){
