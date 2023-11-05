@@ -199,7 +199,7 @@ void place_foliage(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENG
       continue;
     }
 
-    float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, 1, 1,get_map_seed()) + 1;
+    float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, 1, 1,get_map_seed()) + 1.5;
     
     if (noise > 1.8 && noise < 2){
       int trunk_height;
@@ -209,8 +209,15 @@ void place_foliage(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENG
       set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+TREE_HEIGHT);
       continue;
     }
-    if (noise >= 2){
-      set_block(get_block_properties(RED_BERRY_BUSH), x, y, height_map[x][y]+1);
+    
+    if (noise >= 2.1 && noise < 2.2){
+      /* Worlds either have red or blue berries */
+      if (get_map_seed() % 2){
+	set_block(get_block_properties(RED_BERRY_BUSH), x, y, height_map[x][y]+1);
+      } else {
+	set_block(get_block_properties(BLUE_BERRY_BUSH), x, y, height_map[x][y]+1);
+      }
+      continue;
     }
   }
 }
@@ -227,12 +234,12 @@ void place_items(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH
 
     float noise = pnoise2d(x+x_off, y+y_off, 0.25, 10, 1, 1, get_map_seed()) + 1;
     
-    if (noise >= 1.7 &&
-	height_map[x][y] >= CLIFF_HEIGHT-2){
+    if (noise > 2 &&
+	height_map[x][y] >= CLIFF_HEIGHT-1){
       set_block(get_block_properties(ROCKS), x, y, height_map[x][y]+1);
       continue;
     }
-    if (noise > 1.6 &&
+    if (noise > 1.9 &&
 	is_next_to_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1)){
       set_block(get_block_properties(BRANCH), x, y, height_map[x][y]+1);
     }

@@ -185,3 +185,5 @@ Alpha Version 0.4.4:
   Changed chunk size back to 16x16
   Change font used by game
   Pause and Death menu now display correct keybindings
+  Added blue berries
+  Worlds either have red berries or blue berries
