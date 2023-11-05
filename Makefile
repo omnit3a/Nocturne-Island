@@ -16,7 +16,7 @@ all:
 	$(CC) -o $(OUT) $(SRC) $(CFLAGS)
 
 package: all
-	cp $(OUTFILE) $(PACKAGEDIR)
+	cp $(OUT) $(PACKAGEDIR)
 	cp -r $(ASSETDIR) $(PACKAGEDIR)
 	cp LICENSE $(PACKAGEDIR)
 	cp *.txt $(PACKAGEDIR)
