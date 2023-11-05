@@ -241,10 +241,10 @@ void generate_hills(int x_off, int y_off){
   for (int index = start_index ; index < end_index ; index++){
     int x = index % CHUNK_WIDTH;
     int y = index / CHUNK_LENGTH;
-    height_map[x][y] += pnoise2d((x+x_off)-1, (y+y_off), 1, 10, 0.5, 3.5, get_map_seed());
-    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)-1, 1, 10, 0.5, 3.5, get_map_seed());
-    height_map[x][y] += pnoise2d((x+x_off)+1, (y+y_off), 1, 10, 0.5, 3.5, get_map_seed());
-    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)+1, 1, 10, 0.5, 3.5, get_map_seed());
+    height_map[x][y] += pnoise2d((x+x_off)-1, (y+y_off), 1, 10, 0.25, 3.5, get_map_seed());
+    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)-1, 1, 10, 0.25, 3.5, get_map_seed());
+    height_map[x][y] += pnoise2d((x+x_off)+1, (y+y_off), 1, 10, 0.25, 3.5, get_map_seed());
+    height_map[x][y] += pnoise2d((x+x_off), (y+y_off)+1, 1, 10, 0.25, 3.5, get_map_seed());
     height_map[x][y] /= 4;
     if (height_map[x][y] < 1){
       height_map[x][y] = 1;
@@ -257,7 +257,7 @@ void generate_hills(int x_off, int y_off){
     int y = index / CHUNK_LENGTH;
     height_map[x][y] += 1;
     if (height_map[x][y] == 2){
-      float noise = pnoise2d(x+x_off, y+y_off, 1, 10, 0.5, 2, get_map_seed() * 5);
+      float noise = pnoise2d(x+x_off, y+y_off, 1, 10, 0.1, 2, get_map_seed() * 5);
       if (noise < -1.75){
 	height_map[x][y] = 1;
         set_block(get_block_properties(WATER), x, y, 2);

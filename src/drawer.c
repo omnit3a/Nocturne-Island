@@ -43,7 +43,7 @@ void draw_view(render_obj_t * object){
     } else {
       draw_indoors = 0;
     }
-    
+
     do {
       int block = get_block(x, y, z).block.texture;
       
@@ -86,7 +86,11 @@ void draw_player(render_obj_t * object){
   for (int stage = 0 ; stage < 2 ; stage++){
     object->surface = SDL_LoadBMP(LEVEE_HEAD_PATH);
     if (stage == 0){
-      object->surface = SDL_LoadBMP(LEVEE_BODY_PATH);
+      if (get_block(pos.x, pos.y, pos.z).block.id == WATER){
+	object->surface = SDL_LoadBMP(LEVEE_SWIMMING_PATH);	  
+      } else {
+	object->surface = SDL_LoadBMP(LEVEE_BODY_PATH);
+      }
     }
     
     object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
