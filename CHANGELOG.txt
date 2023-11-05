@@ -166,3 +166,4 @@ Alpha Version 0.4.3:
   Added temperature
   Improved terrain generator
   Added swimming sprite
+  Added caves

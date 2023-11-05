@@ -281,13 +281,20 @@ void generate_hills(int x_off, int y_off){
       } else {
 	set_block(get_block_properties(DIRT), x, y, z);
       }
+
+      /* cave generation */
+      float cave_noise = pnoise3d(x+x_off, y+y_off, z, 0.75, 10, 0.5, 1, get_map_seed());
+      if (cave_noise > 1 && cave_noise < 6 && z > 1){
+	set_block(get_block_properties(EMPTY), x, y, z);
+      }
+      
     }
     set_block(get_block_properties(NOKIUM), x, y, 0);
   }
 
   place_foliage(x_off, y_off, height_map);
   place_items(x_off, y_off, height_map);
-  
+
   /* changed block placement */
   for (int change = 0 ; change < changed_blocks_index ; change++){
     for (int index = start_index ; index < end_index ; index++){
