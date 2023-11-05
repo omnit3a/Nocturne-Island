@@ -12,6 +12,7 @@
 #include <messages.h>
 #include <ticks.h>
 #include <tools.h>
+#include <controls.h>
 
 int active_menu = 0;
 
@@ -86,7 +87,9 @@ int handle_game_menu(SDL_Event event){
     return HANDLE_CLOSE;
   }
 
-  switch (event.key.keysym.sym){
+  int keycode = translate_keypress(event, active_menu);
+  
+  switch (keycode){
     case SDLK_e:
       active_menu = INVENTORY_UI_ID;
       return HANDLE_CLOSE;
@@ -140,13 +143,15 @@ void draw_inventory_menu(render_obj_t * object){
 }
 
 int handle_inventory_menu(SDL_Event event){
-  char code = event.key.keysym.sym-97;
-  if (code >= 0 && code < INVENTORY_SIZE){
-    set_current_item(code);
+  int keycode = translate_keypress(event, active_menu)-97;
+  if (keycode >= 0 && keycode < INVENTORY_SIZE){
+    set_current_item(keycode);
     return HANDLE_REGULAR;
   }
 
-  switch(event.key.keysym.sym){
+  keycode = translate_keypress(event, active_menu);
+  
+  switch(keycode){
     case SDLK_ESCAPE:
       active_menu = GAME_UI_ID;
       return HANDLE_CLOSE;
@@ -165,7 +170,8 @@ void draw_pause_menu(render_obj_t * object){
 }
 
 int handle_pause_menu(SDL_Event event){
-  switch(event.key.keysym.sym){
+  int keycode = translate_keypress(event, active_menu);
+  switch(keycode){
     case SDLK_q:
       return HANDLE_EXIT;
     case SDLK_ESCAPE:
@@ -197,15 +203,17 @@ void draw_crafting_menu(render_obj_t * object){
 int handle_crafting_menu(SDL_Event event){
   get_craftable_recipes(recipe_list);
   
-  char code = event.key.keysym.sym-96;
-  if (code >= 0 && code <= CRAFTABLE_LIST_AMOUNT){
-    if (craft_item(recipe_list, code)){
+  int keycode = translate_keypress(event, active_menu)-96;
+  if (keycode >= 0 && keycode < CRAFTABLE_LIST_AMOUNT){
+    if (craft_item(recipe_list, keycode)){
       return HANDLE_CLOSE;
     } else {
       return HANDLE_REGULAR;
     }
   }
-  switch(event.key.keysym.sym){
+
+  keycode = translate_keypress(event, active_menu);
+  switch(keycode){
     case SDLK_ESCAPE:
       active_menu = GAME_UI_ID;
       return HANDLE_CLOSE;
@@ -236,7 +244,9 @@ void draw_death_menu(render_obj_t * object){
 
 int handle_death_menu(SDL_Event event){
 
-  switch(event.key.keysym.sym){
+  int keycode = translate_keypress(event, active_menu);
+  
+  switch(keycode){
     case SDLK_r:
       return HANDLE_DEATH;
     case SDLK_q:

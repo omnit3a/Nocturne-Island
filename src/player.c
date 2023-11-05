@@ -11,6 +11,7 @@
 #include <menu_defs.h>
 #include <menu.h>
 #include <map.h>
+#include <controls.h>
 
 int block_progress = 0;
 
@@ -189,8 +190,10 @@ void handle_player_movement(SDL_Event event){
   if (get_active_menu() != GAME_UI_ID){
     return;
   }
+
+  int keycode = translate_keypress(event, GAME_UI_ID);
   
-  switch (event.key.keysym.sym){
+  switch (keycode){
     case SDLK_w:
       current_rotation.x = 0;
       current_rotation.y = -1;
@@ -238,8 +241,10 @@ void handle_player_rotation(SDL_Event event){
   if (get_active_menu() != GAME_UI_ID){
     return;
   }
+
+  int keycode = translate_keypress(event, GAME_UI_ID);
   
-  switch (event.key.keysym.sym){
+  switch (keycode){
     case SDLK_i:
       current_rotation.x = 0;
       current_rotation.y = -1;

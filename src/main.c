@@ -14,6 +14,8 @@
 #include <inventory.h>
 #include <menu_defs.h>
 #include <crafting.h>
+#include <controls.h>
+#include <menu.h>
 
 int main(int argc, char ** argv){
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
@@ -47,7 +49,8 @@ int main(int argc, char ** argv){
 
   load_block_properties(BLOCK_DATA_PATH);
   load_crafting_recipes(CRAFTING_DATA_PATH);
-
+  load_control_scheme(CONTROL_SCHEME_PATH);
+  
   int player_dead = 1;
   allocate_changed_blocks();
   while (player_dead){
@@ -84,7 +87,10 @@ int main(int argc, char ** argv){
 	    
 	    handle_player_movement(event);
 	    handle_player_rotation(event);
-	    switch(event.key.keysym.sym){
+
+	    int keycode = translate_keypress(event, get_active_menu());
+	    
+	    switch(keycode){
 	      /* Mine a block */
 	      case SDLK_m:
 		player_mine_block();
@@ -95,10 +101,10 @@ int main(int argc, char ** argv){
 		player_place_block();
 		break;
 	    
-		/* Eat food */
-	    case SDLK_f:
-	      player_eat_food();
-	      break;
+	      /* Eat food */
+	      case SDLK_f:
+		player_eat_food();
+		break;
 	    }
 	    break;
           case SDL_QUIT:

@@ -180,3 +180,4 @@ Alpha Version 0.4.4:
   Added inventory current item indication
   Added support for multicolor text
   Fixed bug with item selection in inventory
+  Added support for key rebinding (assets/defs/controls.json)
