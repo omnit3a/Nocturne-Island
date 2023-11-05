@@ -27,11 +27,14 @@ void tick_update(){
   if ((current_tick & (20 - 1)) == 0){
     handle_physics();
     water_flow_update();
-    fire_update();
+    int x_off;
+    int y_off;
+    get_player_offset(&x_off, &y_off);
+    fire_update(x_off, y_off);
   } else {
     reset_physics();
   }
-
+  
   if ((current_tick & (4 - 1)) == 0){
     update_camera();
   }
@@ -69,8 +72,7 @@ void water_flow_update(){
   /* TODO */
 }
 
-void fire_update(){
-  /* TODO */
+void fire_update(int x_off, int y_off){
 }
 
 int get_days_survived(){

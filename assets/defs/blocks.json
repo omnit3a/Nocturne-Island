@@ -426,6 +426,7 @@
       "regen": true,
       "regen_ticks": 10000,
       "hardness": -1,
+      "ignition": -1,
       "extinguish_id": 14,
       "id": 23
     },
@@ -443,6 +444,7 @@
       "regen": 1,
       "regen_ticks": 10000,
       "hardness": -1,
+      "ignition": -1,
       "extinguish_id": 6,
       "id": 24
     }

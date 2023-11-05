@@ -29,5 +29,6 @@ void handle_player_rotation(SDL_Event event);
 entity_t * get_player_entity();
 void init_player_entity();
 transform_t get_player_direction();
+void get_player_offset(int * x_off, int * y_off);
 
 #endif

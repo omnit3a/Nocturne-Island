@@ -12,6 +12,7 @@
 #include <menu.h>
 #include <map.h>
 #include <controls.h>
+#include <ticks.h>
 
 int block_progress = 0;
 
@@ -120,7 +121,8 @@ void player_mine_block(){
     world_data_t prev_data = get_block(rot.x, rot.y, rot.z);
     set_block(block.block, rot.x, rot.y, rot.z);
 
-    set_changed_blocks(prev_data,
+    set_changed_blocks(1,
+		       prev_data,
 		       get_block(rot.x, rot.y, rot.z),
 		       SPAWN_X+x_pos_offset+current_rotation.x,
 		       SPAWN_Y+y_pos_offset+current_rotation.y,
@@ -140,7 +142,8 @@ void player_mine_block(){
     world_data_t prev_data = get_block(rot.x, rot.y, rot.z);
     set_block(get_block_properties(prev_data.block.output_id), rot.x, rot.y, rot.z);
 
-    set_changed_blocks(prev_data,
+    set_changed_blocks(1,
+		       prev_data,
 		       get_block(rot.x, rot.y, rot.z),
 		       SPAWN_X+x_pos_offset+current_rotation.x,
 		       SPAWN_Y+y_pos_offset+current_rotation.y,
@@ -171,7 +174,8 @@ void player_place_block(){
   if (result){
     world_data_t prev_data = get_block(rot.x, rot.y, rot.z);
     set_block(block, rot.x, rot.y, rot.z);
-    set_changed_blocks(prev_data,
+    set_changed_blocks(1,
+		       prev_data,
 		       get_block(rot.x, rot.y, rot.z),
 		       SPAWN_X+x_pos_offset+current_rotation.x,
 		       SPAWN_Y+y_pos_offset+current_rotation.y,
@@ -287,3 +291,7 @@ transform_t get_player_direction(){
   return current_rotation;
 }
 
+void get_player_offset(int * x_off, int * y_off){
+  *x_off = x_pos_offset;
+  *y_off = y_pos_offset;
+}

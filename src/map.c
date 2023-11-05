@@ -59,6 +59,10 @@ void set_block(block_data_t block, int x_pos, int y_pos, int z_pos){
   chunk_map[chunk_index].id = block.id;
   chunk_map[chunk_index].height_map = height;
   chunk_map[chunk_index].temperature = air_temperature;
+
+  if (block.id == FIRE){
+    chunk_map[chunk_index].temperature = get_block_properties(FIRE).ignition/2;
+  }
 }
 
 world_data_t get_block(int x_pos, int y_pos, int z_pos){
@@ -290,7 +294,7 @@ void generate_hills(int x_off, int y_off){
 	continue;
       }
       
-      set_block(get_block_properties(DIRT), x, y, z);
+      set_block(get_block_properties(STONE), x, y, z);
 
       /* cave generation */
       float cave_noise = pnoise3d(x+x_off, y+y_off, z, 0.75, 10, 0.5, 1, get_map_seed());
@@ -325,6 +329,11 @@ void generate_hills(int x_off, int y_off){
 	  regen_block = get_block_properties(WATER);
 	  break;
       }
+
+      if (get_block(x, y, change_z).temperature >= get_block(x, y, change_z).block.ignition &&
+	  get_block(x, y, change_z).block.ignition > 237){
+        set_block(get_block_properties(FIRE), x, y, change_z);
+      }
       
       int x_pos = x + x_off;
       int y_pos = y + y_off;
@@ -336,7 +345,8 @@ void generate_hills(int x_off, int y_off){
       if (regen && SDL_GetTicks() - get_changed_blocks(change).tick_changed >= regen_tick){
 	world_data_t prev_data = get_changed_blocks(change).data;
 	set_block(regen_block, x, y, change_z);
-	set_changed_blocks(prev_data,
+	set_changed_blocks(1,
+			   prev_data,
 			   get_block(x, y, change_z),
 			   x,
 			   y,
@@ -394,7 +404,7 @@ int get_changed_blocks_index(){
   return changed_blocks_index;
 }
 
-void set_changed_blocks(world_data_t prev_data, world_data_t data, int x_pos, int y_pos, int z_pos){
+void set_changed_blocks(int use_block, world_data_t prev_data, world_data_t data, int x_pos, int y_pos, int z_pos){
   int index = changed_blocks_index;
   int replace = 0;
   for (int change = 0 ; change < changed_blocks_size ; change++){
@@ -413,11 +423,18 @@ void set_changed_blocks(world_data_t prev_data, world_data_t data, int x_pos, in
     changed_blocks_index++;
   }
 
+  world_data_t new_data = data;
+  
+  if (!use_block){
+    new_data = prev_data;
+  }
+  
   changed_blocks[index].prev_data = prev_data;
-  changed_blocks[index].data = data;
+  changed_blocks[index].data = new_data;
   changed_blocks[index].x = x_pos;
   changed_blocks[index].y = y_pos;
   changed_blocks[index].z = z_pos;
+  changed_blocks[index].data.temperature = data.temperature;
   changed_blocks[index].tick_changed = SDL_GetTicks();
 }
 

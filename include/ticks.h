@@ -9,5 +9,5 @@ void day_night_update();
 int is_daytime();
 void hunger_update();
 void water_flow_update();
-void fire_update();
+void fire_update(int x_off, int y_off);
 int get_days_survived();
