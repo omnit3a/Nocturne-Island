@@ -35,7 +35,9 @@ void spawn_player(){
   player_entity.rotation.x = SPAWN_X;
   player_entity.rotation.y = SPAWN_Y;
   get_height(&player_entity.rotation.z, SPAWN_X, SPAWN_Y);
-  player_entity.position.z++; 
+  player_entity.position.z++;
+  player_health = 10;
+  player_hunger = 10;
   current_rotation.x = 0;
   current_rotation.y = 1;
   current_rotation.z = 0;

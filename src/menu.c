@@ -90,6 +90,12 @@ int handle_game_menu(SDL_Event event){
       active_menu = PAUSE_UI_ID;
       return HANDLE_CLOSE;
   }
+
+  if (get_player_health() <= 0){
+    active_menu = DEATH_UI_ID;
+    return HANDLE_CLOSE;
+  }
+  
   return HANDLE_REGULAR;
 }
 
@@ -188,6 +194,38 @@ int handle_crafting_menu(SDL_Event event){
     case SDLK_ESCAPE:
       active_menu = GAME_UI_ID;
       return HANDLE_CLOSE;
+  }
+  return HANDLE_REGULAR;
+}
+
+void draw_death_menu(render_obj_t * object){
+  init_ui();
+  char format[40];
+  char amount[20];
+
+  draw_string(PLAYER_DEAD_MSG, object);
+  newline_ui();
+
+  strcpy(format, DAYS_SURVIVED_MSG);
+  sprintf(amount, "%d", get_days_survived());
+  strcat(format, amount);
+  draw_string(format, object);
+  newline_ui();
+
+  draw_string(NEW_GAME_MSG, object);
+  newline_ui();
+
+  draw_string(END_GAME_MSG, object);
+  newline_ui();
+}
+
+int handle_death_menu(SDL_Event event){
+
+  switch(event.key.keysym.sym){
+    case SDLK_r:
+      return HANDLE_DEATH;
+    case SDLK_q:
+      return HANDLE_EXIT;
   }
   return HANDLE_REGULAR;
 }

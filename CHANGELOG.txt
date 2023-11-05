@@ -173,3 +173,5 @@ Alpha Version 0.4.3:
   Changed leaves texture
   Changed tree height
   Changed chunk size to 14x14 from 16x16
+  Added player death
+  Changed distance for player to fall to start taking fall damage to 3

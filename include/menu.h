@@ -14,3 +14,5 @@ void draw_pause_menu(render_obj_t * object);
 int handle_pause_menu(SDL_Event event);
 void draw_crafting_menu(render_obj_t * object);
 int handle_crafting_menu(SDL_Event event);
+void draw_death_menu(render_obj_t * object);
+int handle_death_menu(SDL_Event event);

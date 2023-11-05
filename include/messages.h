@@ -12,4 +12,9 @@
 #define MENU_EXIT_MSG "Press ESC to continue"
 #define MENU_CLOSE_MSG "Press Q to exit"
 
+#define PLAYER_DEAD_MSG "You died!"
+#define DAYS_SURVIVED_MSG "Days survived: "
+#define NEW_GAME_MSG "Press R to start a new game"
+#define END_GAME_MSG "Press Q to exit the game"
+
 #endif

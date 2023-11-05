@@ -11,6 +11,7 @@ int current_tick = 0;
 int starting_tick = 0;
 int day_tick = 0;
 int is_day = 1;
+int days_survived = 0;
 int switch_day = 0;
 unsigned long hunger_tick = 0;
 
@@ -43,6 +44,9 @@ void day_night_update(){
   if (SDL_GetTicks() - day_tick > SDL_TICKS_PER_DAY){
     is_day = !is_day;
     day_tick = SDL_GetTicks();
+    if (is_day){
+      days_survived++;
+    }
   }
 }
 
@@ -67,4 +71,8 @@ void water_flow_update(){
 
 void fire_update(){
   /* TODO */
+}
+
+int get_days_survived(){
+  return days_survived;
 }

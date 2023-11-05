@@ -10,3 +10,4 @@ int is_daytime();
 void hunger_update();
 void water_flow_update();
 void fire_update();
+int get_days_survived();

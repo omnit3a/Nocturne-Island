@@ -33,7 +33,7 @@ void handle_gravity(){
     entity_move(get_player_entity(), &pos);
     distance_fallen++;
   } else {
-    if (distance_fallen > 4){
+    if (distance_fallen > 3){
       set_player_health(get_player_health() - distance_fallen / 2);
     }
     distance_fallen = 0;
