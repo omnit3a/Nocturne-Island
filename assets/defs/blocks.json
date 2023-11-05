@@ -77,7 +77,7 @@
       "hp": 2,
       "solid": true,
       "transparent": true,
-      "texture": 4,
+      "texture": 18,
       "dropped_item": 16,
       "count": 2,
       "block_type": 1,

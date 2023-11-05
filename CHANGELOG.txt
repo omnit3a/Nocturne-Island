@@ -170,3 +170,4 @@ Alpha Version 0.4.3:
   Added player health (Currently death is not implemented)
   Added fall damage
   Added starvation
+  Changed leaves texture
