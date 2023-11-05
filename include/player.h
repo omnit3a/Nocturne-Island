@@ -17,6 +17,8 @@ int get_mining_speed();
 int get_block_progress();
 int get_player_hunger();
 void set_player_hunger(int value);
+int get_player_health();
+void set_player_health(int value);
 
 void player_eat_food();
 void player_mine_block();

@@ -167,3 +167,6 @@ Alpha Version 0.4.3:
   Improved terrain generator
   Added swimming sprite
   Added caves
+  Added player health (Currently death is not implemented)
+  Added fall damage
+  Added starvation

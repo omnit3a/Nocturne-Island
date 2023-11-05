@@ -54,6 +54,9 @@ void hunger_update(){
   if (SDL_GetTicks() - hunger_tick >= HUNGER_TICKS){
     hunger_tick += HUNGER_TICKS;
     int hunger = get_player_hunger();
+    if (hunger == 0){
+      set_player_health(get_player_health() - 1);
+    }
     set_player_hunger(hunger - 1);
   }
 }

@@ -45,6 +45,14 @@ void draw_game_menu(render_obj_t * object){
   newline_ui();
 
   strcpy(format, "");
+  strcat(format, "HP: ");
+  sprintf(text, "%d", get_player_health());
+  strcat(format, text);
+  draw_string(format, object);
+
+  newline_ui();
+  
+  strcpy(format, "");
   strcat(format, "Food: ");
   sprintf(text, "%d", get_player_hunger());
   strcat(format, text);

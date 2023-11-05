@@ -10,6 +10,7 @@
 #include <ui.h>
 #include <menu_defs.h>
 #include <menu.h>
+#include <map.h>
 
 int block_progress = 0;
 
@@ -21,6 +22,7 @@ sprite_t player_sprite;
 entity_t player_entity;
 transform_t current_rotation;
 int player_hunger = 10;
+int player_health = 10;
 
 int x_pos_offset = SPAWN_X;
 int y_pos_offset = SPAWN_Y;
@@ -28,10 +30,12 @@ int y_pos_offset = SPAWN_Y;
 void spawn_player(){
   player_entity.position.x = SPAWN_X;
   player_entity.position.y = SPAWN_Y;
-  player_entity.position.z = SPAWN_Z;
+  get_height(&player_entity.position.z, SPAWN_X, SPAWN_Y);
+  player_entity.position.z++;
   player_entity.rotation.x = SPAWN_X;
   player_entity.rotation.y = SPAWN_Y;
-  player_entity.rotation.z = SPAWN_Z;
+  get_height(&player_entity.rotation.z, SPAWN_X, SPAWN_Y);
+  player_entity.position.z++; 
   current_rotation.x = 0;
   current_rotation.y = 1;
   current_rotation.z = 0;
@@ -54,6 +58,14 @@ void set_player_hunger(int value){
   if (player_hunger < 0){
     player_hunger = 0;
   }
+}
+
+int get_player_health(){
+  return player_health;
+}
+
+void set_player_health(int value){
+  player_health = value;
 }
 
 void player_eat_food(){
