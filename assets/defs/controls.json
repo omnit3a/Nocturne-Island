@@ -73,6 +73,14 @@
     },
 
     {
+      "name": "look_vertical",
+      "keycode_name": "U",
+      "keycode_result": "U",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
       "name": "mine",
       "keycode_name": "M",
       "keycode_result": "M",
