@@ -171,3 +171,5 @@ Alpha Version 0.4.3:
   Added fall damage
   Added starvation
   Changed leaves texture
+  Changed tree height
+  Changed chunk size to 14x14 from 16x16

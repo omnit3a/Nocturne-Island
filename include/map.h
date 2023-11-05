@@ -9,13 +9,12 @@
 #define MAP_WIDTH 100
 #define MAP_LENGTH 100
 #define MAP_HEIGHT 50
-#define CHUNK_WIDTH 16
-#define CHUNK_LENGTH 16
+#define CHUNK_WIDTH 14
+#define CHUNK_LENGTH 14
 #define CHUNK_HEIGHT MAP_HEIGHT
 
-#define GROUND_LEVEL 2 /* Base ground thickness */
 #define CLIFF_HEIGHT 6
-#define GROUND_HEIGHT 5
+#define TREE_HEIGHT 3
 
 #define BLOCK_NAME_LENGTH 24
 #define BLOCKS_AMOUNT 256

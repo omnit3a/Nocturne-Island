@@ -194,8 +194,11 @@ void place_foliage(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENG
     }
 
     if (noise > 1.8 && noise < 2){
-      set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1);
-      set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+2);
+      int trunk_height;
+      for (trunk_height = 1 ; trunk_height < TREE_HEIGHT+1 ; trunk_height++){
+	set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+trunk_height);
+      }
+      set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+TREE_HEIGHT+1);
     }
     if (noise >= 2){
       set_block(get_block_properties(RED_BERRY_BUSH), x, y, height_map[x][y]+1);
