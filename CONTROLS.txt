@@ -7,4 +7,5 @@ M: Mine
 E: Inventory
 C: Crafting
 F: Eat current item
+Q: Drink water
 T: Use item

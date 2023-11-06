@@ -60,7 +60,7 @@ int get_player_thirst(){
 }
 
 void set_player_thirst(int value){
-  if (value + player_hunger >= STOMACH_CAPACITY){
+  if (value + player_hunger > STOMACH_CAPACITY){
     return;
   }
 
@@ -80,7 +80,7 @@ int get_player_hunger(){
 }
 
 void set_player_hunger(int value){
-  if (player_thirst + value >= STOMACH_CAPACITY){
+  if (player_thirst + value > STOMACH_CAPACITY){
     return;
   }
 
@@ -113,6 +113,10 @@ void player_eat_food(){
   }
 
   if (player_hunger + player_thirst == STOMACH_CAPACITY){
+    return;
+  }
+
+  if ((player_hunger + 1) + player_thirst > STOMACH_CAPACITY){
     return;
   }
   
