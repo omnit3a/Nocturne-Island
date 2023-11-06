@@ -105,6 +105,10 @@ int main(int argc, char ** argv){
 	      case SDLK_f:
 		player_eat_food();
 		break;
+
+	      case SDLK_q:
+		player_drink_water();
+		break;
 	    }
 	    break;
           case SDL_QUIT:

@@ -49,23 +49,21 @@ void draw_game_menu(render_obj_t * object){
     strcat(format, block.name);
   }
   draw_string(format, text_white, object);
-
   newline_ui();
 
   strcpy(format, "");
-  strcat(format, HP_MSG);
-  sprintf(text, "%d", get_player_health());
-  strcat(format, text);
+  sprintf(format, HP_MSG, get_player_health());
   draw_string(format, text_white, object);
-
   newline_ui();
   
   strcpy(format, "");
-  strcat(format, HUNGER_MSG);
-  sprintf(text, "%d", get_player_hunger());
-  strcat(format, text);
+  sprintf(format, HUNGER_MSG, get_player_hunger());
   draw_string(format, text_white, object);
+  newline_ui();
   
+  strcpy(format, "");
+  sprintf(format, THIRST_MSG, get_player_thirst());
+  draw_string(format, text_white, object);
   newline_ui();
 
   if (get_block_progress() > 0){

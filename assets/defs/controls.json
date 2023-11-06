@@ -105,6 +105,14 @@
     },
 
     {
+      "name": "quaff",
+      "keycode_name": "Q",
+      "keycode_result": "Q",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
       "name": "open_inventory",
       "keycode_name": "E",
       "keycode_result": "E",

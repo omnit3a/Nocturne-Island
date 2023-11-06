@@ -187,3 +187,6 @@ Alpha Version 0.4.4:
   Pause and Death menu now display correct keybindings
   Added blue berries
   Worlds either have red berries or blue berries
+  Added thirst
+  Added drinking water if the player is standing next to and looking towards water
+  Added stomach capacity. (Hunger + Thirst) cannot be higher than stomach capacity

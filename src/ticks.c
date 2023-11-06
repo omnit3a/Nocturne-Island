@@ -14,6 +14,7 @@ int is_day = 1;
 int days_survived = 0;
 int switch_day = 0;
 unsigned long hunger_tick = 0;
+unsigned long thirst_tick = 0;
 
 #define SPEED 1 / (1000 / TICKS_PER_SECOND)
 
@@ -41,6 +42,7 @@ void tick_update(){
 
   day_night_update();
   hunger_update();
+  thirst_update();
 }
 
 void day_night_update(){
@@ -65,6 +67,17 @@ void hunger_update(){
       set_player_health(get_player_health() - 1);
     }
     set_player_hunger(hunger - 1);
+  }
+}
+
+void thirst_update(){
+  if (SDL_GetTicks() - thirst_tick >= THIRST_TICKS){
+    thirst_tick += THIRST_TICKS;
+    int thirst = get_player_thirst();
+    if (thirst == 0){
+      set_player_health(get_player_health() - 1);
+    }
+    set_player_thirst(thirst-1);
   }
 }
 

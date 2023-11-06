@@ -3,8 +3,9 @@
 
 #define CURRENT_VERSION_MSG "Alpha 0.4.4"
 #define CURRENT_BLOCK_MSG "Current Item: "
-#define HP_MSG "HP: "
-#define HUNGER_MSG "Food: "
+#define HP_MSG "HP: %d"
+#define HUNGER_MSG "Hunger: %d"
+#define THIRST_MSG "Thirst: %d"
 #define EMPTY_MSG "Nothing"
 #define BLOCK_HP_MSG "Block HP: "
 

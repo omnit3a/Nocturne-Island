@@ -23,8 +23,9 @@ tag_t player_tag = {
 sprite_t player_sprite;
 entity_t player_entity;
 transform_t current_rotation;
-int player_hunger = 10;
+int player_hunger = 5;
 int player_health = 10;
+int player_thirst = 5;
 
 int x_pos_offset = SPAWN_X;
 int y_pos_offset = SPAWN_Y;
@@ -39,7 +40,8 @@ void spawn_player(){
   get_height(&player_entity.rotation.z, SPAWN_X, SPAWN_Y);
   player_entity.position.z++;
   player_health = 10;
-  player_hunger = 10;
+  player_hunger = 5;
+  player_thirst = 5;
   current_rotation.x = 0;
   current_rotation.y = 1;
   current_rotation.z = 0;
@@ -53,14 +55,43 @@ int get_block_progress(){
   return block_progress;
 }
 
+int get_player_thirst(){
+  return player_thirst;
+}
+
+void set_player_thirst(int value){
+  if (value + player_hunger >= STOMACH_CAPACITY){
+    return;
+  }
+
+  player_thirst = value;
+  if (player_thirst < 0){
+    player_thirst = 0;
+    return;
+  }
+  if (player_thirst > 10){
+    player_thirst = 10;
+    return;
+  }
+}
+
 int get_player_hunger(){
   return player_hunger;
 }
 
 void set_player_hunger(int value){
+  if (player_thirst + value >= STOMACH_CAPACITY){
+    return;
+  }
+
   player_hunger = value;
   if (player_hunger < 0){
     player_hunger = 0;
+    return;
+  }
+  if (player_hunger > 10){
+    player_hunger = 10;
+    return;
   }
 }
 
@@ -81,11 +112,37 @@ void player_eat_food(){
     return;
   }
 
+  if (player_hunger + player_thirst == STOMACH_CAPACITY){
+    return;
+  }
+  
   int result = remove_inventory_item(get_current_item()->item, 1);
   
   if (result){
-    player_hunger++;
+    set_player_hunger(player_hunger + 1);
   }
+}
+
+void player_drink_water(){
+  transform_t pos = player_entity.position;
+  transform_t rot = player_entity.rotation;
+  rot.x += current_rotation.x;
+  rot.y += current_rotation.y;
+  rot.z = pos.z-1;
+  if (get_active_menu() != GAME_UI_ID){
+    return;
+  }
+
+  if (get_block(rot.x, rot.y, rot.z).block.id != WATER){
+    return;
+  }
+
+  if (player_thirst + player_hunger == STOMACH_CAPACITY){
+    return;
+  }
+
+  set_player_thirst(player_thirst + 1);
+
 }
 
 /* Mine a block in the direction of the player */
