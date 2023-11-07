@@ -56,12 +56,13 @@ int main(int argc, char ** argv){
   while (player_dead){
     player_dead = 0;
     init_map(time(0));
+    printf("Seed: %d\n", get_map_seed());
     generate_hills(SPAWN_X, SPAWN_Y);  // generate a hilly world
     
     setup_camera(renderer, window);
     init_player_entity();
     init_inventory();
-    //add_inventory_item(get_block_properties(MOLTEN_ROCK), 99);
+    //add_inventory_item(get_block_properties(STONE_AXE), 99);
     
     ui_menu_t start_menu;
     get_menu_info(&start_menu, GAME_UI_ID);
