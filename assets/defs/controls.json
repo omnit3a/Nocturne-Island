@@ -1,0 +1,171 @@
+{
+  "controls" : [
+    {
+      "name": "move_up",
+      "keycode_name": "W",
+      "keycode_result": "W",
+      "any_menu": false,
+      "menu_id": 0
+    },
+    
+    {
+      "name": "move_left",
+      "keycode_name": "A",
+      "keycode_result": "A",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "move_down",
+      "keycode_name": "S",
+      "keycode_result": "S",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "move_right",
+      "keycode_name": "D",
+      "keycode_result": "D",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "jump",
+      "keycode_name": "Space",
+      "keycode_result": "Space",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "look_up",
+      "keycode_name": "I",
+      "keycode_result": "I",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "look_left",
+      "keycode_name": "J",
+      "keycode_result": "J",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "look_down",
+      "keycode_name": "K",
+      "keycode_result": "K",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "look_right",
+      "keycode_name": "L",
+      "keycode_result": "L",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "look_vertical",
+      "keycode_name": "U",
+      "keycode_result": "U",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "mine",
+      "keycode_name": "M",
+      "keycode_result": "M",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "place",
+      "keycode_name": "N",
+      "keycode_result": "N",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "eat",
+      "keycode_name": "F",
+      "keycode_result": "F",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "quaff",
+      "keycode_name": "Q",
+      "keycode_result": "Q",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "open_inventory",
+      "keycode_name": "E",
+      "keycode_result": "E",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "open_crafting",
+      "keycode_name": "C",
+      "keycode_result": "C",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "use_item",
+      "keycode_name": "T",
+      "keycode_result": "T",
+      "any_menu": false,
+      "menu_id": 0
+    },
+
+    {
+      "name": "close_menu",
+      "keycode_name": "Escape",
+      "keycode_result": "Escape",
+      "any_menu": true,
+      "menu_id": 0
+    },
+
+    {
+      "name": "exit_game_pause",
+      "keycode_name": "Q",
+      "keycode_result": "Q",
+      "any_menu": false,
+      "menu_id": 1
+    },
+
+    {
+      "name": "exit_game_death",
+      "keycode_name": "Q",
+      "keycode_result": "Q",
+      "any_menu": false,
+      "menu_id": 4
+    },
+
+    {
+      "name": "new_game_death",
+      "keycode_name": "R",
+      "keycode_result": "R",
+      "any_menu": false,
+      "menu_id": 4
+    }    
+  ] 
+}

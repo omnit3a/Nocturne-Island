@@ -5,7 +5,7 @@
 #include <drawer.h>
 
 /* Font related definitions */
-#define FONT_PATH "assets/ui/unifont.ttf" 
+#define FONT_PATH "assets/ui/font.ttf" 
 #define FONT_WIDTH 8
 #define FONT_HEIGHT 16
 #define FONT_ATLAS_SIZE 16
@@ -22,7 +22,7 @@ void init_ui();
 
 void zero_ui();
 void newline_ui();
-void draw_string(char * string, render_obj_t * object);
+void draw_string(char * string, SDL_Color color, render_obj_t * object);
 
 void handle_block_select(SDL_Event event);
 

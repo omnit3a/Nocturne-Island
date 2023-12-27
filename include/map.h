@@ -9,8 +9,8 @@
 #define MAP_WIDTH 100
 #define MAP_LENGTH 100
 #define MAP_HEIGHT 50
-#define CHUNK_WIDTH 14
-#define CHUNK_LENGTH 14
+#define CHUNK_WIDTH 16
+#define CHUNK_LENGTH 16
 #define CHUNK_HEIGHT MAP_HEIGHT
 
 #define CLIFF_HEIGHT 6
@@ -89,7 +89,7 @@ int is_next_to_workshop(int workshop_id, int x_pos, int y_pos, int z_pos);
 
 int get_changed_blocks_size();
 int get_changed_blocks_index();
-void set_changed_blocks(world_data_t prev_data, world_data_t data, int x_pos, int y_pos, int z_pos);
+void set_changed_blocks(int use_block, world_data_t prev_data, world_data_t data, int x_pos, int y_pos, int z_pos);
 change_data_t get_changed_blocks(int index);
 void allocate_changed_blocks();
 void reallocate_changed_blocks(int size_offset);

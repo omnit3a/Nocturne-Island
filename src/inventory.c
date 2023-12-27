@@ -143,3 +143,7 @@ void get_tools_list(inventory_slot_t list[TOOL_AMOUNT]){
     }
   }
 }
+
+int get_current_slot(){
+  return current_slot;
+}

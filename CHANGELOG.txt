@@ -175,3 +175,19 @@ Alpha Version 0.4.3:
   Changed chunk size to 14x14 from 16x16
   Added player death
   Changed distance for player to fall to start taking fall damage to 3
+
+Alpha Version 0.4.4:
+  Added inventory current item indication
+  Added support for multicolor text
+  Fixed bug with item selection in inventory
+  Added support for key rebinding (assets/defs/controls.json)
+  Map generation optimizations
+  Changed chunk size back to 16x16
+  Change font used by game
+  Pause and Death menu now display correct keybindings
+  Added blue berries
+  Worlds either have red berries or blue berries
+  Added thirst
+  Added drinking water if the player is standing next to and looking towards water
+  Added stomach capacity. (Hunger + Thirst) cannot be higher than stomach capacity
+  Game now prints seed at world generation

@@ -27,10 +27,13 @@
 #define STICK 15
 #define BRANCH 16
 #define RED_BERRY_BUSH 17
-#define BUSH 18
+#define RED_BUSH 18
 #define RED_BERRY 19
 #define SHARP_ROCK 20
 #define SHARP_STICK 21
 #define STONE_AXE 22
 #define MOLTEN_ROCK 23
 #define STEAM 24
+#define RED_MUSHROOM 25
+#define BLUE_BERRY_BUSH 26
+#define BLUE_BERRIES 27
