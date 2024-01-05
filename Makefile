@@ -1,23 +1,58 @@
-CC=gcc
-CFLAGS=-Wall -I$(INCLUDE) -lm -lSDL2 -lSDL2_ttf
+# tool macros
+CC = gcc
+CLIBS = -lm -lSDL2 -lSDL2_ttf
+CERROR = -Wall
+CFLAGS = $(CERROR) $(CLIBS) $(addprefix -I, $(HDR_PATH))
+LFLAGS = $(CFLAGS) -c
 
-INCLUDE=include/
+# path macros
+BIN_PATH := bin
+SRC_PATH := src
+LIB_PATH := $(SRC_PATH)/libs
+HDR_PATH := include $(LIB_PATH)/include
+AST_PATH := assets
+PKG_PATH := pkg
 
-SRC := $(shell find . -name *.c)
+# compile macros
+GAME_NAME := nocturne-island
+PKG_NAME := nocturne.zip
+TARGET := $(BIN_PATH)/$(GAME_NAME)
+PACKAGE := $(PKG_NAME)
 
-OUT=nocturne-island
+PKG_FILES := $(AST_PATH) LICENSE CREDITS CHANGELOG
 
-PACKAGEDIR=bin/
-PACKAGENAME=nocturne.zip
-ASSETDIR=assets/
+# src files & obj files
+SRC := $(shell find $(SRC_PATH) -type f -name '*.c')
+OBJ := $(patsubst $(SRC_PATH)/%.c, $(BIN_PATH)/%.o, $(SRC))
 
+# clean files list
+
+# default rule
 all:
-	clear
-	$(CC) -o $(OUT) $(SRC) $(CFLAGS)
+	@if [ ! -d $(BIN_PATH) ]; then mkdir $(BIN_PATH); fi;
+	@$(MAKE) -C . $(TARGET)
 
-package: all
-	cp $(OUT) $(PACKAGEDIR)
-	cp -r $(ASSETDIR) $(PACKAGEDIR)
-	cp LICENSE $(PACKAGEDIR)
-	cp *.txt $(PACKAGEDIR)
-	zip -r $(PACKAGENAME) $(PACKAGEDIR)
+# non-phony targets
+$(TARGET): $(OBJ)
+	@printf "%s:\n\t" $(notdir $(TARGET))
+	@$(CC) $^ $(CFLAGS) -o $@
+	@printf "Compiled Successfully!\n" 
+
+$(BIN_PATH)/%.o: $(SRC_PATH)/%.c
+	@if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi;
+	@printf "\t%-15s %-30s " $(notdir $^) $@
+	@echo $(CLIBS)
+	@$(CC) $(LFLAGS) -o $@ $^
+
+.PHONY: clean
+clean:
+	@rm -rf $(BIN_PATH) $(PKG_PATH) $(PACKAGE)
+
+.PHONY: package
+package: $(PKG_FILES) $(TARGET)
+	@if [ ! -d $(PKG_PATH) ]; then mkdir -p $(PKG_PATH); fi;
+	@printf "Copying files into package:\n"	
+	@printf "\t%s\n" $^; cp $^ -r $(PKG_PATH)
+	@printf "Creating package archive:\n"
+	@printf "\t%s\n" $(PACKAGE)
+	@zip -r $(PACKAGE) $(PKG_PATH) > /dev/null

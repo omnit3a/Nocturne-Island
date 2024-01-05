@@ -677,6 +677,8 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 	char *ep = NULL;
 	json_debug_trace((1, "Looking at %s\n", cp));
 	switch (arr->element_type) {
+	case t_time:
+		break;
 	case t_string:
 	    while (*cp != '\0' && isspace((unsigned char) *cp))
 		cp++;
