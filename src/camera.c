@@ -25,7 +25,7 @@ void update_camera(){
   SDL_RenderClear(camera_object.renderer);
 
   draw_view(&camera_object);
-  draw_player(&camera_object);
+  //draw_player(&camera_object);
   draw_menu(&camera_object);
   
   SDL_RenderPresent(camera_object.renderer);
