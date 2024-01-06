@@ -21,8 +21,6 @@ void draw_view(render_obj_t * object){
 	object->clip.w = TILE_WIDTH;
 	object->clip.h = TILE_HEIGHT;
 	transform_t pos = get_player_entity()->position;
-	int draw_indoors = 0;
-	int drawing_height = 0;
 
 	for (int x = 0 ; x < CHUNK_WIDTH ; x++){
 		for (int y = 0 ; y < CHUNK_LENGTH ; y++){
@@ -65,8 +63,6 @@ void draw_view(render_obj_t * object){
 /* Draw player */
 void draw_player(render_obj_t * object){
 	transform_t pos = get_player_entity()->position;
-	transform_t rot = get_player_direction();
-	int stage = -1;
 	
 	get_camera_view(&view_x, &view_y);    
 	object->surface = SDL_LoadBMP(LEVEE_BODY_PATH);
