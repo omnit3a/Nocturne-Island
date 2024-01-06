@@ -191,3 +191,6 @@ Alpha Version 0.4.4:
   Added drinking water if the player is standing next to and looking towards water
   Added stomach capacity. (Hunger + Thirst) cannot be higher than stomach capacity
   Game now prints seed at world generation
+
+Alpha Version 0.4.5:
+  Switched to using a Tibia-like renderering style
