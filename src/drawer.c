@@ -24,6 +24,10 @@ int get_drawing_height(){
 		x++;
 		y++;
 		z++;
+		
+		if (x > pos.x + 2 || y > pos.y + 2 || z > pos.z + 2){
+			return CHUNK_HEIGHT;
+		}
 		if (x == CHUNK_WIDTH || y == CHUNK_LENGTH || z == CHUNK_HEIGHT){
 			return z;
 		}
