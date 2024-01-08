@@ -14,6 +14,9 @@
 int view_x = 0;
 int view_y = 0;
 
+const float height_offset = 0.525;
+const float block_offset = 1.525;
+	
 int get_drawing_height(){
 	transform_t pos = get_player_entity()->position;
 	int x = pos.x + 1;
@@ -43,20 +46,32 @@ void draw_view(render_obj_t * object){
 	object->clip.h = TILE_HEIGHT;
 	transform_t pos = get_player_entity()->position;
 	int drawing_height = CHUNK_HEIGHT;
-
+	int draw_indoors = 0;
+	
 	for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH; index++){
 		int x = index % CHUNK_WIDTH;
 		int y = index / CHUNK_LENGTH;
 
 		if (is_block_shaded(pos.x, pos.y, pos.z-1)){
 			drawing_height = pos.z+1;
+			draw_indoors = 1;
 		} else {
 			drawing_height = get_drawing_height();
-			//drawing_height = CHUNK_HEIGHT;
+			draw_indoors = 0;
 		}
 		
 		for (int z = 0 ; z < drawing_height ; z++){
-				
+
+			int shade_z = z;
+			if (shade_z == drawing_height - 1){
+				shade_z--;
+			}			
+			if (is_block_shaded(x, y, shade_z)){
+				draw_indoors = 1;
+			} else {
+				draw_indoors = 0;
+			}
+			
 			int block = get_block(x, y, z).block.texture;
 
 			if (x == CHUNK_WIDTH / 2 && y == CHUNK_LENGTH / 2 && z == pos.z){
@@ -77,12 +92,23 @@ void draw_view(render_obj_t * object){
 				object->clip.y = 0;
 			}
 			
-			float z_pos = z * 0.4;
+			float z_pos = z * height_offset;
 			float x_pos = x - z_pos;
 			float y_pos = y - z_pos;
-				
-			object->target.x = (x_pos * (DEFAULT_SCREEN_WIDTH/view_x)) / 1.5;
-			object->target.y = (y_pos * (DEFAULT_SCREEN_HEIGHT/view_y)) / 1.5;
+
+			int brightness = (32 * is_daytime())+((z) * 20);
+			if (brightness > 255){
+				brightness = 255;
+			}
+
+			if (draw_indoors){
+				SDL_SetTextureColorMod(object->texture, 16+(z * 15), 16+(z * 15), 16+(z * 15));
+			} else {
+				SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
+			}
+			
+			object->target.x = (x_pos * (DEFAULT_SCREEN_WIDTH/view_x)) / block_offset;
+			object->target.y = (y_pos * (DEFAULT_SCREEN_HEIGHT/view_y)) / block_offset;
 			object->target.w = DEFAULT_SCREEN_WIDTH/view_x;
 			object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
 			SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);
@@ -100,25 +126,33 @@ void draw_player(render_obj_t * object){
 	object->surface = SDL_LoadBMP(LEVEE_BODY_PATH);
 	object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
 
-	float z_pos = pos.z * 0.4;
+	float z_pos = pos.z * height_offset;
 	float x_pos = CHUNK_WIDTH/2 - z_pos;
 	float y_pos = CHUNK_LENGTH/2 - z_pos;
     
-	object->target.x = (x_pos * (DEFAULT_SCREEN_WIDTH/view_x)) / 1.5;
-	object->target.y = (y_pos * (DEFAULT_SCREEN_HEIGHT/view_y)) / 1.5;
+	object->target.x = (x_pos * (DEFAULT_SCREEN_WIDTH/view_x)) / block_offset;
+	object->target.y = (y_pos * (DEFAULT_SCREEN_HEIGHT/view_y)) / block_offset;
 	object->target.x += 8;
 	object->target.y -= 8;
-	object->target.w = DEFAULT_SCREEN_WIDTH/view_x;
-	object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
+	object->target.w = DEFAULT_SCREEN_WIDTH/view_x + 12;
+	object->target.h = DEFAULT_SCREEN_HEIGHT/view_y + 12;
 
 	object->clip.w = LEVEE_WIDTH;
 	object->clip.h = LEVEE_HEIGHT;
 	object->clip.x = get_player_entity()->sprite.frame_offset * LEVEE_WIDTH;
 	object->clip.y = 0;
 
-	if (is_player_jumping()){
+	int brightness = (32 * is_daytime())+((pos.z) * 25);
+	if (brightness > 255){
+		brightness = 255;
 	}
-    
+
+	if (is_block_shaded(pos.x, pos.y, pos.z-1)){
+		SDL_SetTextureColorMod(object->texture, 16+(pos.z * 15), 16+(pos.z * 15), 16+(pos.z * 15));
+	} else {
+		SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
+	}
+	
 	SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);
 	SDL_FreeSurface(object->surface);
 	SDL_DestroyTexture(object->texture);
