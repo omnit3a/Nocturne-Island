@@ -124,6 +124,7 @@ int main(int argc, char ** argv){
 	}
 
 	free_changed_blocks();
+	unload_textures();
 	TTF_Quit();
 	SDL_Quit();
   

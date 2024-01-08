@@ -14,8 +14,8 @@
 int view_x = 0;
 int view_y = 0;
 
-const float height_offset = 0.525;
-const float block_offset = 1.525;
+const double height_offset = 1 / 0.5;
+const double block_offset = 1.6175;
 
 int texture_lookup[16 * 16][2];
 
@@ -49,7 +49,7 @@ int get_drawing_height(){
 	return pos.z + 1;
 }
 
-float z_pos;
+double z_pos;
 
 double fast_div(double x, double y){
 	union {
@@ -62,10 +62,27 @@ double fast_div(double x, double y){
 	return data_union.dbl * x; 
 }
 
+SDL_Surface * atlas_surface;
+SDL_Texture * atlas_texture;
+SDL_Surface * player_surface;
+SDL_Texture * player_texture;
+
+void load_textures(render_obj_t * object){
+	atlas_surface = SDL_LoadBMP(ATLAS_PATH);
+	atlas_texture = SDL_CreateTextureFromSurface(object->renderer, atlas_surface);
+	player_surface = SDL_LoadBMP(LEVEE_BODY_PATH);
+	player_texture = SDL_CreateTextureFromSurface(object->renderer, player_surface);
+}
+
+void unload_textures(){
+	SDL_FreeSurface(atlas_surface);
+	SDL_DestroyTexture(atlas_texture);
+	SDL_FreeSurface(player_surface);
+	SDL_DestroyTexture(player_texture);	
+}
+
 void draw_view(render_obj_t * object){
 	get_camera_view(&view_x, &view_y);
-	object->surface = SDL_LoadBMP(ATLAS_PATH);
-	object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
 	object->clip.w = TILE_WIDTH;
 	object->clip.h = TILE_HEIGHT;
 	transform_t pos = get_player_entity()->position;
@@ -98,14 +115,11 @@ void draw_view(render_obj_t * object){
 			}
 			
 			int block = get_block(x, y, z).block.texture;
-			z_pos = (z - pos.z) * height_offset;
+			z_pos = (z - pos.z);
+			z_pos = fast_div(z_pos, height_offset);
 			
 			if (x == CHUNK_WIDTH / 2 && y == CHUNK_LENGTH / 2 && z == pos.z){
-				SDL_FreeSurface(object->surface);
-				SDL_DestroyTexture(object->texture);
 				draw_player(object);
-				object->surface = SDL_LoadBMP(ATLAS_PATH);
-				object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
 				object->clip.w = TILE_WIDTH;
 				object->clip.h = TILE_HEIGHT;
 			}
@@ -119,64 +133,65 @@ void draw_view(render_obj_t * object){
 			}
 
 			if (draw_indoors){
-				SDL_SetTextureColorMod(object->texture, 16+(z * 15), 16+(z * 15), 16+(z * 15));
+				SDL_SetTextureColorMod(atlas_texture, 16+(z * 15), 16+(z * 15), 16+(z * 15));
 			} else {
 				int brightness = (32 * is_daytime())+((z) * 20);
 				if (brightness > 255){
 					brightness = 255;
 				}
-				SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
+				SDL_SetTextureColorMod(atlas_texture, brightness, brightness, brightness);
 			}
 
-			float x_pos = x - z_pos;
-			float y_pos = y - z_pos;
-			object->target.x = (x_pos * block_width) / block_offset;
-			object->target.y = (y_pos * block_height) / block_offset;
+			double x_pos = x - z_pos;
+		        double y_pos = y - z_pos;
+		        x_pos *= block_width;
+		        y_pos *= block_height;
+			x_pos = fast_div(x_pos, block_offset);
+			y_pos = fast_div(y_pos, block_offset);
+			object->target.x = x_pos;
+			object->target.y = y_pos;
 			object->target.w = DEFAULT_SCREEN_WIDTH/view_x;
 			object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
-			SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);
+			SDL_RenderCopy(object->renderer, atlas_texture, &object->clip, &object->target);
 		}
 	}
-	SDL_FreeSurface(object->surface);
-	SDL_DestroyTexture(object->texture);
 }
   
 /* Draw player */
 void draw_player(render_obj_t * object){
-	transform_t pos = get_player_entity()->position;
-	
+	transform_t pos = get_player_entity()->position;	
 	get_camera_view(&view_x, &view_y);    
-	object->surface = SDL_LoadBMP(LEVEE_BODY_PATH);
-	object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
+	const int block_width = DEFAULT_SCREEN_WIDTH / view_x;
+	const int block_height = DEFAULT_SCREEN_HEIGHT / view_y;
 
-	float x_pos = CHUNK_WIDTH/2 - z_pos;
-	float y_pos = CHUNK_LENGTH/2 - z_pos;
-    
-	object->target.x = (x_pos * (DEFAULT_SCREEN_WIDTH/view_x)) / block_offset;
-	object->target.y = (y_pos * (DEFAULT_SCREEN_HEIGHT/view_y)) / block_offset;
+	double x_pos = CHUNK_WIDTH/2 - z_pos;
+        double y_pos = CHUNK_LENGTH/2 - z_pos;
+	x_pos *= block_width;
+	y_pos *= block_height;
+	x_pos = fast_div(x_pos, block_offset);
+	y_pos = fast_div(y_pos, block_offset);
+	
+	object->target.x = x_pos;
+	object->target.y = y_pos;
 	//object->target.x += 8;
 	//object->target.y -= 8;
-	object->target.w = DEFAULT_SCREEN_WIDTH/view_x + 12;
-	object->target.h = DEFAULT_SCREEN_HEIGHT/view_y + 12;
+	object->target.w = DEFAULT_SCREEN_WIDTH/view_x + 16;
+	object->target.h = DEFAULT_SCREEN_HEIGHT/view_y + 16;
 
 	object->clip.w = LEVEE_WIDTH;
 	object->clip.h = LEVEE_HEIGHT;
 	object->clip.x = get_player_entity()->sprite.frame_offset * LEVEE_WIDTH;
 	object->clip.y = 0;
 
-	int brightness = (32 * is_daytime())+((pos.z) * 25);
-	if (brightness > 255){
-		brightness = 255;
-	}
-
 	if (is_block_shaded(pos.x, pos.y, pos.z-1)){
-		SDL_SetTextureColorMod(object->texture, 16+(pos.z * 15), 16+(pos.z * 15), 16+(pos.z * 15));
+		SDL_SetTextureColorMod(player_texture, 16+(pos.z * 15), 16+(pos.z * 15), 16+(pos.z * 15));
 	} else {
-		SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
+		int brightness = (32 * is_daytime())+((pos.z) * 25);
+		if (brightness > 255){
+			brightness = 255;
+		}
+		SDL_SetTextureColorMod(player_texture, brightness, brightness, brightness);
 	}
 	
-	SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);
-	SDL_FreeSurface(object->surface);
-	SDL_DestroyTexture(object->texture);
-
+	SDL_RenderCopy(object->renderer, player_texture, &object->clip, &object->target);
 }
