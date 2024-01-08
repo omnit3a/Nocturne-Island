@@ -34,6 +34,7 @@ typedef struct render_obj_t {
 
 #include <camera.h>
 
+void init_texture_lookup();
 void draw_view(render_obj_t * object);
 void draw_player(render_obj_t * object);
 

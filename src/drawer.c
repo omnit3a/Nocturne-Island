@@ -16,7 +16,18 @@ int view_y = 0;
 
 const float height_offset = 0.525;
 const float block_offset = 1.525;
-	
+
+int texture_lookup[16 * 16][2];
+
+void init_texture_lookup(){
+	for (int index = 0 ; index < 256 ; index++){
+		int x = index % 16;
+		int y = index / 16;
+		texture_lookup[index][0] = x * TILE_WIDTH;
+		texture_lookup[index][1] = y * TILE_HEIGHT;
+	}
+}
+
 int get_drawing_height(){
 	transform_t pos = get_player_entity()->position;
 	int x = pos.x + 1;
@@ -40,6 +51,17 @@ int get_drawing_height(){
 
 float z_pos;
 
+double fast_div(double x, double y){
+	union {
+		double dbl;
+		unsigned long long ull;
+	} data_union;
+	data_union.dbl = y;
+	data_union.ull = ( 0xbfcdd6a18f6a6f52ULL - data_union.ull ) >> (unsigned char) 1;
+	data_union.dbl *= data_union.dbl;
+	return data_union.dbl * x; 
+}
+
 void draw_view(render_obj_t * object){
 	get_camera_view(&view_x, &view_y);
 	object->surface = SDL_LoadBMP(ATLAS_PATH);
@@ -48,12 +70,14 @@ void draw_view(render_obj_t * object){
 	object->clip.h = TILE_HEIGHT;
 	transform_t pos = get_player_entity()->position;
 	int drawing_height = CHUNK_HEIGHT;
-	int draw_indoors = 0;
+	const int block_width = DEFAULT_SCREEN_WIDTH / view_x;
+	const int block_height = DEFAULT_SCREEN_HEIGHT / view_y;
 	
 	for (int index = 0 ; index < CHUNK_WIDTH * CHUNK_LENGTH; index++){
 		int x = index % CHUNK_WIDTH;
 		int y = index / CHUNK_LENGTH;
-
+		int draw_indoors = 0;
+		
 		if (is_block_shaded(pos.x, pos.y, pos.z-1)){
 			drawing_height = pos.z+1;
 			draw_indoors = 1;
@@ -62,8 +86,7 @@ void draw_view(render_obj_t * object){
 			draw_indoors = 0;
 		}
 		
-		for (int z = 0 ; z < drawing_height ; z++){
-
+		for (int z = 0 ; z < drawing_height ; z++){			
 			int shade_z = z;
 			if (shade_z == drawing_height - 1){
 				shade_z--;
@@ -75,7 +98,6 @@ void draw_view(render_obj_t * object){
 			}
 			
 			int block = get_block(x, y, z).block.texture;
-
 			z_pos = (z - pos.z) * height_offset;
 			
 			if (x == CHUNK_WIDTH / 2 && y == CHUNK_LENGTH / 2 && z == pos.z){
@@ -89,29 +111,27 @@ void draw_view(render_obj_t * object){
 			}
 				
 			if (get_block(x, y, z).id > 0){
-				object->clip.x = (block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
-				object->clip.y = (block / (ATLAS_HEIGHT / TILE_HEIGHT)) * TILE_HEIGHT;						
+				object->clip.x = texture_lookup[block][0];//(block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
+				object->clip.y = texture_lookup[block][1];//(block / (ATLAS_HEIGHT / TILE_HEIGHT)) * TILE_HEIGHT;
 			} else {
 				object->clip.x = 0;
 				object->clip.y = 0;
-			}
-			
-			float x_pos = x - z_pos;
-			float y_pos = y - z_pos;
-
-			int brightness = (32 * is_daytime())+((z) * 20);
-			if (brightness > 255){
-				brightness = 255;
 			}
 
 			if (draw_indoors){
 				SDL_SetTextureColorMod(object->texture, 16+(z * 15), 16+(z * 15), 16+(z * 15));
 			} else {
+				int brightness = (32 * is_daytime())+((z) * 20);
+				if (brightness > 255){
+					brightness = 255;
+				}
 				SDL_SetTextureColorMod(object->texture, brightness, brightness, brightness);
 			}
-			
-			object->target.x = (x_pos * (DEFAULT_SCREEN_WIDTH/view_x)) / block_offset;
-			object->target.y = (y_pos * (DEFAULT_SCREEN_HEIGHT/view_y)) / block_offset;
+
+			float x_pos = x - z_pos;
+			float y_pos = y - z_pos;
+			object->target.x = (x_pos * block_width) / block_offset;
+			object->target.y = (y_pos * block_height) / block_offset;
 			object->target.w = DEFAULT_SCREEN_WIDTH/view_x;
 			object->target.h = DEFAULT_SCREEN_HEIGHT/view_y;
 			SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);

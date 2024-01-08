@@ -204,7 +204,7 @@ void place_foliage(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENG
     if (noise > 1.8 && noise < 2){
       int trunk_height;
       for (trunk_height = 1 ; trunk_height < TREE_HEIGHT ; trunk_height++){
-	set_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+trunk_height);
+	set_block(get_block_properties(TREE_TRUNK), x, y, height_map[x][y]+trunk_height);
       }
       set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+TREE_HEIGHT);
       continue;
@@ -240,7 +240,7 @@ void place_items(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH
       continue;
     }
     if (noise > 1.9 &&
-	is_next_to_block(get_block_properties(TREE_BOTTOM), x, y, height_map[x][y]+1)){
+	is_next_to_block(get_block_properties(TREE_TRUNK), x, y, height_map[x][y]+1)){
       set_block(get_block_properties(BRANCH), x, y, height_map[x][y]+1);
     }
   }
