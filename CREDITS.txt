@@ -2,3 +2,5 @@ Perlin Noise Generator:
   - https://github.com/czinn/perlin
 JSON Parser:
   - https://gitlab.com/esr/microjson
+Base for player sprite:
+  - https://github.com/peonso/opentibia_sprite_pack

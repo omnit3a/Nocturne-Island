@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <drawer.h>
 #include <camera.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +19,7 @@ void setup_camera(SDL_Renderer * renderer, SDL_Window * window){
   camera_object.window = window;
   camera_object.renderer = renderer;
   overlay_object.renderer = renderer;
+  load_textures(&camera_object);
 }
 
 void update_camera(){
@@ -25,7 +27,7 @@ void update_camera(){
   SDL_RenderClear(camera_object.renderer);
 
   draw_view(&camera_object);
-  draw_player(&camera_object);
+  //draw_player(&camera_object);
   draw_menu(&camera_object);
   
   SDL_RenderPresent(camera_object.renderer);

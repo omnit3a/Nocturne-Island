@@ -10,7 +10,7 @@ Alpha Version 0.1.2:
   Added dynamic resolution
   Added unbreakable block (Nokium) that spawns at bottom of world
   Added an inventory, which can be opened with 'e'
-  
+	
 Alpha Version 0.2.0:
   Removed direct camera control and made camera follow player
   Refactored blocks to have data which can be expanded, allowing for modification
@@ -191,3 +191,6 @@ Alpha Version 0.4.4:
   Added drinking water if the player is standing next to and looking towards water
   Added stomach capacity. (Hunger + Thirst) cannot be higher than stomach capacity
   Game now prints seed at world generation
+
+Alpha Version 0.4.5:
+  Switched to using a Tibia-like renderering style

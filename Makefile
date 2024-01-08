@@ -11,7 +11,7 @@ SRC_PATH := src
 LIB_PATH := $(SRC_PATH)/libs
 HDR_PATH := include $(LIB_PATH)/include
 AST_PATH := assets
-PKG_PATH := pkg
+PKG_PATH := nocturne
 
 # compile macros
 GAME_NAME := nocturne-island
@@ -19,7 +19,7 @@ PKG_NAME := nocturne.zip
 TARGET := $(BIN_PATH)/$(GAME_NAME)
 PACKAGE := $(PKG_NAME)
 
-PKG_FILES := $(AST_PATH) LICENSE CREDITS CHANGELOG
+PKG_FILES := $(AST_PATH) LICENSE CREDITS.txt CHANGELOG.txt
 
 # src files & obj files
 SRC := $(shell find $(SRC_PATH) -type f -name '*.c')
