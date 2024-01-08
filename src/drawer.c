@@ -125,8 +125,8 @@ void draw_view(render_obj_t * object){
 			}
 				
 			if (get_block(x, y, z).id > 0){
-				object->clip.x = texture_lookup[block][0];//(block % (ATLAS_WIDTH / TILE_WIDTH)) * TILE_WIDTH;
-				object->clip.y = texture_lookup[block][1];//(block / (ATLAS_HEIGHT / TILE_HEIGHT)) * TILE_HEIGHT;
+				object->clip.x = texture_lookup[block][0];
+				object->clip.y = texture_lookup[block][1];
 			} else {
 				object->clip.x = 0;
 				object->clip.y = 0;
