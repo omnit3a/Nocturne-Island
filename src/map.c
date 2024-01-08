@@ -203,7 +203,8 @@ void place_foliage(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENG
     
     if (noise > 1.8 && noise < 2){
       int trunk_height;
-      for (trunk_height = 1 ; trunk_height < TREE_HEIGHT ; trunk_height++){
+      set_block(get_block_properties(TREE_BASE), x, y, height_map[x][y]+1);
+      for (trunk_height = 2 ; trunk_height < TREE_HEIGHT ; trunk_height++){
 	set_block(get_block_properties(TREE_TRUNK), x, y, height_map[x][y]+trunk_height);
       }
       set_block(get_block_properties(TREE_LEAVES), x, y, height_map[x][y]+TREE_HEIGHT);
@@ -240,7 +241,7 @@ void place_items(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENGTH
       continue;
     }
     if (noise > 1.9 &&
-	is_next_to_block(get_block_properties(TREE_TRUNK), x, y, height_map[x][y]+1)){
+	is_next_to_block(get_block_properties(TREE_BASE), x, y, height_map[x][y]+1)){
       set_block(get_block_properties(BRANCH), x, y, height_map[x][y]+1);
     }
   }
@@ -384,19 +385,19 @@ int is_block_mineable(block_data_t block){
 }
 
 int is_next_to_block(block_data_t block, int x_pos, int y_pos, int z_pos){
-  if (get_block(x_pos-1, y_pos, z_pos).block.id == block.id){
-    return 1;
-  }
-  if (get_block(x_pos, y_pos-1, z_pos).block.id == block.id){
-    return 1;
-  }
-  if (get_block(x_pos+1, y_pos, z_pos).block.id == block.id){
-    return 1;
-  }
-  if (get_block(x_pos, y_pos+1, z_pos).block.id == block.id){
-    return 1;
-  }
-  return 0;
+	if (get_block(x_pos-1, y_pos, z_pos).block.id == block.id){
+		return 1;
+	}
+	if (get_block(x_pos, y_pos-1, z_pos).block.id == block.id){
+		return 1;
+	}
+	if (get_block(x_pos+1, y_pos, z_pos).block.id == block.id){
+		return 1;
+	}
+	if (get_block(x_pos, y_pos+1, z_pos).block.id == block.id){
+		return 1;
+	}
+	return 0;
 }
 
 int is_next_to_workshop(int workshop_id, int x_pos, int y_pos, int z_pos){

@@ -501,6 +501,24 @@
       "ignition": 300,
       "extinguish_id": 12,
       "id": 27
+    },
+
+    {
+      "name": "Trunk",
+      "hp": 2,
+      "solid": true,
+      "transparent": true,
+      "texture":  4,
+      "dropped_item": 16,
+      "count": 2,
+      "block_type": 1,
+      "output_id": 0,
+      "regen": false,
+      "regen_ticks": 0,
+      "hardness": 2,
+      "ignition": 644,
+      "extinguish_id": 12,
+      "id": 28
     }
   ]
 }
