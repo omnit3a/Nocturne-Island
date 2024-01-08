@@ -38,6 +38,8 @@ int get_drawing_height(){
 	return pos.z + 1;
 }
 
+float z_pos;
+
 void draw_view(render_obj_t * object){
 	get_camera_view(&view_x, &view_y);
 	object->surface = SDL_LoadBMP(ATLAS_PATH);
@@ -74,6 +76,8 @@ void draw_view(render_obj_t * object){
 			
 			int block = get_block(x, y, z).block.texture;
 
+			z_pos = (z - pos.z) * height_offset;
+			
 			if (x == CHUNK_WIDTH / 2 && y == CHUNK_LENGTH / 2 && z == pos.z){
 				SDL_FreeSurface(object->surface);
 				SDL_DestroyTexture(object->texture);
@@ -92,7 +96,6 @@ void draw_view(render_obj_t * object){
 				object->clip.y = 0;
 			}
 			
-			float z_pos = z * height_offset;
 			float x_pos = x - z_pos;
 			float y_pos = y - z_pos;
 
@@ -126,14 +129,13 @@ void draw_player(render_obj_t * object){
 	object->surface = SDL_LoadBMP(LEVEE_BODY_PATH);
 	object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
 
-	float z_pos = pos.z * height_offset;
 	float x_pos = CHUNK_WIDTH/2 - z_pos;
 	float y_pos = CHUNK_LENGTH/2 - z_pos;
     
 	object->target.x = (x_pos * (DEFAULT_SCREEN_WIDTH/view_x)) / block_offset;
 	object->target.y = (y_pos * (DEFAULT_SCREEN_HEIGHT/view_y)) / block_offset;
-	object->target.x += 8;
-	object->target.y -= 8;
+	//object->target.x += 8;
+	//object->target.y -= 8;
 	object->target.w = DEFAULT_SCREEN_WIDTH/view_x + 12;
 	object->target.h = DEFAULT_SCREEN_HEIGHT/view_y + 12;
 
