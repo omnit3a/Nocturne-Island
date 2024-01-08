@@ -72,8 +72,7 @@ int main(int argc, char ** argv){
 		int running_game = 1;
 		while (running_game){
 			SDL_Event event;
-      
-			tick_update();
+      			tick_update();
 
 			if (SDL_PollEvent(&event) <= 0){
 				continue;
@@ -101,17 +100,14 @@ int main(int argc, char ** argv){
 			int keycode = translate_keypress(event, get_active_menu());
 	    
 			switch(keycode){
-				/* Mine a block */
 			case SDLK_m:
 				player_mine_block();
 				break;
 	      
-				/* Place a block */
 			case SDLK_n:
 				player_place_block();
 				break;
 	    
-				/* Eat food */
 			case SDLK_f:
 				player_eat_food();
 				break;

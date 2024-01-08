@@ -5,8 +5,6 @@
 #include <player.h>
 #include <map.h>
 
-#define SPEED 1 / (1000 / TICKS_PER_SECOND)
-
 int current_tick = 0;
 int starting_tick = 0;
 int day_tick = 0;
@@ -32,14 +30,11 @@ void tick_update(){
     int y_off;
     get_player_offset(&x_off, &y_off);
     fire_update(x_off, y_off);
+    update_camera();
   } else {
     reset_physics();
   }
   
-  if ((current_tick & (4 - 1)) == 0){
-    update_camera();
-  }
-
   day_night_update();
   hunger_update();
   thirst_update();
