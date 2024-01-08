@@ -51,6 +51,36 @@ void newline_ui(){
   y_cursor = y_cursor % rows;
 }
 
+void ui_draw_horizon(render_obj_t * object){
+	object->surface = SDL_LoadBMP(HORIZON_PATH);
+        object->texture = SDL_CreateTextureFromSurface(object->renderer, object->surface);
+	transform_t rot = get_player_direction();
+	object->clip.y = 0;
+	switch (rot.z){
+	case -1:
+		object->clip.x = 0;
+		break;
+	case 0:
+		object->clip.x = 16;
+		break;
+	case 1:
+		object->clip.x = 32;
+		break;
+	}
+	object->clip.w = 16;
+	object->clip.h = 16;
+	int width = 64;
+	int height = 64;
+	object->target.x = 0;
+	object->target.y = DEFAULT_SCREEN_HEIGHT - height;
+	object->target.w = width;
+	object->target.h = height;
+	SDL_RenderCopy(object->renderer, object->texture, &object->clip, &object->target);
+
+	SDL_DestroyTexture(object->texture);
+	SDL_FreeSurface(object->surface);
+}
+
 void draw_string(char * string, SDL_Color color, render_obj_t * object){
   font = TTF_OpenFont(FONT_PATH, 16);
   int width = 0;
@@ -84,7 +114,7 @@ void handle_block_select(SDL_Event event){
 }
 
 void draw_menu(render_obj_t * object){
-  ui_menu_t current_menu;
+  ui_menu_t current_menu;  
   get_menu_info(&current_menu, get_active_menu());
   current_menu.draw(object);
 }
