@@ -22,22 +22,24 @@ int get_current_tick(){
 }
 
 void tick_update(){
-  get_current_tick();
-  if ((current_tick & (20 - 1)) == 0){
-    handle_physics();
-    water_flow_update();
-    int x_off;
-    int y_off;
-    get_player_offset(&x_off, &y_off);
-    fire_update(x_off, y_off);
-    update_camera();
-  } else {
-    reset_physics();
-  }
-  
-  day_night_update();
-  hunger_update();
-  thirst_update();
+	get_current_tick();
+	if ((current_tick & (20 - 1)) == 0){
+		handle_physics();
+		water_flow_update();
+		int x_off;
+		int y_off;
+		get_player_offset(&x_off, &y_off);
+		fire_update(x_off, y_off);
+		update_camera();
+	} else {
+		reset_physics();
+	}
+
+	if (current_tick % 20 < 8){
+		day_night_update();
+		hunger_update();
+		thirst_update();
+	}
 }
 
 void day_night_update(){
