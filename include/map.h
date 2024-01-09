@@ -23,22 +23,21 @@
 #define BASE_TEMPERATURE 237
 
 typedef struct block_data_s {
-	char name[BLOCK_NAME_LENGTH];
-	int hp;
-	bool solid;
-	bool transparent;
-	int texture;
-	int dropped_item;
-	int count;
-	int block_type;
-	int output_id;
-	int regen;
-	int regen_ticks;
-	int hardness;
-	int ignition;
-	int extinguish_id;
-	bool is_item;
-	int id;
+  char name[BLOCK_NAME_LENGTH];
+  int hp;
+  bool solid;
+  bool transparent;
+  int texture;
+  int dropped_item;
+  int count;
+  int block_type;
+  int output_id;
+  int regen;
+  int regen_ticks;
+  int hardness;
+  int ignition;
+  int extinguish_id;
+  int id;
 } block_data_t;
 
 typedef struct data_map_s {
