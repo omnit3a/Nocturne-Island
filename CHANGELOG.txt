@@ -194,9 +194,3 @@ Alpha Version 0.4.4:
 
 Alpha Version 0.4.5:
   Switched to using a Tibia-like renderering style
-
-Alpha Version 0.4.6:
-  Trees now have a seperate texture for their bottom segment
-  Created new texture for tree leaves
-  Water is now two pixels lower than the other blocks
-  Add indication of vertical look direction

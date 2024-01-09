@@ -43,48 +43,48 @@ void tick_update(){
 }
 
 void day_night_update(){
-	if (SDL_GetTicks() - day_tick > SDL_TICKS_PER_DAY){
-		is_day = !is_day;
-		day_tick = SDL_GetTicks();
-		if (is_day){
-			days_survived++;
-		}
-	}
+  if (SDL_GetTicks() - day_tick > SDL_TICKS_PER_DAY){
+    is_day = !is_day;
+    day_tick = SDL_GetTicks();
+    if (is_day){
+      days_survived++;
+    }
+  }
 }
 
 int is_daytime(){
-	return is_day;
+  return is_day;
 }
 
 void hunger_update(){
-	if (SDL_GetTicks() - hunger_tick >= HUNGER_TICKS){
-		hunger_tick += HUNGER_TICKS;
-		int hunger = get_player_hunger();
-		if (hunger == 0){
-			set_player_health(get_player_health() - 1);
-		}
-		set_player_hunger(hunger - 1);
-	}
+  if (SDL_GetTicks() - hunger_tick >= HUNGER_TICKS){
+    hunger_tick += HUNGER_TICKS;
+    int hunger = get_player_hunger();
+    if (hunger == 0){
+      set_player_health(get_player_health() - 1);
+    }
+    set_player_hunger(hunger - 1);
+  }
 }
 
 void thirst_update(){
-	if (SDL_GetTicks() - thirst_tick >= THIRST_TICKS){
-		thirst_tick += THIRST_TICKS;
-		int thirst = get_player_thirst();
-		if (thirst == 0){
-			set_player_health(get_player_health() - 1);
-		}
-		set_player_thirst(thirst-1);
-	}
+  if (SDL_GetTicks() - thirst_tick >= THIRST_TICKS){
+    thirst_tick += THIRST_TICKS;
+    int thirst = get_player_thirst();
+    if (thirst == 0){
+      set_player_health(get_player_health() - 1);
+    }
+    set_player_thirst(thirst-1);
+  }
 }
 
 void water_flow_update(){
-	/* TODO */
+  /* TODO */
 }
 
 void fire_update(int x_off, int y_off){
 }
 
 int get_days_survived(){
-	return days_survived;
+  return days_survived;
 }

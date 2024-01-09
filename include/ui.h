@@ -10,8 +10,6 @@
 #define FONT_HEIGHT 16
 #define FONT_ATLAS_SIZE 16
 
-#define HORIZON_PATH "assets/ui/horizon.bmp"
-
 typedef struct ui_menu_s {
   int (*update)(SDL_Event event);
   void (*draw)(render_obj_t * object);
@@ -24,7 +22,6 @@ void init_ui();
 
 void zero_ui();
 void newline_ui();
-void ui_draw_horizon(render_obj_t * object);
 void draw_string(char * string, SDL_Color color, render_obj_t * object);
 
 void handle_block_select(SDL_Event event);
