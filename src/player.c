@@ -13,6 +13,7 @@
 #include <map.h>
 #include <controls.h>
 #include <ticks.h>
+#include <tools/waterskin.h>
 
 int block_progress = 0;
 
@@ -331,6 +332,7 @@ void handle_player_rotation(SDL_Event event){
       player_entity.sprite.frame_offset = 1;
       break;
     case SDLK_u:
+	    fill_waterskin();
       current_rotation.z = current_rotation.z - 1;
       if (current_rotation.z == -2){
 	current_rotation.z = 1;

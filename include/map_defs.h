@@ -37,3 +37,4 @@
 #define RED_MUSHROOM 25
 #define BLUE_BERRY_BUSH 26
 #define BLUE_BERRIES 27
+#define WATERSKIN 28

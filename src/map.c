@@ -458,5 +458,8 @@ void reallocate_changed_blocks(int size_offset){
 }
 
 void free_changed_blocks(){
-  free(changed_blocks);
+	if (changed_blocks == NULL){
+		return;
+	}
+	free(changed_blocks);
 }

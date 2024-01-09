@@ -4,14 +4,20 @@
 #include <map_defs.h>
 #include <map.h>
 #include <string.h>
+#include <items.h>
 
 inventory_slot_t inventory[INVENTORY_SIZE];
 int current_slot;
+item_state_t default_state = {
+	0
+};
+
 
 void init_inventory(){
   current_slot = 0;
   for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
     inventory[slot].item = get_block_properties(EMPTY);
+    inventory[slot].state = default_state;
     inventory[slot].amount = 0;
     inventory[slot].size = SLOT_SIZE;
     inventory[slot].is_empty = 1;
@@ -29,6 +35,7 @@ int add_inventory_item(block_data_t item, int amount){
 	return 0;
       }
       inventory[slot].item = item;
+      inventory[slot].state = default_state;
       inventory[slot].amount += amount;
       inventory[slot].is_empty = 0;
       sort_inventory();
@@ -56,6 +63,14 @@ int remove_inventory_item(block_data_t item, int amount){
     }
   }
   return 0;
+}
+
+int set_inventory_item_state(item_state_t state, int slot){
+	if (get_inventory_item(slot)->is_empty){
+		return 0;
+	}
+	inventory[slot].state = state;
+	return 1;
 }
 
 inventory_slot_t * get_inventory_item(int slot){

@@ -16,6 +16,7 @@
 #include <crafting.h>
 #include <controls.h>
 #include <menu.h>
+#include <items.h>
 
 int main(int argc, char ** argv){	
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
@@ -48,6 +49,7 @@ int main(int argc, char ** argv){
 	SDL_UpdateWindowSurface(window);
 
 	load_block_properties(BLOCK_DATA_PATH);
+	load_item_properties(ITEM_DATA_PATH);
 	load_crafting_recipes(CRAFTING_DATA_PATH);
 	load_control_scheme(CONTROL_SCHEME_PATH);
 	
@@ -58,12 +60,14 @@ int main(int argc, char ** argv){
 		init_map(time(0));
 		printf("Seed: %d\n", get_map_seed());
 		generate_hills(SPAWN_X, SPAWN_Y);  // generate a hilly world
-
+		free_changed_blocks();
+		
 		init_texture_lookup();
 		setup_camera(renderer, window);
 		init_player_entity();
 		init_inventory();
-    
+		add_inventory_item(get_block_properties(WATERSKIN), 1);
+		
 		ui_menu_t start_menu;
 		get_menu_info(&start_menu, GAME_UI_ID);
 		open_menu(&start_menu);
