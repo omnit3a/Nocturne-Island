@@ -1,0 +1,58 @@
+{
+  "items": [
+    
+    {
+      "name": "Rock",
+      "texture": 0,
+      "id": 0
+    },
+
+    {
+      "name": "Charcoal",
+      "texture": 1,
+      "id": 1
+    },
+
+    {
+      "name": "Stick",
+      "texture": 2,
+      "id": 2
+    },
+
+    {
+      "name": "Branch",
+      "texture": 3,
+      "id": 3
+    },
+
+    {
+      "name": "Sharpened Stick",
+      "texture": 4,
+      "id": 4
+    },
+
+    {
+      "name": "Stone Axe",
+      "texture": 5,
+      "id": 5
+    },
+
+    {
+      "name": "Red Berries",
+      "texture": 6,
+      "id": 6
+    },
+
+    {
+      "name": "Blue Berries",
+      "texture": 7,
+      "id": 7
+    },
+
+    {
+      "name": "Sharpened Rock",
+      "texture": 8,
+      "id": 8
+    }
+  ]
+}
