@@ -194,3 +194,6 @@ Alpha Version 0.4.4:
 
 Alpha Version 0.4.5:
   Switched to using a Tibia-like renderering style
+
+Alpha Version 0.4.6:
+  Added items
