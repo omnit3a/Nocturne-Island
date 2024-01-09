@@ -9,7 +9,7 @@
 #include <entity.h>
 #include <item_defs.h>
 
-void fill_waterskin(){
+void fill_container(){
 	transform_t pos = get_player_entity()->position;
 	item_state_t state = get_current_item()->state;
 	int fullness = state.fullness;
