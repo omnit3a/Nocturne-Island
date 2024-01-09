@@ -1,7 +1,7 @@
 #ifndef MESSAGES_H_
 #define MESSAGES_H_
 
-#define CURRENT_VERSION_MSG "Alpha 0.4.5"
+#define CURRENT_VERSION_MSG "Alpha 0.4.7"
 #define CURRENT_BLOCK_MSG "Current Item: "
 #define HP_MSG "HP: %d"
 #define HUNGER_MSG "Hunger: %d"

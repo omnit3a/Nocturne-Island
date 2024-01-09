@@ -1,6 +1,8 @@
 #ifndef ITEMS_H
 #define ITEMS_H
 
+#include <stdbool.h>
+
 #define ITEM_DATA_PATH "assets/defs/items.json"
 
 #define ITEM_NAME_LENGTH 24
@@ -8,7 +10,7 @@
 
 typedef struct item_data_s {
 	char name[ITEM_NAME_LENGTH];
-	int absorbs_liquid;
+        bool absorbs_liquid;
 	int container_size;
 	int id;
 } item_data_t;

@@ -8,10 +8,9 @@
 
 inventory_slot_t inventory[INVENTORY_SIZE];
 int current_slot;
-item_state_t default_state = {
-	0
+item_state_t default_state = (item_state_t){
+	0,
 };
-
 
 void init_inventory(){
   current_slot = 0;

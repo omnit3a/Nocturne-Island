@@ -125,6 +125,7 @@ void load_block_properties(char * path){
     {"hardness", t_integer, STRUCTOBJECT(block_data_t, hardness)},
     {"ignition", t_integer, STRUCTOBJECT(block_data_t, ignition)},
     {"extinguish_id", t_integer, STRUCTOBJECT(block_data_t, extinguish_id)},
+    {"is_item", t_boolean, STRUCTOBJECT(block_data_t, is_item)},
     {"id", t_integer, STRUCTOBJECT(block_data_t, id)},
     {NULL},
   };
