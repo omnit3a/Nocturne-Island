@@ -15,6 +15,7 @@
       "hardness": -1,
       "ignition": -1,
       "extinguish_id": 0,
+      "is_item": false,
       "id": 0
     },
 
@@ -33,6 +34,7 @@
       "hardness": 2,
       "ignition": 1612,
       "extinguish_id": 23,
+      "is_item": false,
       "id": 1
     },
       
@@ -51,6 +53,7 @@
       "hardness": 0,
       "ignition": 600,
       "extinguish_id": 0,
+      "is_item": false,
       "id": 2
     },
       
@@ -69,6 +72,7 @@
       "hardness": 2,
       "ignition": 644,
       "extinguish_id": 12,
+      "is_item": false,
       "id": 3
     },
       
@@ -87,6 +91,7 @@
       "hardness": 1,
       "ignition": 500,
       "extinguish_id": 12,
+      "is_item": false,
       "id": 4
     },
       
@@ -105,6 +110,7 @@
       "hardness": 0,
       "ignition": -1,
       "extinguish_id": 5,
+      "is_item": false,
       "id": 5
     },
       
@@ -123,6 +129,7 @@
       "hardness": 0,
       "ignition": 373,
       "extinguish_id": 24,
+      "is_item": false,
       "id": 6
     },
       
@@ -141,6 +148,7 @@
       "hardness": 0,
       "ignition": 1972,
       "extinguish_id": 23,
+      "is_item": false,
       "id": 7
     },
       
@@ -159,6 +167,7 @@
       "hardness": -1,
       "ignition": -1,
       "extinguish_id": 8,
+      "is_item": false,
       "id": 8
     },
       
@@ -177,6 +186,7 @@
       "hardness": 1,
       "ignition": 1523,
       "extinguish_id": 23,
+      "is_item": false,
       "id": 9
     },
       
@@ -195,6 +205,7 @@
       "hardness": 0,
       "ignition": 400,
       "extinguish_id": 12,
+      "is_item": false,
       "id": 10
     },
       
@@ -213,6 +224,7 @@
       "hardness": -1,
       "ignition": 1400,
       "extinguish_id": 12,
+      "is_item": false,
       "id": 11
     },
       
@@ -231,6 +243,7 @@
       "hardness": 0,
       "ignition": 413,
       "extinguish_id": 0,
+      "is_item": true,
       "id": 12
     },
       
@@ -249,6 +262,7 @@
       "hardness": 3,
       "ignition": 1612,
       "extinguish_id": 12,
+      "is_item": false,
       "id": 13
     },
       
@@ -267,6 +281,7 @@
       "hardness": 0,
       "ignition": 1612,
       "extinguish_id": 23,
+      "is_item": true,
       "id": 14
     },
     {
@@ -284,6 +299,7 @@
       "hardness": 0,
       "ignition": 400,
       "extinguish_id": 12,
+      "is_item": true,
       "id": 15
     },
       
@@ -302,6 +318,7 @@
       "hardness": 0,
       "ignition": 400,
       "extinguish_id": 12,
+      "is_item": true,
       "id": 16
     },
       
@@ -320,6 +337,7 @@
       "hardness": 0,
       "ignition": 400,
       "extinguish_id": 12,
+      "is_item": false,
       "id": 17
     },
       
@@ -338,6 +356,7 @@
       "hardness": 0,
       "ignition": 400,
       "extinguish_id": 12,
+      "is_item": false,
       "id": 18
     },
       
@@ -356,6 +375,7 @@
       "hardness": 0,
       "ignition": 300,
       "extinguish_id": 12,
+      "is_item": true,
       "id": 19
     },
       
@@ -374,6 +394,7 @@
       "hardness": 1,
       "ignition": 1612,
       "extinguish_id": 23,
+      "is_item": true,
       "id": 20
     },
       
@@ -392,6 +413,7 @@
       "hardness": 0,
       "ignition": 400,
       "extinguish_id": 12,
+      "is_item": true,
       "id": 21
     },
       
@@ -410,6 +432,7 @@
       "hardness": 2,
       "ignition": 400,
       "extinguish_id": 12,
+      "is_item": true,
       "id": 22
     },
 
@@ -428,6 +451,7 @@
       "hardness": -1,
       "ignition": -1,
       "extinguish_id": 14,
+      "is_item": false,
       "id": 23
     },
 
@@ -446,6 +470,7 @@
       "hardness": -1,
       "ignition": -1,
       "extinguish_id": 6,
+      "is_item": false,
       "id": 24
     },
     
@@ -464,6 +489,7 @@
       "hardness": 0,
       "ignition": 380,
       "extinguish_id": 0,
+      "is_item": false,
       "id": 25
     },
 
@@ -482,6 +508,7 @@
       "hardness": 0,
       "ignition": 400,
       "extinguish_id": 12,
+      "is_item": false,
       "id": 26
     },
       
@@ -500,6 +527,7 @@
       "hardness": 0,
       "ignition": 300,
       "extinguish_id": 12,
+      "is_item": true,
       "id": 27
     }
   ]

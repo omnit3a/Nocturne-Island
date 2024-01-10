@@ -13,7 +13,6 @@
 #include <map.h>
 #include <controls.h>
 #include <ticks.h>
-#include <tools/waterskin.h>
 
 int block_progress = 0;
 

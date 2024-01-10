@@ -12,6 +12,7 @@ typedef struct item_data_s {
 	char name[ITEM_NAME_LENGTH];
         bool absorbs_liquid;
 	int container_size;
+	int block_id;
 	int id;
 } item_data_t;
 
@@ -26,5 +27,6 @@ typedef struct item_state_s {
 
 void load_item_properties(char * path);
 item_data_t get_item_properties(int item_id);
+int get_item_id(int block_id);
 
 #endif

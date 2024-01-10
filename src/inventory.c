@@ -28,20 +28,21 @@ int is_inventory_slot_empty(int slot){
 }
 
 int add_inventory_item(block_data_t item, int amount){
-  for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
-    if (is_inventory_slot_empty(slot) || compare_blocks(inventory[slot].item, item)){
-      if (inventory[slot].amount + amount > inventory[slot].size){
+	sort_inventory();
+	for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
+		if (is_inventory_slot_empty(slot) || compare_blocks(inventory[slot].item, item)){
+			if (inventory[slot].amount + amount > inventory[slot].size){
+				return 0;
+			}
+			inventory[slot].item = item;
+			inventory[slot].state = default_state;
+			inventory[slot].amount += amount;
+			inventory[slot].is_empty = 0;
+			sort_inventory();
+			return 1;
+		}
+	}
 	return 0;
-      }
-      inventory[slot].item = item;
-      inventory[slot].state = default_state;
-      inventory[slot].amount += amount;
-      inventory[slot].is_empty = 0;
-      sort_inventory();
-      return 1;
-    }
-  }
-  return 0;
 }
 
 int remove_inventory_item(block_data_t item, int amount){
@@ -51,12 +52,20 @@ int remove_inventory_item(block_data_t item, int amount){
       if (inventory[slot].amount - amount > 0){
 	inventory[slot].amount -= amount;
 	sort_inventory();
+	
+	if (is_inventory_empty()){
+		set_current_item(0);
+	}
 	return 1;
       }
       if (inventory[slot].amount - amount == 0){
 	inventory[slot].amount = 0;
 	inventory[slot].is_empty = 1;
 	sort_inventory();
+
+	if (is_inventory_empty()){
+		set_current_item(0);
+	}
 	return 1;
       }
     }
@@ -86,31 +95,31 @@ void set_current_item(int slot){
 
 
 void sort_inventory(){
-  int item_count[BLOCKS_AMOUNT];
-  block_data_t prev_block = get_current_item()->item;
-  for (int id = 0 ; id < BLOCKS_AMOUNT ; id++){
-    item_count[id] = 0;
-    if (id == 0){
-      continue;
-    }
-    for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
-      if (get_inventory_item(slot)->item.id == id){
-	item_count[id] += get_inventory_item(slot)->amount;
-      }
-    }
-  }
-  init_inventory();
-  int items_added = 0;
-  for (int id = 0 ; id < BLOCKS_AMOUNT && items_added < INVENTORY_SIZE; id++){
-    if (item_count[id] > 0){
-      inventory[items_added].item = get_block_properties(id);
-      inventory[items_added].amount = item_count[id];
-      inventory[items_added].is_empty = 0;
-      items_added++;
-    }
-  }
-  int prev_slot = find_inventory_slot(prev_block);
-  set_current_item(prev_slot);
+	int item_count[BLOCKS_AMOUNT];
+	block_data_t prev_block = get_current_item()->item;
+	for (int id = 0 ; id < BLOCKS_AMOUNT ; id++){
+		item_count[id] = 0;
+		if (id == 0){
+			continue;
+		}
+		for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
+			if (get_inventory_item(slot)->item.id == id){
+				item_count[id] += get_inventory_item(slot)->amount;
+			}
+		}
+	}
+	init_inventory();
+	int items_added = 0;
+	for (int id = 0 ; id < BLOCKS_AMOUNT && items_added < INVENTORY_SIZE; id++){
+		if (item_count[id] > 0){
+			inventory[items_added].item = get_block_properties(id);
+			inventory[items_added].amount = item_count[id];
+			inventory[items_added].is_empty = 0;
+			items_added++;
+		}
+	}
+	int prev_slot = find_inventory_slot(prev_block);
+	set_current_item(prev_slot);
 }
 
 int check_inventory_item(block_data_t item, int amount){
@@ -130,6 +139,15 @@ int is_inventory_full(){
     }
   }
   return 1;
+}
+
+int is_inventory_empty(){
+	for (int slot = 0 ; slot < INVENTORY_SIZE ; slot++){
+		if (!inventory[slot].is_empty){
+			return 0;
+		}
+	}
+	return 1;
 }
 
 int find_inventory_slot(block_data_t item){
