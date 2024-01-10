@@ -201,3 +201,4 @@ Alpha Version 0.4.6:
 Alpha Version 0.4.7:
   Added containers which may hold items
   Fixed bug with inventory item removal
+  Made Caves rarer
