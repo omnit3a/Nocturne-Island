@@ -306,7 +306,7 @@ void generate_hills(int x_off, int y_off){
 
       /* cave generation */
       float cave_noise = pnoise3d(x+x_off, y+y_off, z, 0.75, 10, 0.5, 1, get_map_seed());
-      if (cave_noise > 1 && cave_noise < 6 && z > 1){
+      if (cave_noise > 2 && cave_noise < 6 && z > 1){
 	set_block(get_block_properties(EMPTY), x, y, z);
       }
       
