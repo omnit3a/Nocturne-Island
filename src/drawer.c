@@ -125,7 +125,8 @@ void draw_view(render_obj_t * object){
 			}
 				
 			if (get_block(x, y, z).id > 0){
-				int tree_base = (get_block(x, y, z).block.id == TREE_TRUNK && get_block(x,y,z-1).block.id != TREE_TRUNK);
+				int tree_base = (get_block(x, y, z).block.id == TREE_TRUNK &&
+						 (get_block(x,y,z-1).block.id != TREE_TRUNK && get_block(x,y,z-1).block.id != EMPTY));
 				object->clip.x = texture_lookup[block+tree_base][0];
 				object->clip.y = texture_lookup[block][1];
 			} else {
