@@ -60,7 +60,6 @@ int main(int argc, char ** argv){
 		init_map(time(0));
 		printf("Seed: %d\n", get_map_seed());
 		generate_hills(SPAWN_X, SPAWN_Y);  // generate a hilly world
-		free_changed_blocks();
 		
 		init_texture_lookup();
 		setup_camera(renderer, window);
