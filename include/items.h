@@ -7,9 +7,11 @@
 
 #define ITEM_NAME_LENGTH 24
 #define ITEMS_AMOUNT 256
+#define MAX_CONTAINER_SIZE 64
 
 typedef struct item_data_s {
 	char name[ITEM_NAME_LENGTH];
+	int size;
         bool absorbs_liquid;
 	int container_size;
 	int block_id;
@@ -23,6 +25,7 @@ typedef struct item_map_s {
 
 typedef struct item_state_s {
 	int fullness;
+        item_data_t container_contents[MAX_CONTAINER_SIZE];
 } item_state_t;
 
 void load_item_properties(char * path);

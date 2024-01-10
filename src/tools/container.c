@@ -7,7 +7,6 @@
 #include <inventory.h>
 #include <tools/container.h>
 #include <entity.h>
-#include <item_defs.h>
 
 void fill_container(){
 	item_state_t state = get_current_item()->state;

@@ -3,6 +3,7 @@
     
     {
       "name": "Rock",
+      "size": 2,
       "absorbs_liquid": false,
       "container_size": -1,
       "block_id": 14, 
@@ -11,6 +12,7 @@
 
     {
       "name": "Charcoal",
+      "size": 1,
       "absorbs_liquid": true,
       "container_size": -1,
       "block_id": 12,
@@ -19,6 +21,7 @@
 
     {
       "name": "Stick",
+      "size": 5,
       "absorbs_liquid": true,
       "container_size": -1,
       "block_id": 15,
@@ -27,6 +30,7 @@
 
     {
       "name": "Branch",
+      "size": 5,
       "absorbs_liquid": true,
       "container_size": -1,
       "block_id": 16,
@@ -35,6 +39,7 @@
 
     {
       "name": "Sharpened Stick",
+      "size": 4,
       "absorbs_liquid": true,
       "container_size": -1,
       "block_id": 21,
@@ -43,6 +48,7 @@
 
     {
       "name": "Stone Axe",
+      "size": 8,
       "absorbs_liquid": false,
       "container_size": -1,
       "block_id": 22,
@@ -51,6 +57,7 @@
 
     {
       "name": "Red Berries",
+      "size": 1,
       "absorbs_liquid": true,
       "container_size": -1,
       "block_id": 19,
@@ -59,6 +66,7 @@
 
     {
       "name": "Blue Berries",
+      "size": 1,
       "absorbs_liquid": true,
       "container_size": -1,
       "block_id": 27,
@@ -67,6 +75,7 @@
 
     {
       "name": "Sharpened Rock",
+      "size": 1,
       "absorbs_liquid": false,
       "container_size": -1,
       "block_id": 20,

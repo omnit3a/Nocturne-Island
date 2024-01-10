@@ -8,7 +8,7 @@
 
 inventory_slot_t inventory[INVENTORY_SIZE];
 int current_slot;
-item_state_t default_state = (item_state_t){
+item_state_t default_state = {
 	0,
 };
 
@@ -104,6 +104,7 @@ void sort_inventory(){
 	for (int id = 0 ; id < BLOCKS_AMOUNT && items_added < INVENTORY_SIZE; id++){
 		if (item_count[id] > 0){
 			inventory[items_added].item = get_block_properties(id);
+			inventory[items_added].state = default_state;
 			inventory[items_added].amount = item_count[id];
 			inventory[items_added].is_empty = 0;
 			items_added++;

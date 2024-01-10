@@ -39,6 +39,7 @@ void load_item_properties(char * path){
 
 	const struct json_attr_t json_subobjects[] = {
 		{"name", t_string, STRUCTOBJECT(item_data_t, name), .len = ITEM_NAME_LENGTH},
+		{"size", t_integer, STRUCTOBJECT(item_data_t, size)},
 		{"absorbs_liquid", t_boolean, STRUCTOBJECT(item_data_t, absorbs_liquid)},
 		{"container_size", t_integer, STRUCTOBJECT(item_data_t, container_size)},
 		{"block_id", t_integer, STRUCTOBJECT(item_data_t, block_id)},
