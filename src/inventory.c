@@ -52,20 +52,12 @@ int remove_inventory_item(block_data_t item, int amount){
       if (inventory[slot].amount - amount > 0){
 	inventory[slot].amount -= amount;
 	sort_inventory();
-	
-	if (is_inventory_empty()){
-		set_current_item(0);
-	}
 	return 1;
       }
       if (inventory[slot].amount - amount == 0){
 	inventory[slot].amount = 0;
 	inventory[slot].is_empty = 1;
 	sort_inventory();
-
-	if (is_inventory_empty()){
-		set_current_item(0);
-	}
 	return 1;
       }
     }
@@ -96,7 +88,6 @@ void set_current_item(int slot){
 
 void sort_inventory(){
 	int item_count[BLOCKS_AMOUNT];
-	block_data_t prev_block = get_current_item()->item;
 	for (int id = 0 ; id < BLOCKS_AMOUNT ; id++){
 		item_count[id] = 0;
 		if (id == 0){
@@ -118,8 +109,7 @@ void sort_inventory(){
 			items_added++;
 		}
 	}
-	int prev_slot = find_inventory_slot(prev_block);
-	set_current_item(prev_slot);
+	set_current_item(0);
 }
 
 int check_inventory_item(block_data_t item, int amount){
