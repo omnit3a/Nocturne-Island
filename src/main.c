@@ -65,7 +65,6 @@ int main(int argc, char ** argv){
 		setup_camera(renderer, window);
 		init_player_entity();
 		init_inventory();
-		add_inventory_item(get_block_properties(WATERSKIN), 1);
 		
 		ui_menu_t start_menu;
 		get_menu_info(&start_menu, GAME_UI_ID);
