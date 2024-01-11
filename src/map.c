@@ -211,7 +211,7 @@ void place_foliage(int x_off, int y_off, char height_map[CHUNK_WIDTH][CHUNK_LENG
       continue;
     }
     
-    if (noise >= 2.1 && noise < 2.2){
+    if (noise >= 2.5 && noise < 2.6){
       /* Worlds either have red or blue berries */
       if (get_map_seed() % 2){
 	set_block(get_block_properties(RED_BERRY_BUSH), x, y, height_map[x][y]+1);

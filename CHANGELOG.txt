@@ -203,3 +203,4 @@ Alpha Version 0.4.7:
   Fixed bug with inventory item removal
   Made Caves rarer
   Changed day/night cycle to be 24 minutes
+  Made berries rarer
