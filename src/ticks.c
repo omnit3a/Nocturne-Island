@@ -43,13 +43,13 @@ void tick_update(){
 }
 
 void day_night_update(){
-  if (SDL_GetTicks() - day_tick > SDL_TICKS_PER_DAY){
-    is_day = !is_day;
-    day_tick = SDL_GetTicks();
-    if (is_day){
-      days_survived++;
-    }
-  }
+	if (SDL_GetTicks() - day_tick > SDL_TICKS_PER_DAY){
+		is_day = !is_day;
+		day_tick = SDL_GetTicks();
+		if (is_day){
+			days_survived++;
+		}
+	}
 }
 
 int is_daytime(){

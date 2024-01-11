@@ -115,6 +115,7 @@ int main(int argc, char ** argv){
 				break;
 
 			case SDLK_q:
+				player_drink_water();
 				break;
 			}
 		}

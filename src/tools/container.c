@@ -11,7 +11,7 @@
 void fill_container(){
 	item_state_t state = get_current_item()->state;
 	int fullness = state.fullness;
-
+	
 	if (!get_current_item()->item.is_item){
 		return;
 	}
@@ -24,7 +24,7 @@ void fill_container(){
 	if (get_item_properties(item_id).container_size < 0){
 		return;
 	}
-	
+
 	if (fullness < get_item_properties(item_id).container_size){
 		state.fullness += 1;
 		set_inventory_item_state(state, get_current_slot());

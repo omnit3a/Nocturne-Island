@@ -1,7 +1,7 @@
 #pragma once
 
 #define TICKS_PER_SECOND 100
-#define SDL_TICKS_PER_DAY 300 * 1000
+#define SDL_TICKS_PER_DAY 720 * 1000
 
 int get_current_tick();
 void tick_update();
