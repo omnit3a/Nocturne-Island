@@ -204,3 +204,4 @@ Alpha Version 0.4.7:
   Made Caves rarer
   Changed day/night cycle to be 24 minutes
   Made berries rarer
+  Hunger and thirst now drain based on player activity

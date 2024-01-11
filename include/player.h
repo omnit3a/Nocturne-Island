@@ -10,8 +10,8 @@
 #define SPAWN_Y CHUNK_LENGTH/2
 #define SPAWN_Z 11
 
-#define HUNGER_TICKS 120000
-#define THIRST_TICKS 100000
+#define HUNGER_STEPS 500
+#define THIRST_STEPS 300
 #define STOMACH_CAPACITY 15
 
 void spawn_player();

@@ -244,61 +244,85 @@ void player_place_block(){
   }
 }
 
+int player_hunger_steps = 1;
+int player_thirst_steps = 1;
 /* Get user input for the player, then do stuff with it */
 void handle_player_movement(SDL_Event event){
-  transform_t pos = player_entity.position;
-  transform_t rot = player_entity.rotation;
-  transform_t prev_rot = current_rotation;
+	transform_t pos = player_entity.position;
+	transform_t rot = player_entity.rotation;
+	transform_t prev_rot = current_rotation;
   
-  int move_player = 0;
+	int move_player = 0;
 
-  if (get_active_menu() != GAME_UI_ID){
-    return;
-  }
+	if (get_active_menu() != GAME_UI_ID){
+		return;
+	}
 
-  int keycode = translate_keypress(event, GAME_UI_ID);
+	int keycode = translate_keypress(event, GAME_UI_ID);
   
-  switch (keycode){
-    case SDLK_w:
-      current_rotation.x = 0;
-      current_rotation.y = -1;
-      move_player = 1;
-      break;
-    case SDLK_a:
-      current_rotation.x = -1;
-      current_rotation.y = 0;
-      move_player = 1;
-      break;
-    case SDLK_s:
-      current_rotation.x = 0;
-      current_rotation.y = 1;
-      move_player = 1;
-      break;
-    case SDLK_d:
-      current_rotation.x = 1;
-      current_rotation.y = 0;
-      move_player = 1;
-      break;
-    case SDLK_SPACE:
-      /* Check for empty space above player and solid space below player */
-      if (!get_block(pos.x, pos.y, pos.z+1).block.solid &&
-	  get_block(pos.x, pos.y, pos.z-1).block.solid){
-	player_jump();
-      }
-      break;
-  }
-  rot.x += current_rotation.x;
-  rot.y += current_rotation.y;
-  rot.z = pos.z;
+	switch (keycode){
+	case SDLK_w:
+		current_rotation.x = 0;
+		current_rotation.y = -1;
+		move_player = 1;
+		break;
+	case SDLK_a:
+		current_rotation.x = -1;
+		current_rotation.y = 0;
+		move_player = 1;
+		break;
+	case SDLK_s:
+		current_rotation.x = 0;
+		current_rotation.y = 1;
+		move_player = 1;
+		break;
+	case SDLK_d:
+		current_rotation.x = 1;
+		current_rotation.y = 0;
+		move_player = 1;
+		break;
+	case SDLK_SPACE:
+		/* Check for empty space above player and solid space below player */
+		if (!get_block(pos.x, pos.y, pos.z+1).block.solid &&
+		    get_block(pos.x, pos.y, pos.z-1).block.solid){
+			player_jump();
+		}
+		break;
+	}
+	rot.x += current_rotation.x;
+	rot.y += current_rotation.y;
+	rot.z = pos.z;
   
-  if(!get_block(rot.x, rot.y, rot.z).block.solid && move_player){
-    x_pos_offset += current_rotation.x;
-    y_pos_offset += current_rotation.y;
-    generate_hills(x_pos_offset, y_pos_offset);
-  }
-  current_rotation.x = prev_rot.x;
-  current_rotation.y = prev_rot.y;
-  current_rotation.z = prev_rot.z;
+	if(!get_block(rot.x, rot.y, rot.z).block.solid && move_player){
+		x_pos_offset += current_rotation.x;
+		y_pos_offset += current_rotation.y;
+		generate_hills(x_pos_offset, y_pos_offset);
+	}
+	current_rotation.x = prev_rot.x;
+	current_rotation.y = prev_rot.y;
+	current_rotation.z = prev_rot.z;
+	
+	player_hunger_steps += 1;
+	player_thirst_steps += 1;
+	player_hunger_steps = player_hunger_steps % HUNGER_STEPS;
+	player_thirst_steps = player_thirst_steps % THIRST_STEPS;
+	if (player_hunger_steps == 0){
+		int hunger = get_player_hunger();
+		if (hunger == 0){
+			set_player_health(get_player_health() - 1);
+			return;
+		}
+		set_player_hunger(hunger - 1);
+	}
+
+	if (player_thirst_steps == 0){
+		int thirst = get_player_thirst();
+		if (thirst == 0){
+			set_player_health(get_player_health() - 1);
+			return;
+		}
+		set_player_thirst(thirst - 1);
+	}
 }
 
 void handle_player_rotation(SDL_Event event){

@@ -37,8 +37,6 @@ void tick_update(){
 
 	if (current_tick % 20 < 8){
 		day_night_update();
-		hunger_update();
-		thirst_update();
 	}
 }
 
@@ -54,28 +52,6 @@ void day_night_update(){
 
 int is_daytime(){
   return is_day;
-}
-
-void hunger_update(){
-  if (SDL_GetTicks() - hunger_tick >= HUNGER_TICKS){
-    hunger_tick += HUNGER_TICKS;
-    int hunger = get_player_hunger();
-    if (hunger == 0){
-      set_player_health(get_player_health() - 1);
-    }
-    set_player_hunger(hunger - 1);
-  }
-}
-
-void thirst_update(){
-  if (SDL_GetTicks() - thirst_tick >= THIRST_TICKS){
-    thirst_tick += THIRST_TICKS;
-    int thirst = get_player_thirst();
-    if (thirst == 0){
-      set_player_health(get_player_health() - 1);
-    }
-    set_player_thirst(thirst-1);
-  }
 }
 
 void water_flow_update(){
