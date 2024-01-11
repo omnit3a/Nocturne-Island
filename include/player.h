@@ -12,7 +12,7 @@
 
 #define HUNGER_STEPS 500
 #define THIRST_STEPS 300
-#define STOMACH_CAPACITY 15
+#define STOMACH_CAPACITY 20
 
 void spawn_player();
 int get_mining_speed();
